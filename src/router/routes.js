@@ -17,7 +17,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const storeAuthentication = useAuthenticationStore();
       if (
-        storeAuthentication.getUserRole().includes("website_admin") &&
+        // storeAuthentication.getUserRole().includes("website_admin") &&
         storeAuthentication.isAuthenticated
       ) {
         next();
