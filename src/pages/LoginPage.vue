@@ -1,9 +1,6 @@
 <script setup>
-import { ref } from "vue";
 import { useAuthenticationStore } from "src/stores/authentication";
 const storeAuthentication = useAuthenticationStore();
-
-const loginOption = ref("employee");
 </script>
 
 <template>
@@ -19,19 +16,19 @@ const loginOption = ref("employee");
     <div class="tw-w-auto tw-my-auto">
       <div class="tw-flex tw-p-3">
         <q-btn
-          @click="loginOption = 'employee'"
+          @click="storeAuthentication.loginOption = 'employee'"
           v-bind:class="{
-            'bg-secondary': loginOption === 'employee',
-            'tw-bg-grey': loginOption === 'admin',
+            'bg-secondary': storeAuthentication.loginOption === 'employee',
+            'tw-bg-grey': storeAuthentication.loginOption === 'admin',
           }"
           class="tw-normal-case tw-rounded-full"
           >Employee Login</q-btn
         >
         <q-btn
-          @click="loginOption = 'admin'"
+          @click="storeAuthentication.loginOption = 'admin'"
           v-bind:class="{
-            'tw-bg-grey': loginOption === 'employee',
-            'bg-secondary': loginOption === 'admin',
+            'tw-bg-grey': storeAuthentication.loginOption === 'employee',
+            'bg-secondary': storeAuthentication.loginOption === 'admin',
           }"
           class="tw-mx-4 tw-normal-case tw-rounded-full"
           >Admin Login</q-btn
@@ -79,7 +76,7 @@ const loginOption = ref("employee");
           <q-btn
             class="tw-bottom-1 tw-rounded-3xl tw-px-7 bg-secondary tw-normal-case"
             @click="storeAuthentication.handleLogin"
-            :disabled="storeAuthentication.loading"
+            :disable="storeAuthentication.loading"
             >Login</q-btn
           >
         </div>

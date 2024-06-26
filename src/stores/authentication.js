@@ -9,6 +9,8 @@ export const useAuthenticationStore = defineStore("authentication", {
     email: null,
     password: null,
     data: null,
+    isAuthenticated: false,
+    loginOption: "employee",
   }),
 
   getters: {
@@ -38,6 +40,15 @@ export const useAuthenticationStore = defineStore("authentication", {
           this.error = false;
           this.data = data;
           console.log(this.getUserRole());
+          console.log(data);
+
+          this.isAuthenticated = true;
+
+          if (this.loginOption === "employee") {
+            this.router.push("/employee/dashboard");
+          } else if (this.loginOption === "admin") {
+            this.router.push("/admin/dashboard");
+          }
         }
       } catch (error) {
         if (error) {
