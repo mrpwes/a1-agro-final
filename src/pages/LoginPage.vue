@@ -1,7 +1,9 @@
 <script setup>
-import { useAuthenticationStore } from "stores/authentication";
-
+import { ref } from "vue";
+import { useAuthenticationStore } from "src/stores/authentication";
 const storeAuthentication = useAuthenticationStore();
+
+const loginOption = ref("employee");
 </script>
 
 <template>
@@ -17,19 +19,19 @@ const storeAuthentication = useAuthenticationStore();
     <div class="tw-w-auto tw-my-auto">
       <div class="tw-flex tw-p-3">
         <q-btn
-          v-on:click="storeAuthentication.setUserType('employee')"
+          @click="loginOption = 'employee'"
           v-bind:class="{
-            'bg-secondary': storeAuthentication.getUserType === 'employee',
-            'tw-bg-grey': storeAuthentication.getUserType === 'admin',
+            'bg-secondary': loginOption === 'employee',
+            'tw-bg-grey': loginOption === 'admin',
           }"
           class="tw-normal-case tw-rounded-full"
           >Employee Login</q-btn
         >
         <q-btn
-          v-on:click="storeAuthentication.setUserType('admin')"
+          @click="loginOption = 'admin'"
           v-bind:class="{
-            'bg-secondary': storeAuthentication.getUserType === 'admin',
-            'tw-bg-grey': storeAuthentication.getUserType === 'employee',
+            'tw-bg-grey': loginOption === 'employee',
+            'bg-secondary': loginOption === 'admin',
           }"
           class="tw-mx-4 tw-normal-case tw-rounded-full"
           >Admin Login</q-btn
@@ -41,57 +43,43 @@ const storeAuthentication = useAuthenticationStore();
         <div
           class="tw-p-3 tw-rounded-3xl tw-bg-neutral-300 tw-center tw-mx-5 tw-mb-3"
         >
-          EMPLOYEE ID
+          EMAIL
           <q-input
             borderless
-            v-model="storeAuthentication.employeeId"
             class="tw-w-full tw-px-2 tw-rounded-3xl tw-bg-white tw-mt-1"
             dense="dense"
+            v-model="storeAuthentication.email"
           />
         </div>
         <div class="tw-rounded-3xl tw-bg-neutral-300 tw-center tw-p-3 tw-mx-5">
           <div>PASSWORD</div>
           <q-input
             borderless
-            v-model="storeAuthentication.password"
             class="tw-w-full tw-px-2 tw-rounded-3xl tw-bg-white tw-mt-1"
+            v-model="storeAuthentication.password"
             dense="dense"
             type="password"
           />
         </div>
-        <div class="tw-mx-auto tw-w-max tw-text-center">
+        <div
+          v-if="storeAuthentication.error"
+          class="tw-mx-auto tw-w-max tw-text-center"
+        >
           <p
             v-if="
-              storeAuthentication.firstSubmit &&
-              (!storeAuthentication.employeeId || !storeAuthentication.password)
+              (storeAuthentication.errorMessage = 'Invalid login credentials')
             "
             class="tw-bg-red-200 tw-border tw-border-red-500 tw-px-2 tw-py-1 tw-mt-2"
           >
             <text class="tw-font-bold">Wrong Credentials</text><br />
-            Invalid employee id or password
+            Email or password
           </p>
-          <!-- <br
-            v-if="
-              storeAuthentication.firstSubmit && !storeAuthentication.employeeId
-            "
-          />
-          <span
-            v-if="
-              storeAuthentication.firstSubmit && !storeAuthentication.password
-            "
-            class="tw-text-red-500"
-            >Password is required</span
-          > -->
         </div>
         <div class="tw-text-lg tw-text-center tw-p-3">
           <q-btn
             class="tw-bottom-1 tw-rounded-3xl tw-px-7 bg-secondary tw-normal-case"
-            @click="storeAuthentication.firstSubmit = true"
-            v-bind:to="
-              storeAuthentication.getUserType === 'employee'
-                ? '/dashboard'
-                : '/admin/dashboard'
-            "
+            @click="storeAuthentication.handleLogin"
+            :disabled="storeAuthentication.loading"
             >Login</q-btn
           >
         </div>
