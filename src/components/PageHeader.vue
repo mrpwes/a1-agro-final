@@ -1,6 +1,7 @@
 <script setup>
 // import { useGlobalStore } from "stores/global";
 import { usePageHeader } from "stores/pageHeader";
+import { onMounted } from "vue";
 
 defineProps({
   currentPage: String,
@@ -8,6 +9,10 @@ defineProps({
 
 // const store = useGlobalStore();
 const storePageHeader = usePageHeader();
+
+onMounted(() => {
+  storePageHeader.getProfilePicture();
+});
 </script>
 
 <template>
@@ -44,9 +49,13 @@ const storePageHeader = usePageHeader();
           <h6 class="col q-ma-none text-weight-regular">
             <!-- {{ store.getEmployeeName }}&nbsp; -->
           </h6>
-          <q-avatar size="2.5rem"
-            ><img src="../assets/boy-avatar.png"
-          /></q-avatar>
+          <q-avatar size="2.5rem">
+            <img
+              v-if="storePageHeader.profilePicture != null"
+              :src="storePageHeader.profilePicture"
+            />
+            <q-spinner v-else color="primary" size="1.75em" :thickness="5" />
+          </q-avatar>
         </div>
       </router-link>
     </div>
