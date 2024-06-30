@@ -1,7 +1,7 @@
 <script setup>
 import { useAuthenticationStore } from "stores/authentication";
 import { usePageHeader } from "stores/pageHeader";
-// import { ref } from "vue";
+import PageHeader from "components/PageHeader.vue";
 
 const storePageHeader = usePageHeader();
 const storeAuthentication = useAuthenticationStore();
@@ -143,6 +143,7 @@ const adminMenuList = [
   </q-dialog>
 
   <q-layout view="lHh Lpr fFf">
+    <page-header />
     <q-drawer
       v-model="storePageHeader.drawer"
       show-if-above

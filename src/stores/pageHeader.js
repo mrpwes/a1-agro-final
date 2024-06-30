@@ -6,6 +6,7 @@ export const usePageHeader = defineStore("pageHeader", {
   state: () => ({
     drawer: ref(false),
     profilePicture: ref(null),
+    currentPage: ref(null),
   }),
 
   getters: {

@@ -3,10 +3,6 @@
 import { usePageHeader } from "stores/pageHeader";
 import { onMounted } from "vue";
 
-defineProps({
-  currentPage: String,
-});
-
 // const store = useGlobalStore();
 const storePageHeader = usePageHeader();
 
@@ -29,7 +25,7 @@ onMounted(() => {
           icon="menu"
         />
         <h2 class="tw-text-3xl tw-font-extrabold tw-pl-3">
-          {{ currentPage }}
+          {{ storePageHeader.currentPage }}
         </h2>
       </div>
       <router-link class="no-decoration" to="/profile">

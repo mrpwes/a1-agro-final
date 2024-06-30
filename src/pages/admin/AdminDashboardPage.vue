@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from "vue";
-import PageHeader from "components/PageHeader.vue";
+import { usePageHeader } from "stores/pageHeader";
 import { useApprovalListStore } from "src/stores/admin/approvalList";
+
+const storePageHeader = usePageHeader();
+storePageHeader.currentPage = "Dashboard";
 
 const storeApprovalList = useApprovalListStore();
 
@@ -55,7 +58,6 @@ const columns = [
 </script>
 
 <template>
-  <page-header currentPage="Dashboard" />
   <div class="tw-flex tw-justify-evenly tw-w-8/12 tw-mx-auto tw-mb-6">
     <div class="tw-grid tw-grid-cols-2 tw-gap-3 tw-text-center">
       <div class="tw-bg-white tw-rounded-3xl tw-shadow-md tw-p-10">

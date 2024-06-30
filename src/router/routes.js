@@ -6,12 +6,16 @@ const routes = [
     children: [{ path: "", component: () => import("pages/LoginPage.vue") }],
   },
   {
-    path: "/admin/dashboard",
+    path: "/admin",
     component: () => import("layouts/MainLayout.vue"),
     children: [
       {
-        path: "",
+        path: "dashboard",
         component: () => import("pages/admin/AdminDashboardPage.vue"),
+      },
+      {
+        path: "employeeList",
+        component: () => import("pages/admin/AdminEmployeeListPage.vue"),
       },
     ],
     beforeEnter: (to, from, next) => {

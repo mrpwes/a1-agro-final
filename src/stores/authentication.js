@@ -80,20 +80,5 @@ export const useAuthenticationStore = defineStore("authentication", {
     getUserRole() {
       return this.data.user.app_metadata.userrole;
     },
-    // setUserType(setUserType) {
-    //   this.userType = setUserType;
-    // },
-    // setEmployeeId(setEmployeeId) {
-    //   this.employeeId = setEmployeeId;
-    // },
-    // setPassword(setPassword) {
-    //   this.password = setPassword;
-    // },
-    // logoutUser() {
-    //   this.employeeId = null;
-    //   this.password = null;
-    //   this.firstSubmit = false;
-    //   this.userType = "employee";
-    // },
   },
 });
