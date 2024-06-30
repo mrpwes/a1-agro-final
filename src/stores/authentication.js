@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { getActivePinia } from "pinia";
 import { supabase } from "../lib/supabaseClient.js";
 
 export const useAuthenticationStore = defineStore("authentication", {
@@ -31,6 +32,7 @@ export const useAuthenticationStore = defineStore("authentication", {
     async logout() {
       try {
         this.logoutLoading = true;
+        getActivePinia()._s.forEach((store) => store.$reset());
         let { error } = await supabase.auth.signOut();
         if (error) {
           throw error;
