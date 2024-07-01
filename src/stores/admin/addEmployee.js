@@ -62,7 +62,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         this.loading = true;
         this.supabaseSignUpUserAuth();
       } catch (error) {
-        console.log(error);
+        alert(error);
       }
     },
 
@@ -76,7 +76,7 @@ export const useAddEmployee = defineStore("addEmployee", {
           throw error;
         } else {
           this.registeredAuthID = data.user.id;
-          console.log(this.registeredAuthID);
+          // console.log(this.registeredAuthID);
           this.addFormRecord();
           this.uploadImage();
         }
@@ -110,9 +110,10 @@ export const useAddEmployee = defineStore("addEmployee", {
 
         if (error) {
           throw error;
-        } else {
-          console.log("Record inserted successfully");
         }
+        // else {
+        //   console.log("Record inserted successfully");
+        // }
       } catch (error) {
         alert(error);
       }
@@ -124,7 +125,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         "/profile-image" +
         this.profileImageFileExtension; //
       try {
-        const { data, error } = await supabase.storage
+        const { error } = await supabase.storage // { data,error }
           .from("users")
           .upload(uploadImage, this.profileImage, {
             cacheControl: "3600",
@@ -132,10 +133,11 @@ export const useAddEmployee = defineStore("addEmployee", {
           });
         if (error) {
           throw error;
-        } else {
-          console.log("Image uploaded successfully");
-          console.log(data);
         }
+        // else {
+        //   console.log("Image uploaded successfully");
+        //   // console.log(data);
+        // }
       } catch (error) {
         alert(error);
       }
@@ -151,7 +153,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         if (error) {
           throw error;
         } else {
-          console.log("employment type", data);
+          // console.log("employment type", data);
           this.employment_type = data;
         }
       } catch (error) {
@@ -166,7 +168,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         if (error) {
           throw error;
         } else {
-          console.log("phone type", data);
+          // console.log("phone type", data);
           this.phone_type = data;
         }
       } catch (error) {
