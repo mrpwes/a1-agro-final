@@ -5,6 +5,7 @@ export const useAddEmployee = defineStore("addEmployee", {
   state: () => ({
     profileImage: null,
     profileImageFileExtension: null,
+    profileImageUpload: null,
     email: null,
     password: null,
 
@@ -63,6 +64,10 @@ export const useAddEmployee = defineStore("addEmployee", {
         this.supabaseSignUpUserAuth();
       } catch (error) {
         alert(error);
+        this.loading = false;
+      } finally {
+        this.reset();
+        this.loading = false;
       }
     },
 
@@ -78,6 +83,8 @@ export const useAddEmployee = defineStore("addEmployee", {
           this.registeredAuthID = data.user.id;
           // console.log(this.registeredAuthID);
           this.addFormRecord();
+          this.addPhoneNumber();
+          this.addAddress();
           this.uploadImage();
         }
       } catch (error) {
@@ -100,6 +107,7 @@ export const useAddEmployee = defineStore("addEmployee", {
             department: this.department,
             position: this.position,
             phil_health_number: this.phil_health_number,
+            pag_ibig_number: this.pag_ibig_number,
             sss_number: this.sss_number,
             bir_tin: this.bir_tin,
             hired_date: this.hired_date,
@@ -119,15 +127,51 @@ export const useAddEmployee = defineStore("addEmployee", {
       }
     },
 
+    async addPhoneNumber() {
+      try {
+        const { error } = await supabase.from("phone_number").insert({
+          phone_type_id: this.phone_type_selected["id"],
+          employee_id: this.registeredAuthID,
+          phone_number: this.phone_number,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+      }
+    },
+
+    async addAddress() {
+      try {
+        const { error } = await supabase.from("address").insert({
+          employee_id: this.registeredAuthID,
+          region: this.region,
+          province: this.province,
+          city: this.city,
+          barangay: this.barangay,
+          postal_code: this.postal_code,
+          street: this.street,
+          house_number: this.house_number,
+          additional_information: this.additional_information,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+      }
+    },
+
     async uploadImage() {
       const uploadImage =
         this.registeredAuthID +
-        "/profile-image" +
+        "/profile-image." +
         this.profileImageFileExtension; //
       try {
         const { error } = await supabase.storage // { data,error }
           .from("users")
-          .upload(uploadImage, this.profileImage, {
+          .upload(uploadImage, this.profileImageUpload, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -179,6 +223,7 @@ export const useAddEmployee = defineStore("addEmployee", {
     reset() {
       this.profileImage = null;
       this.profileImageFileExtension = null;
+      this.profileImageUpload = null;
       this.email = null;
       this.password = null;
       this.date_of_birth = null;

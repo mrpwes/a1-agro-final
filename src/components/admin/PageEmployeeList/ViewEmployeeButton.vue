@@ -9,6 +9,7 @@ const selectedRow = ref(null);
 function openmodel(row) {
   selectedRow.value = row;
   viewPrompt.value = true;
+  console.table(selectedRow.value);
 }
 
 //FIXME: CONTACT NUMBER ADD MORE

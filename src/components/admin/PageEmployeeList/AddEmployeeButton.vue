@@ -23,6 +23,7 @@ function resetForm() {
 
 function onFileInput(event) {
   storeAddEmployee.profileImage = URL.createObjectURL(event.target.files[0]);
+  storeAddEmployee.profileImageUpload = event.target.files[0];
 
   const name = event.target.files[0].name;
   const lastDot = name.lastIndexOf(".");
