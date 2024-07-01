@@ -1,153 +1,37 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { date } from "quasar";
-import { useEmployeeListStore } from "src/stores/admin/employeeList";
-import { Notify } from "quasar";
+import { useAddEmployee } from "src/stores/admin/addEmployee";
+// import { Notify } from "quasar";
 
-const storeEmployeeList = useEmployeeListStore();
-//FIXME: CONTACT NUMBER ADD MORE
+const storeAddEmployee = useAddEmployee();
 
 const addEmployeeDialog = ref(false);
+// function addEmployee() {
+//   addEmployeeDialog.value = false;
 
-const lastName = ref("");
-const lastNameRef = ref(null);
-const middleName = ref("");
-const middleNameRef = ref(null);
-const firstName = ref("");
-const firstNameRef = ref(null);
-
-// const dateHired = ref(date.formatDate(Date.now(), "M/D/YYYY"));
-const employeeId = ref(storeEmployeeList.getHighestEmployeeIDNumber);
-
-watch(storeEmployeeList.rows, () => {
-  employeeId.value = storeEmployeeList.getHighestEmployeeIDNumber;
-});
-
-const employeeIdRef = ref(null);
-const dateHired = ref(date.formatDate(Date.now(), "MM-DD-YYYY"));
-const dateHiredRef = ref(null);
-const contactNumber = ref("");
-const contactNumberRef = ref(null);
-
-const birthday = ref("");
-const birthdayRef = ref(null);
-const gender = ref("");
-const genderRef = ref(null);
-const martialStatus = ref("Single");
-const martialStatusRef = ref(null);
-const department = ref("");
-const departmentRef = ref(null);
-const position = ref("");
-const positionRef = ref(null);
-const address = ref("");
-const addressRef = ref(null);
-
-const philHealthNumber = ref("");
-const philHealthNumberRef = ref(null);
-const pagIbigNumber = ref("");
-const pagIbigNumberRef = ref(null);
-const sssNumber = ref("");
-const sssNumberRef = ref(null);
-const birTin = ref("");
-const birTinRef = ref(null);
-const ratePerDay = ref("");
-const ratePerDayRef = ref(null);
-
-function addEmployee() {
-  var employeeId = storeEmployeeList.getHighestEmployeeIDNumber;
-  lastNameRef.value.validate();
-  middleNameRef.value.validate();
-  firstNameRef.value.validate();
-  dateHiredRef.value.validate();
-  contactNumberRef.value.validate();
-  // birthdayRef.value.validate();
-  genderRef.value.validate();
-  martialStatusRef.value.validate();
-  departmentRef.value.validate();
-  positionRef.value.validate();
-  addressRef.value.validate();
-  philHealthNumberRef.value.validate();
-  pagIbigNumberRef.value.validate();
-  sssNumberRef.value.validate();
-  birTinRef.value.validate();
-  ratePerDayRef.value.validate();
-  if (
-    lastNameRef.value.hasError ||
-    middleNameRef.value.hasError ||
-    firstNameRef.value.hasError ||
-    dateHiredRef.value.hasError ||
-    contactNumberRef.value.hasError ||
-    // birthdayRef.value.hasError ||
-    genderRef.value.hasError ||
-    martialStatusRef.value.hasError ||
-    departmentRef.value.hasError ||
-    positionRef.value.hasError ||
-    addressRef.value.hasError ||
-    philHealthNumberRef.value.hasError ||
-    pagIbigNumberRef.value.hasError ||
-    sssNumberRef.value.hasError ||
-    birTinRef.value.hasError ||
-    ratePerDayRef.value.hasError
-  ) {
-    // Has Error
-  }
-  const arr = {
-    employeeImg: "../../../assets/boy-avatar.png",
-    birthday: birthday.value,
-    martialStatus: martialStatus.value,
-    address: address.value,
-
-    employeeId: employeeId,
-    name: {
-      firstName: firstName.value,
-      middleName: middleName.value,
-      lastName: lastName.value,
-    },
-    gender: gender.value,
-    contactNumber: contactNumber.value,
-
-    dateHired: dateHired.value, //MM-DD-YYYY
-    // employmentStatus: employmentStatus,
-    position: position.value,
-    department: department.value,
-    ratePerDay: ratePerDay.value,
-
-    philHealthNumber: philHealthNumber.value,
-    pagIBIGNumber: pagIbigNumber.value,
-    sssNumber: sssNumber.value,
-    birTin: birTin.value,
-    isArchive: false,
-  };
-
-  storeEmployeeList.rows.push(arr);
-
-  addEmployeeDialog.value = false;
-
-  resetForm();
-
-  Notify.create({
-    icon: "done",
-    color: "positive",
-    message: "Added Employee Successfully!",
-  });
-}
+//   Notify.create({
+//     icon: "done",
+//     color: "positive",
+//     message: "Added Employee Successfully!",
+//   });
+// }
 
 function resetForm() {
-  lastName.value = "";
-  middleName.value = "";
-  firstName.value = "";
-  contactNumber.value = "";
-  birthday.value = "";
-  gender.value = "";
-  department.value = "";
-  position.value = "";
-  address.value = "";
-  philHealthNumber.value = "";
-  pagIbigNumber.value = "";
-  sssNumber.value = "";
-  birTin.value = "";
-  ratePerDay.value = "";
+  storeAddEmployee.reset();
 }
+
+function onFileInput(event) {
+  storeAddEmployee.profileImage = URL.createObjectURL(event.target.files[0]);
+
+  const name = event.target.files[0].name;
+  const lastDot = name.lastIndexOf(".");
+  const ext = name.substring(lastDot + 1);
+
+  storeAddEmployee.profileImageFileExtension = ext;
+}
+
+storeAddEmployee.getReferencedData();
 </script>
 
 <template>
@@ -159,54 +43,88 @@ function resetForm() {
   />
   <q-dialog v-model="addEmployeeDialog" persistent>
     <q-card class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
-      <q-form @submit.prevent="addEmployee" autofocus>
+      <q-form @submit.prevent="storeAddEmployee.addEmployee" autofocus>
         <div>
-          <div class="tw-grid tw-grid-cols-4 tw-gap-5 tw-pb-5">
+          <div class="tw-grid tw-grid-cols-4 tw-gap-4 tw-pb-3">
             <div class="tw-col-span-4 tw-text-3xl tw-font-extrabold tw-pb-3">
               Add New Employee
             </div>
-            <div class="tw-col-span-2">
-              <img
-                src="../../../assets/boy-avatar.png"
-                class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
-              />
+            <div class="tw-col-span-2 tw-row-span-2 tw-self-center tw-mx-auto">
+              <div>
+                <input
+                  type="file"
+                  accept=".jpg, .png, .jpeg"
+                  @change="onFileInput($event)"
+                />
+              </div>
+              <div class="tw-grid tw-justify-items-center">
+                <q-img
+                  :src="storeAddEmployee.profileImage"
+                  spinner-color="white"
+                  style="height: 140px; max-width: 150px"
+                />
+              </div>
+            </div>
+            <div class="tw-col-span-2 tw-content-center tw-p-3">
+              <div class="tw-flex tw-gap-3">
+                <div class="tw-max-w-64 tw-min-w-32">
+                  <q-select
+                    filled
+                    v-model="storeAddEmployee.employment_type_id_selected"
+                    :options="storeAddEmployee.employment_type"
+                    option-label="employment_type_name"
+                    :option-value="employment_type_name"
+                    popup-content-class="tw-capitalize"
+                    :rules="[(val) => !!val || 'Field is required']"
+                    lazy-rules
+                    lazy-loading
+                    hide-bottom-space
+                    class="tw-capitalize"
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+                <q-input
+                  filled
+                  v-model="storeAddEmployee.email"
+                  label="Email"
+                  :rules="[(val) => !!val || 'Field is required']"
+                  :disable="storeAddEmployee.loading"
+                />
+                <q-input
+                  filled
+                  v-model="storeAddEmployee.password"
+                  type="password"
+                  :rules="[(val) => !!val || 'Field is required']"
+                  label="Password"
+                  :disable="storeAddEmployee.loading"
+                />
+              </div>
             </div>
             <div class="tw-col-span-2 tw-content-center tw-p-3">
               <div class="tw-flex tw-gap-3">
                 <q-input
                   filled
-                  v-model="lastName"
-                  ref="lastNameRef"
+                  v-model="storeAddEmployee.last_name"
                   label="Last Name"
                   :rules="[(val) => !!val || 'Field is required']"
+                  class="tw-capitalize"
+                  :disable="storeAddEmployee.loading"
                 />
                 <q-input
                   filled
-                  v-model="middleName"
-                  ref="middleNameRef"
-                  label="Middle Name"
-                />
-                <q-input
-                  filled
-                  v-model="firstName"
-                  ref="firstNameRef"
+                  v-model="storeAddEmployee.first_name"
                   label="Fist Name"
+                  :rules="[(val) => !!val || 'Field is required']"
+                  class="tw-capitalize"
+                  :disable="storeAddEmployee.loading"
                 />
-              </div>
-            </div>
-            <div class="tw-col-span-1">
-              <div>
-                <span class="tw-font-semibold">Employee ID:</span>
-                <div class="tw-w-36">
-                  <q-input
-                    filled
-                    :dense="dense"
-                    v-model="employeeId"
-                    ref="employeeIdRef"
-                    disable
-                    hide-bottom-space
-                  />
-                </div>
+                <q-input
+                  filled
+                  v-model="storeAddEmployee.middle_name"
+                  label="Middle Name"
+                  class="tw-capitalize"
+                  :disable="storeAddEmployee.loading"
+                />
               </div>
             </div>
             <div class="tw-col-span-1">
@@ -214,11 +132,11 @@ function resetForm() {
               <div class="tw-max-w-52">
                 <q-input
                   filled
-                  v-model="dateHired"
-                  ref="dateHiredRef"
-                  label="MM-DD-YYYY"
+                  v-model="storeAddEmployee.hired_date"
+                  label="YYYY-MM-DD"
                   :rules="[(val) => date.isValid(val)]"
                   hide-bottom-space
+                  :disable="storeAddEmployee.loading"
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
@@ -228,9 +146,8 @@ function resetForm() {
                         transition-hide="scale"
                       >
                         <q-date
-                          v-model="dateHired"
-                          ref="dateHiredRef"
-                          mask="MM-DD-YYYY"
+                          v-model="storeAddEmployee.hired_date"
+                          mask="YYYY-MM-DD"
                         >
                           <div class="row items-center justify-end">
                             <q-btn
@@ -248,16 +165,37 @@ function resetForm() {
               </div>
             </div>
             <div class="tw-col-span-1">
-              <span class="tw-font-semibold">Contact Number:</span>
+              <span class="tw-font-semibold">Contact Type:</span>
               <div class="tw-max-w-64">
-                <q-input
+                <q-select
                   filled
-                  v-model="contactNumber"
-                  ref="contactNumberRef"
-                  :dense="dense"
-                  :rules="[(val) => val.length >= 3]"
+                  v-model="storeAddEmployee.phone_type_selected"
+                  :options="storeAddEmployee.phone_type"
+                  option-label="phone_type_name"
+                  :option-value="phone_type_name"
+                  popup-content-class="tw-capitalize"
+                  :rules="[(val) => !!val || 'Field is required']"
+                  lazy-rules
+                  lazy-loading
                   hide-bottom-space
+                  class="tw-capitalize"
+                  :disable="storeAddEmployee.loading"
                 />
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div v-if="storeAddEmployee.phone_type_selected != null">
+                <span class="tw-font-semibold">Contact Number:</span>
+                <div class="tw-max-w-64">
+                  <q-input
+                    filled
+                    v-model="storeAddEmployee.phone_number"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
               </div>
             </div>
             <div class="tw-col-span-1">
@@ -267,11 +205,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="birthday"
-                    ref="birthdayRef"
-                    label="MM-DD-YYYY"
+                    v-model="storeAddEmployee.date_of_birth"
+                    label="YYYY-MM-DD"
                     :rules="[(val) => date.isValid(val)]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   >
                     <template v-slot:append>
                       <q-icon name="event" class="cursor-pointer">
@@ -281,9 +219,8 @@ function resetForm() {
                           transition-hide="scale"
                         >
                           <q-date
-                            v-model="birthday"
-                            ref="birthdayRef"
-                            mask="MM-DD-YYYY"
+                            v-model="storeAddEmployee.date_of_birth"
+                            mask="YYYY-MM-DD"
                           >
                             <div class="row items-center justify-end">
                               <q-btn
@@ -302,40 +239,41 @@ function resetForm() {
               </div>
             </div>
             <div class="tw-col-span-1">
-              <div class="tw-flex tw-items-center">
+              <div>
                 <span class="tw-font-semibold">Gender:</span>
-                <div class="tw-w-32">
+                <div class="tw-max-w-64">
                   <q-select
                     filled
-                    v-model="gender"
-                    ref="genderRef"
+                    v-model="storeAddEmployee.gender"
                     :options="['Male', 'Female']"
                     :rules="[(val) => !!val || 'Field is required']"
                     lazy-rules
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
             </div>
             <div class="tw-col-span-1">
-              <div class="tw-flex tw-items-center">
+              <div>
                 <span class="tw-font-semibold">Martial Status:</span>
-                <q-select
-                  filled
-                  v-model="martialStatus"
-                  ref="martialStatusRef"
-                  :options="[
-                    'Single',
-                    'Married',
-                    'Widowed',
-                    'Divorced',
-                    'Separated',
-                  ]"
-                  :class="[martialStatus == null ? 'tw-w-32' : 'tw-w-max']"
-                  :rules="[(val) => !!val || 'Field is required']"
-                  lazy-rules
-                  hide-bottom-space
-                />
+                <div class="tw-max-w-64">
+                  <q-select
+                    filled
+                    v-model="storeAddEmployee.martial_status"
+                    :options="[
+                      'Single',
+                      'Married',
+                      'Widowed',
+                      'Divorced',
+                      'Separated',
+                    ]"
+                    :rules="[(val) => !!val || 'Field is required']"
+                    lazy-rules
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
               </div>
             </div>
             <div class="tw-col-span-1">
@@ -344,11 +282,11 @@ function resetForm() {
                 <div class="tw-max-w-64">
                   <q-input
                     filled
-                    v-model="department"
-                    ref="departmentRef"
+                    v-model="storeAddEmployee.department"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -359,24 +297,103 @@ function resetForm() {
                 <div class="tw-max-w-64">
                   <q-input
                     filled
-                    v-model="position"
-                    ref="positionRef"
+                    v-model="storeAddEmployee.position"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
             </div>
-            <div class="tw-col-span-4">
+          </div>
+          <div class="tw-grid tw-grid-cols-4 tw-gap-1 tw-mb-4">
+            <div class="tw-col-span-1">
               <span class="tw-font-semibold">Address:</span>
               <q-input
                 filled
-                v-model="address"
-                ref="addressRef"
+                v-model="storeAddEmployee.region"
                 :dense="dense"
-                :rules="[(val) => val.length >= 3]"
+                label="Region"
                 hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.province"
+                :dense="dense"
+                label="Province"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.city"
+                label="City"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.barangay"
+                label="Barangay"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.postal_code"
+                label="Postal Code"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.street"
+                label="Street"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.house_number"
+                label="House Number"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="storeAddEmployee.additional_information"
+                label="Additional Information"
+                :dense="dense"
+                hide-bottom-space
+                :disable="storeAddEmployee.loading"
               />
             </div>
           </div>
@@ -392,11 +409,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="philHealthNumber"
-                    ref="philHealthNumberRef"
+                    v-model="storeAddEmployee.phil_health_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -407,11 +424,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="pagIbigNumber"
-                    ref="pagIbigNumberRef"
+                    v-model="storeAddEmployee.pag_ibig_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -422,11 +439,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="sssNumber"
-                    ref="sssNumberRef"
+                    v-model="storeAddEmployee.sss_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -437,11 +454,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="birTin"
-                    ref="birTinRef"
+                    v-model="storeAddEmployee.bir_tin"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -452,11 +469,11 @@ function resetForm() {
                 <div class="tw-max-w-52">
                   <q-input
                     filled
-                    v-model="ratePerDay"
-                    ref="ratePerDayRef"
+                    v-model="storeAddEmployee.rate_per_day"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
+                    :disable="storeAddEmployee.loading"
                   />
                 </div>
               </div>
@@ -464,8 +481,15 @@ function resetForm() {
           </div>
 
           <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" @click="resetForm" v-close-popup />
             <q-btn
+              flat
+              :disable="storeAddEmployee.loading"
+              label="Cancel"
+              @click="resetForm"
+              v-close-popup
+            />
+            <q-btn
+              :disable="storeAddEmployee.loading"
               flat
               class="tw-bg-green-400"
               label="Add Employee"

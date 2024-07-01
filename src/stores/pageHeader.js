@@ -34,7 +34,7 @@ export const usePageHeader = defineStore("pageHeader", {
           this.profilePicture = data.signedUrl;
         }
       } catch (error) {
-        console.log("Error getting profile picture:", error.message);
+        // console.log("Error getting profile picture:", error.message);
         this.getDefaultProfile();
       }
     },
