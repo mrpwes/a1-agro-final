@@ -66,7 +66,7 @@ export const useEmployeeListStore = defineStore("employeeList", {
         } else {
           this.rows = data;
           // console.table(data);
-          // console.log(data);
+          console.log(data);
         }
       } catch (error) {
         console.log(error);

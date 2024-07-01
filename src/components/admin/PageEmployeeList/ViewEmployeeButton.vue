@@ -217,15 +217,96 @@ const editingInformation = ref(true);
           </div>
         </div>
         <div class="tw-col-span-4">
-          <span class="tw-font-semibold">Address:</span>
-          <q-input
-            filled
-            v-model="selectedRow.address[0].region"
-            :dense="dense"
-            :rules="[(val) => val.length >= 3]"
-            hide-bottom-space
-            :disable="editingInformation"
-          />
+          <div class="tw-grid tw-grid-cols-4 tw-gap-1 tw-mb-4">
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">Address:</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].region"
+                :dense="dense"
+                label="Region"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].province"
+                :dense="dense"
+                label="Province"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].city"
+                label="City"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].barangay"
+                label="Barangay"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].postal_code"
+                label="Postal Code"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].street"
+                label="Street"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].house_number"
+                label="House Number"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+            <div class="tw-col-span-1">
+              <span class="tw-font-semibold">&nbsp;</span>
+              <q-input
+                filled
+                v-model="selectedRow.address[0].additional_information"
+                label="Additional Information"
+                :dense="dense"
+                hide-bottom-space
+                :disable="editingInformation"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div class="tw-grid tw-grid-cols-3 tw-gap-3">
