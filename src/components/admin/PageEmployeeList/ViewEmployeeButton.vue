@@ -1,12 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import { date } from "quasar";
-import { useEmployeeListStore } from "../../../stores/admin/employeeList";
+import { useViewEmployeeStore } from "src/stores/admin/employeeListPage/viewEmployee";
 
 defineProps(["rows"]);
 
-const storeUseEmployeeList = useEmployeeListStore();
-storeUseEmployeeList.getProfilePicture();
+const storeViewEmployee = useViewEmployeeStore();
+
+storeViewEmployee.getProfilePicture();
 const viewPrompt = ref(false);
 const selectedRow = ref(null);
 function openmodel(row) {
@@ -46,7 +47,7 @@ const editingInformation = ref(true);
         <div class="tw-col-span-4">
           <!-- TODO: Update Image Responsiveness -->
           <img
-            :src="storeUseEmployeeList.getProfilePicture(selectedRow.id)"
+            :src="storeViewEmployee.getProfilePicture(selectedRow.id)"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
           />
         </div>
@@ -408,7 +409,13 @@ const editingInformation = ref(true);
           :class="selectedRow.is_archive ? 'tw-bg-green-400' : 'tw-bg-red-400'"
           icon="mdi-archive"
           :label="selectedRow.is_archive ? 'Activate' : 'Inactivate'"
-          @click="selectedRow.is_archive = !selectedRow.is_archive"
+          @click="
+            storeViewEmployee.inactiveEmployee(
+              selectedRow.id,
+              selectedRow.is_archive
+            )
+          "
+          v-close-popup
         />
       </q-card-actions>
     </div>

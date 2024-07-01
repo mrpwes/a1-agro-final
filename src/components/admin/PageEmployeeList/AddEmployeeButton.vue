@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { date } from "quasar";
-import { useAddEmployee } from "src/stores/admin/addEmployee";
+import { useAddEmployee } from "src/stores/admin/employeeListPage/addEmployee";
 // import { Notify } from "quasar";
 
 const storeAddEmployee = useAddEmployee();

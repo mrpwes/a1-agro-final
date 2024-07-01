@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { date } from "quasar";
-import { useEmployeeListStore } from "src/stores/admin/employeeList";
+import { useViewEmployeeStore } from "src/stores/admin/employeeListPage/viewEmployee";
 import { usePageHeader } from "stores/pageHeader";
 
 const storePageHeader = usePageHeader();
@@ -11,7 +11,7 @@ import addEmployeeButton from "components/admin/PageEmployeeList/AddEmployeeButt
 import archivedEmployeeButton from "components/admin/PageEmployeeList/ArchivedEmployeeButton.vue";
 import viewEmployeeButton from "components/admin/PageEmployeeList/ViewEmployeeButton.vue";
 
-const storeEmployeeList = useEmployeeListStore();
+const storeEmployeeList = useViewEmployeeStore();
 storeEmployeeList.fetchListOfEmployee();
 
 const tableSearch = ref("");

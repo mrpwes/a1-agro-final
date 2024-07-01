@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import { date } from "quasar";
-import { useEmployeeListStore } from "src/stores/admin/employeeList";
+import { useViewEmployeeStore } from "src/stores/admin/employeeListPage/viewEmployee";
 import viewEmployeeButton from "components/admin/PageEmployeeList/ViewEmployeeButton.vue";
 
-const storeEmployeeList = useEmployeeListStore();
+const storeViewEmployee = useViewEmployeeStore();
 
 const archivedEmployee = ref(false);
 
@@ -16,7 +16,7 @@ const columns = [
     required: true,
     label: "Employee Id",
     align: "left",
-    field: (row) => row.employeeId,
+    field: (row) => row.id,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -24,14 +24,14 @@ const columns = [
     name: "Name",
     align: "center",
     label: "Name",
-    field: (row) => row.name.lastName + ", " + row.name.firstName,
+    field: (row) => row.last_name + ", " + row.first_name,
     sortable: true,
   },
   {
     name: "Birthday",
     align: "center",
     label: "Birthday",
-    field: "birthday",
+    field: (row) => row.date_of_birth,
     format: (val) => date.formatDate(val, "MMM D, YYYY"),
     sortable: true,
   },
@@ -39,7 +39,7 @@ const columns = [
     name: "Contact Number",
     align: "center",
     label: "Contact Number",
-    field: "contactNumber",
+    field: (row) => row.phone_number[0].phone_number,
     sortable: true,
   },
   {
@@ -83,7 +83,7 @@ const columns = [
         bordered
         :filter="tableSearch"
         :columns="columns"
-        :rows="storeEmployeeList.getInactive"
+        :rows="storeViewEmployee.getInactive"
         :rows-per-page-options="[10, 20, 0]"
         row-key="name"
       >

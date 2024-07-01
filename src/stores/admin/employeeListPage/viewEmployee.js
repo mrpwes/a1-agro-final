@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
-import { supabase } from "../../lib/supabaseClient.js";
+import { supabase } from "../../../lib/supabaseClient.js";
 
-export const useEmployeeListStore = defineStore("employeeList", {
+export const useViewEmployeeStore = defineStore("viewEmployee", {
   state: () => ({
     rows: [],
   }),
@@ -67,7 +67,7 @@ export const useEmployeeListStore = defineStore("employeeList", {
         } else {
           this.rows = data;
           // console.table(data);
-          console.log(data);
+          // console.log(data);
         }
       } catch (error) {
         console.log(error);
@@ -96,6 +96,24 @@ export const useEmployeeListStore = defineStore("employeeList", {
     getDefaultProfile() {
       this.profilePicture =
         "https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/public-bucket/default-profile-image/avatar.png";
+    },
+
+    async inactiveEmployee(employeeId, is_archive) {
+      try {
+        // console.log(employeeId);
+        const { data, error } = await supabase
+          .from("employee")
+          .update({ is_archive: !is_archive })
+          .eq("id", employeeId)
+          .select();
+        if (error) {
+          throw error;
+        }
+        console.log("Successfully updated country:", data);
+        this.fetchListOfEmployee();
+      } catch (error) {
+        console.error("Error updating country:", error.message);
+      }
     },
   },
 });
