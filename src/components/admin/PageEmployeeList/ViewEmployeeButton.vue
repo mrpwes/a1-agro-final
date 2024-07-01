@@ -1,9 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { date } from "quasar";
+import { useEmployeeListStore } from "../../../stores/admin/employeeList";
 
 defineProps(["rows"]);
 
+const storeUseEmployeeList = useEmployeeListStore();
+storeUseEmployeeList.getProfilePicture();
 const viewPrompt = ref(false);
 const selectedRow = ref(null);
 function openmodel(row) {
@@ -41,8 +44,9 @@ const editingInformation = ref(true);
           }}
         </div>
         <div class="tw-col-span-4">
+          <!-- TODO: Update Image Responsiveness -->
           <img
-            src="../../../assets/boy-avatar.png"
+            :src="storeUseEmployeeList.getProfilePicture(selectedRow.id)"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
           />
         </div>

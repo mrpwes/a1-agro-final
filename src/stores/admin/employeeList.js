@@ -27,6 +27,7 @@ export const useEmployeeListStore = defineStore("employeeList", {
     async fetchListOfEmployee() {
       try {
         const { data, error } = await supabase.from("employee").select(`
+          id,
           date_of_birth,
           martial_status,
           address (
@@ -71,6 +72,30 @@ export const useEmployeeListStore = defineStore("employeeList", {
       } catch (error) {
         console.log(error);
       }
+    },
+
+    async getProfilePicture() {
+      try {
+        const { data, error } = await supabase.storage
+          .from("users")
+          .createSignedUrl(
+            "c9e5eeaf-913c-48d2-9f0b-109ae109ac83/profile_image.png", //TODO: .createSignedUrl(id + "/profile-image.png", 60);
+            60
+          );
+        if (error) {
+          throw error;
+        } else {
+          console.log(data.signedUrl);
+          this.profilePicture = data.signedUrl;
+        }
+      } catch (error) {
+        // console.log("Error getting profile picture:", error.message);
+        this.getDefaultProfile();
+      }
+    },
+    getDefaultProfile() {
+      this.profilePicture =
+        "https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/public-bucket/default-profile-image/avatar.png";
     },
   },
 });

@@ -24,7 +24,7 @@ export const usePageHeader = defineStore("pageHeader", {
         const { data, error } = await supabase.storage
           .from("users")
           .createSignedUrl(
-            "c9e5eeaf-913c-48d2-9f0b-109ae109ac83/profile_image.png",
+            "c9e5eeaf-913c-48d2-9f0b-109ae109ac83/profile_image.png", //TODO: .createSignedUrl(id + "/profile-image.png", 60);
             60
           );
         if (error) {
