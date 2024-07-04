@@ -7,16 +7,15 @@ defineProps(["rows"]);
 
 const storeViewEmployee = useViewEmployeeStore();
 
-storeViewEmployee.getProfilePicture();
 const viewPrompt = ref(false);
 const selectedRow = ref(null);
+const editingInformation = ref(false);
+
 function openmodel(row) {
   selectedRow.value = row;
   viewPrompt.value = true;
   console.table(selectedRow.value);
 }
-
-//FIXME: CONTACT NUMBER ADD MORE
 
 function capitalizeFirstLetterOfEachWord(str) {
   return str
@@ -24,8 +23,6 @@ function capitalizeFirstLetterOfEachWord(str) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
-
-const editingInformation = ref(true);
 </script>
 
 <template>
@@ -44,12 +41,39 @@ const editingInformation = ref(true);
             )
           }}
         </div>
-        <div class="tw-col-span-4">
+        <div class="tw-col-span-2">
           <!-- TODO: Update Image Responsiveness -->
           <img
             :src="storeViewEmployee.getProfilePicture(selectedRow.id)"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
           />
+        </div>
+        <div class="tw-col-span-2 tw-content-center tw-p-3">
+          <div class="tw-flex tw-gap-3">
+            <q-input
+              filled
+              v-model="selectedRow.last_name"
+              label="Last Name"
+              :rules="[(val) => !!val || 'Field is required']"
+              class="tw-capitalize"
+              :disable="!editingInformation"
+            />
+            <q-input
+              filled
+              v-model="selectedRow.first_name"
+              label="Fist Name"
+              :rules="[(val) => !!val || 'Field is required']"
+              class="tw-capitalize"
+              :disable="!editingInformation"
+            />
+            <q-input
+              filled
+              v-model="selectedRow.middle_name"
+              label="Middle Name"
+              class="tw-capitalize"
+              :disable="!editingInformation"
+            />
+          </div>
         </div>
         <div class="tw-col-span-1">
           <div>
@@ -59,8 +83,7 @@ const editingInformation = ref(true);
                 filled
                 :dense="dense"
                 v-model="selectedRow.company_employee_id"
-                :disable="editingInformation"
-                :rules="[(val) => val.length >= 0]"
+                :disable="true"
                 hide-bottom-space
               />
             </div>
@@ -72,10 +95,10 @@ const editingInformation = ref(true);
             <q-input
               filled
               v-model="selectedRow.hired_date"
-              label="MM-DD-YYYY"
+              label="YYYY-MM-DD"
               :rules="[(val) => date.isValid(val)]"
               hide-bottom-space
-              :disable="editingInformation"
+              :disable="!editingInformation"
             >
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
@@ -84,7 +107,7 @@ const editingInformation = ref(true);
                     transition-show="scale"
                     transition-hide="scale"
                   >
-                    <q-date v-model="selectedRow.hired_date" mask="MM-DD-YYYY">
+                    <q-date v-model="selectedRow.hired_date" mask="YYYY-MM-DD">
                       <div class="row items-center justify-end">
                         <q-btn
                           v-close-popup
@@ -109,7 +132,7 @@ const editingInformation = ref(true);
               :dense="dense"
               :rules="[(val) => val.length >= 3]"
               hide-bottom-space
-              :disable="editingInformation"
+              :disable="!editingInformation"
             />
           </div>
         </div>
@@ -122,8 +145,9 @@ const editingInformation = ref(true);
                 filled
                 v-model="selectedRow.date_of_birth"
                 :rules="[(val) => date.isValid(val)]"
+                label="YYYY-MM-DD"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -134,7 +158,7 @@ const editingInformation = ref(true);
                     >
                       <q-date
                         v-model="selectedRow.date_of_birth"
-                        mask="MM-DD-YYYY"
+                        mask="YYYY-MM-DD"
                       >
                         <div class="row items-center justify-end">
                           <q-btn
@@ -160,10 +184,16 @@ const editingInformation = ref(true);
                 filled
                 v-model="selectedRow.gender"
                 :options="['Male', 'Female']"
+                :display-value="
+                  selectedRow.gender == true || selectedRow.gender == 'Male'
+                    ? 'Male'
+                    : 'Female'
+                "
                 :rules="[(val) => !!val || 'Field is required']"
                 lazy-rules
+                emit-value
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -186,7 +216,7 @@ const editingInformation = ref(true);
               ]"
               :rules="[(val) => !!val || 'Field is required']"
               lazy-rules
-              :disable="editingInformation"
+              :disable="!editingInformation"
               hide-bottom-space
             />
           </div>
@@ -201,7 +231,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -216,7 +246,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -231,7 +261,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 label="Region"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -242,7 +272,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 label="Province"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -253,7 +283,7 @@ const editingInformation = ref(true);
                 label="City"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -264,7 +294,7 @@ const editingInformation = ref(true);
                 label="Barangay"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -275,7 +305,7 @@ const editingInformation = ref(true);
                 label="Postal Code"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -286,7 +316,7 @@ const editingInformation = ref(true);
                 label="Street"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -297,7 +327,7 @@ const editingInformation = ref(true);
                 label="House Number"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
             <div class="tw-col-span-1">
@@ -308,7 +338,7 @@ const editingInformation = ref(true);
                 label="Additional Information"
                 :dense="dense"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -328,7 +358,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -343,7 +373,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -358,7 +388,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -373,7 +403,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -388,7 +418,7 @@ const editingInformation = ref(true);
                 :dense="dense"
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
-                :disable="editingInformation"
+                :disable="!editingInformation"
               />
             </div>
           </div>
@@ -396,13 +426,30 @@ const editingInformation = ref(true);
       </div>
 
       <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup />
         <q-btn
           flat
+          label="Cancel"
+          @click="editingInformation = ref(false)"
+          v-close-popup
+        />
+        <q-btn
+          v-if="editingInformation == false"
+          flat
           class="tw-bg-green-400"
-          :icon="!editingInformation ? 'save' : 'edit'"
-          :label="!editingInformation ? 'Save' : 'Edit'"
+          :icon="editingInformation ? 'save' : 'edit'"
+          label="Edit"
           @click="editingInformation = !editingInformation"
+        />
+        <q-btn
+          v-else
+          flat
+          class="tw-bg-green-400"
+          :icon="editingInformation ? 'save' : 'edit'"
+          label="Save"
+          @click="
+            editingInformation = !editingInformation;
+            storeViewEmployee.updateEmployeeData(selectedRow);
+          "
         />
         <q-btn
           flat

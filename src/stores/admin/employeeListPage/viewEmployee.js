@@ -24,6 +24,89 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
   },
 
   actions: {
+    async updateEmployeeData(selectedRow) {
+      try {
+        this.updateEmployeePhoneNumber(selectedRow);
+        this.updateEmployeeAddress(selectedRow);
+        const { data, error } = await supabase
+          .from("employee")
+          .update({
+            first_name: selectedRow.first_name,
+            middle_name: selectedRow.middle_name,
+            last_name: selectedRow.last_name,
+            date_of_birth: selectedRow.date_of_birth,
+            gender: selectedRow.gender == "Male" ? true : false,
+            martial_status: selectedRow.martial_status,
+            department: selectedRow.department,
+            position: selectedRow.position,
+            phil_health_number: selectedRow.phil_health_number,
+            pag_ibig_number: selectedRow.pag_ibig_number,
+            sss_number: selectedRow.sss_number,
+            bir_tin: selectedRow.bir_tin,
+            hired_date: selectedRow.hired_date,
+            rate_per_day: selectedRow.rate_per_day,
+          })
+          .eq("id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+        this.fetchListOfEmployee();
+        console.log("Successfully updated");
+        console.table(data);
+      } catch (error) {
+        console.error("Error updating:", error.message);
+      }
+    },
+
+    async updateEmployeeAddress(selectedRow) {
+      try {
+        const { data, error } = await supabase
+          .from("address")
+          .update({
+            region: selectedRow.address[0].region,
+            province: selectedRow.address[0].province,
+            city: selectedRow.address[0].city,
+            barangay: selectedRow.address[0].barangay,
+            postal_code: selectedRow.address[0].postal_code,
+            street: selectedRow.address[0].street,
+            house_number: selectedRow.address[0].house_number,
+            additional_information:
+              selectedRow.address[0].additional_information,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+        this.fetchListOfEmployee();
+        console.log("Successfully Address");
+        console.table(data);
+      } catch (error) {
+        console.error("Error updating:", error.message);
+      }
+    },
+
+    async updateEmployeePhoneNumber(selectedRow) {
+      try {
+        const { data, error } = await supabase
+          .from("phone_number")
+          .update({
+            phone_number: selectedRow.phone_number[0].phone_number,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+        this.fetchListOfEmployee();
+        console.log("Successfully Phone Number");
+        console.table(data);
+      } catch (error) {
+        console.error("Error updating:", error.message);
+      }
+    },
+
     async fetchListOfEmployee() {
       try {
         const { data, error } = await supabase.from("employee").select(`

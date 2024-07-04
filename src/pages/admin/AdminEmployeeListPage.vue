@@ -18,7 +18,7 @@ const tableSearch = ref("");
 
 const columns = [
   {
-    name: "Employee Id",
+    name: "Employee_Id",
     required: true,
     label: "Employee Id",
     align: "left",
@@ -79,6 +79,7 @@ const columns = [
     class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
     flat
     bordered
+    :sortBy="Employee_Id"
     :filter="tableSearch"
     :columns="columns"
     :rows="storeEmployeeList.getActive"

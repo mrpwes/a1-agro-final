@@ -16,7 +16,7 @@ const columns = [
     required: true,
     label: "Employee Id",
     align: "left",
-    field: (row) => row.id,
+    field: (row) => row.company_employee_id,
     format: (val) => `${val}`,
     sortable: true,
   },
