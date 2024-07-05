@@ -54,10 +54,6 @@ export const useAddEmployee = defineStore("addEmployee", {
   }),
 
   getters: {},
-
-  // TODO: Images Temp Local Storage to Database SignedUP User Bucket Storage to be implemented
-  // insert contents to database
-
   actions: {
     addEmployee() {
       Promise.all([this.supabaseSignUpUserAuth()]).then(() => {
@@ -92,12 +88,12 @@ export const useAddEmployee = defineStore("addEmployee", {
         const { error } = await supabase
           .from("employee")
           .update({
-            employment_type_id: this.employment_type_id_selected["id"], //TODO: UPDATE
+            employment_type_id: this.employment_type_id_selected["id"],
             first_name: this.first_name,
             middle_name: this.middle_name,
             last_name: this.last_name,
             date_of_birth: this.date_of_birth,
-            gender: this.gender == "Male" ? true : false, //TODO: UPDATE BOOLEAN
+            gender: this.gender == "Male" ? true : false,
             martial_status: this.martial_status,
             department: this.department,
             position: this.position,
