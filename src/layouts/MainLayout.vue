@@ -92,7 +92,7 @@ const adminMenuList = [
     icon: "fa-solid fa-file-invoice",
     label: "Voucher List",
     separator: true,
-    link: "/admin/invoiceList",
+    link: "/admin/voucherList",
   },
   {
     icon: "checklist",

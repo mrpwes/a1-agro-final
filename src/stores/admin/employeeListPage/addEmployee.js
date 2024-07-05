@@ -66,7 +66,6 @@ export const useAddEmployee = defineStore("addEmployee", {
         alert(error);
         this.loading = false;
       } finally {
-        this.reset();
         this.loading = false;
       }
     },
