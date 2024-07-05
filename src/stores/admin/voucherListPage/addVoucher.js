@@ -26,6 +26,7 @@ export const useAddVoucherStore = defineStore("addVoucher", {
     addVoucher() {
       Promise.all([this.getCurrentUser()]).then(() => {
         this.addVoucherData();
+        this.reset();
       });
     },
 
@@ -87,6 +88,16 @@ export const useAddVoucherStore = defineStore("addVoucher", {
         color: "positive",
         message: "Added Voucher Successfully!",
       });
+    },
+    reset() {
+      this.employee_id = null;
+      this.type = null;
+      this.date_issued = null;
+      this.recipient = null;
+      this.issuer = null;
+      this.description = null;
+      this.amount = null;
+      this.is_archive = null;
     },
   },
 });
