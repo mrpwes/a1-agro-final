@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
+import { Notify } from "quasar";
 
 export const useAddEmployee = defineStore("addEmployee", {
   state: () => ({
@@ -58,16 +59,15 @@ export const useAddEmployee = defineStore("addEmployee", {
   // insert contents to database
 
   actions: {
-    async addEmployee() {
-      try {
-        this.loading = true;
-        this.supabaseSignUpUserAuth();
-      } catch (error) {
-        alert(error);
+    addEmployee() {
+      Promise.all([this.supabaseSignUpUserAuth()]).then(() => {
+        this.addFormRecord(),
+          this.addPhoneNumber(),
+          this.addAddress(),
+          this.uploadImage(),
+          this.reset();
         this.loading = false;
-      } finally {
-        this.loading = false;
-      }
+      });
     },
 
     async supabaseSignUpUserAuth() {
@@ -80,14 +80,10 @@ export const useAddEmployee = defineStore("addEmployee", {
           throw error;
         } else {
           this.registeredAuthID = data.user.id;
-          // console.log(this.registeredAuthID);
-          this.addFormRecord();
-          this.addPhoneNumber();
-          this.addAddress();
-          this.uploadImage();
         }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
 
@@ -123,6 +119,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         // }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
 
@@ -138,6 +135,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
 
@@ -159,6 +157,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
 
@@ -183,6 +182,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         // }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
 
@@ -201,6 +201,7 @@ export const useAddEmployee = defineStore("addEmployee", {
         }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
       try {
         //GET PHONE TYPE
@@ -216,9 +217,16 @@ export const useAddEmployee = defineStore("addEmployee", {
         }
       } catch (error) {
         alert(error);
+        console.log(error);
       }
     },
-
+    success() {
+      Notify.create({
+        icon: "done",
+        color: "positive",
+        message: "Added Voucher Successfully!",
+      });
+    },
     reset() {
       this.profileImage = null;
       this.profileImageFileExtension = null;
