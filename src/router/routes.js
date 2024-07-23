@@ -21,6 +21,10 @@ const routes = [
         path: "voucherList",
         component: () => import("pages/admin/AdminVoucherListPage.vue"),
       },
+      {
+        path: "support",
+        component: () => import("pages/SupportPage.vue"),
+      },
     ],
     beforeEnter: (to, from, next) => {
       const storeAuthentication = useAuthenticationStore();

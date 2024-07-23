@@ -116,7 +116,7 @@ const adminMenuList = [
     icon: "support",
     label: "Support",
     separator: false,
-    link: "/support",
+    link: "/admin/support",
   },
 ];
 </script>
