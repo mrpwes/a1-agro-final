@@ -1,0 +1,125 @@
+<script setup>
+import { usePageHeader } from "stores/pageHeader";
+
+import ViewVoucherButton from "components/admin/PageVoucherList/ViewVoucherButton.vue";
+import ArchivedVoucherButton from "components/admin/PageVoucherList/ArchivedVoucherButton.vue";
+import AddVoucherButton from "components/admin/PageVoucherList/AddVoucherButton.vue";
+import AddLoanButton from "components/admin/PageLoanList/AddLoanButton.vue";
+
+import { useViewLoan } from "stores/admin/loanListPage/viewLoan";
+
+const storePageHeader = usePageHeader();
+storePageHeader.currentPage = "Loan List";
+
+const storeViewLoan = useViewLoan();
+storeViewLoan.getLoanList();
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const columns = [
+  {
+    name: "Loan ID",
+    required: true,
+    label: "Loan ID",
+    align: "left",
+    field: (row) => row.id,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "Loan Type",
+    align: "center",
+    label: "Loan Type",
+    field: (row) =>
+      (row.request_type.request_type_name === "VALE"
+        ? row.vale[0].id
+        : row.partial_to_ar[0].id) +
+      " - " +
+      row.request_type.request_type_name,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "Description",
+    align: "center",
+    label: "Description",
+    field: "description",
+    sortable: true,
+  },
+  {
+    name: "Recipient",
+    align: "center",
+    label: "Recipient",
+    field: (row) => row.employee.first_name + " " + row.employee.last_name,
+    sortable: true,
+  },
+  {
+    name: "Issuer",
+    align: "center",
+    label: "Issuer",
+    field: (row) =>
+      row.request_confirmation.employee.first_name +
+      " " +
+      row.request_confirmation.employee.last_name,
+    sortable: true,
+  },
+  {
+    name: "Amount",
+    align: "center",
+    label: "Amount",
+    field: (row) =>
+      "₱" +
+      (row.request_type.request_type_name === "VALE"
+        ? numberWithCommas(row.vale[0].amount)
+        : numberWithCommas(row.partial_to_ar[0].amount)),
+    sortable: true,
+  },
+  {
+    name: "actions",
+    align: "center",
+    label: "",
+    field: "",
+  },
+];
+</script>
+
+<template>
+  <!-- TODO: Add Voucher List Page and Connect to Database -->
+  <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
+    <ArchivedVoucherButton></ArchivedVoucherButton>
+    <AddVoucherButton></AddVoucherButton>
+    <AddLoanButton></AddLoanButton>
+  </div>
+  <q-table
+    class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
+    flat
+    bordered
+    :filter="tableSearch"
+    :columns="columns"
+    :rows="storeViewLoan.rows"
+    :rows-per-page-options="[10, 20, 0]"
+    row-key="name"
+  >
+    <template v-slot:body-cell-actions="props">
+      <q-td key="actions" class="tw-w-2/12" :props="props"
+        ><ViewVoucherButton :rows="props.row"></ViewVoucherButton
+      ></q-td>
+    </template>
+    <template v-slot:top-right>
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="tableSearch"
+        placeholder="Search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input> </template
+  ></q-table>
+</template>
+
+<style scoped></style>

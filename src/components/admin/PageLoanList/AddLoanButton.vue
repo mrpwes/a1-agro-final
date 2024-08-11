@@ -1,0 +1,119 @@
+<script setup>
+import { ref } from "vue";
+import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
+
+const storeAddLoan = useAddLoan();
+const addLoanDialog = ref(false);
+
+storeAddLoan.getDetails();
+</script>
+
+<template>
+  <q-btn
+    icon="mdi-plus"
+    label="Add Loan"
+    @click="addLoanDialog = true"
+    class="tw-bg-white"
+  />
+  <q-dialog v-model="addLoanDialog" persistent>
+    <q-card class="min-width: 500px">
+      <q-form @submit.prevent="storeAddLoan.addLoan" autofocus>
+        <div class="tw-m-4">
+          <q-card-section class="tw-pt-0 tw-pl-0">
+            <div class="tw-text-3xl tw-font-extrabold tw-pb-3">
+              Add Loan Form
+            </div>
+          </q-card-section>
+          <div class="tw-flex tw-mb-3">
+            <div class="tw-content-center tw-mr-3">Employee Name:</div>
+            <q-select
+              filled
+              v-model="storeAddLoan.employeeOption"
+              use-input
+              hide-selected
+              fill-input
+              hide-bottom-space
+              input-debounce="0"
+              :options="storeAddLoan.employeeOptions"
+              :option-label="
+                (opt) =>
+                  'first_name' in opt
+                    ? opt.first_name + ' ' + opt.last_name
+                    : ''
+              "
+              :option-value="id"
+              class="!tw-pb-0; tw-capitalize"
+              popup-content-class="tw-capitalize"
+            >
+              <!-- @filter="filterRecipient" -->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div class="tw-flex tw-mb-3">
+            <div class="tw-content-center tw-mr-3">Type:</div>
+            <q-select
+              filled
+              v-model="storeAddLoan.type"
+              use-input
+              hide-selected
+              fill-input
+              hide-bottom-space
+              input-debounce="0"
+              :options="storeAddLoan.typeOptions"
+              class="!tw-pb-0; tw-capitalize;"
+              popup-content-class="tw-capitalize"
+            >
+              <!-- @filter="filterRecipient" -->
+              <template v-slot:no-option>
+                <q-item>
+                  <q-item-section class="text-grey">
+                    No results
+                  </q-item-section>
+                </q-item>
+              </template>
+            </q-select>
+          </div>
+          <div>
+            <div>Description:</div>
+            <div class="tw-pb-3 tw-px-2">
+              <q-input
+                v-model="storeAddLoan.description"
+                type="textarea"
+                filled
+                hide-bottom-space
+              />
+            </div>
+          </div>
+          <div class="tw-flex tw-mb-3">
+            <div class="tw-content-center tw-mr-3">Amount:</div>
+            <div class="tw-px-2">
+              <q-input
+                v-model="storeAddLoan.amount"
+                filled
+                autogrow
+                hide-bottom-space
+                class="tw-max-w-full"
+              />
+            </div>
+          </div>
+          <q-card-actions align="right" class="text-primary">
+            <q-btn flat label="Cancel" @click="resetForm" v-close-popup />
+            <q-btn
+              flat
+              class="tw-bg-green-400"
+              label="Add Loan"
+              type="submit"
+              v-close-popup
+            />
+          </q-card-actions>
+        </div>
+      </q-form>
+    </q-card>
+  </q-dialog>
+</template>
