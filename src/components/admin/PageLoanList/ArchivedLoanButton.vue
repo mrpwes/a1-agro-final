@@ -1,17 +1,13 @@
 <script setup>
-import { usePageHeader } from "stores/pageHeader";
-
+import { ref } from "vue";
 import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButton.vue";
-import ArchivedLoanButton from "components/admin/PageLoanList/ArchivedLoanButton.vue";
-import AddLoanButton from "components/admin/PageLoanList/AddLoanButton.vue";
-
 import { useViewLoan } from "stores/admin/loanListPage/viewLoan";
 
-const storePageHeader = usePageHeader();
-storePageHeader.currentPage = "Loan List";
-
 const storeViewLoan = useViewLoan();
-storeViewLoan.getLoanList();
+
+const archivedEmployee = ref(false);
+
+const tableSearch = ref("");
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -85,39 +81,52 @@ const columns = [
 </script>
 
 <template>
-  <!-- TODO: Add Voucher List Page and Connect to Database -->
-  <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
-    <ArchivedLoanButton></ArchivedLoanButton>
-    <AddLoanButton></AddLoanButton>
-  </div>
-  <q-table
-    class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
-    flat
-    bordered
-    :filter="tableSearch"
-    :columns="columns"
-    :rows="storeViewLoan.getUnarchivedLoanList"
-    :rows-per-page-options="[10, 20, 0]"
-    row-key="Loan ID"
-  >
-    <template v-slot:body-cell-actions="props">
-      <q-td key="actions" class="tw-w-2/12" :props="props"
-        ><ViewLoanButton :rows="props.row"></ViewLoanButton
-      ></q-td>
-    </template>
-    <template v-slot:top-right>
-      <q-input
-        borderless
-        dense
-        debounce="300"
-        v-model="tableSearch"
-        placeholder="Search"
-      >
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input> </template
-  ></q-table>
-</template>
+  <q-btn
+    icon="mdi-archive"
+    label="Archived Loan"
+    @click="archivedEmployee = true"
+    class="tw-bg-white"
+  />
 
-<style scoped></style>
+  <q-dialog v-model="archivedEmployee" persistent>
+    <div class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
+      <div class="tw-col-span-4 tw-text-3xl tw-font-extrabold tw-pb-3">
+        Archived Loan
+      </div>
+      <q-table
+        class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
+        flat
+        bordered
+        :filter="tableSearch"
+        :columns="columns"
+        :rows="storeViewLoan.getArchivedLoanList"
+        :rows-per-page-options="[10, 20, 0]"
+        row-key="name"
+      >
+        <template v-slot:body-cell-actions="props">
+          <q-td :props="props">
+            <div>
+              <ViewLoanButton :rows="props.row"></ViewLoanButton>
+            </div>
+          </q-td>
+        </template>
+        <template v-slot:top-right>
+          <q-input
+            borderless
+            dense
+            debounce="300"
+            v-model="tableSearch"
+            placeholder="Search"
+          >
+            <template v-slot:append>
+              <q-icon name="search" />
+            </template>
+          </q-input>
+        </template>
+      </q-table>
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="Cancel" v-close-popup />
+      </q-card-actions>
+    </div>
+  </q-dialog>
+</template>

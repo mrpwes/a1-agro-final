@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
 import { useAuthenticationStore } from "../../authentication.js";
+import { useViewLoan } from "./viewLoan.js";
 
 const storeAuthentication = useAuthenticationStore();
+const storeViewLoan = useViewLoan();
 export const useAddLoan = defineStore("addLoan", {
   state: () => ({
     employee_id: storeAuthentication.getEmployeeId,
@@ -26,11 +28,11 @@ export const useAddLoan = defineStore("addLoan", {
         if (error) {
           throw error;
         } else {
-          console.log("employee", data);
+          // console.log("employee", data);
           this.employeeOptions = data;
         }
       } catch (error) {
-        alert(error + "line 33");
+        // alert(error + "line 33");
         console.log(error);
       }
     },
@@ -41,6 +43,12 @@ export const useAddLoan = defineStore("addLoan", {
         })
         .then(() => {
           return this.insertCompanyLoan();
+        })
+        .then(() => {
+          this.resetForm();
+        })
+        .then(() => {
+          storeViewLoan.getLoanList();
         })
         .catch((error) => {
           console.error("An error occurred:", error);
@@ -58,7 +66,7 @@ export const useAddLoan = defineStore("addLoan", {
               request_confirmation_date: new Date().toLocaleDateString("en-US"),
               status: "Approved",
               remarks: "Approved",
-              is_active: false,
+              is_archive: false,
             },
           ])
           .select("id");
@@ -86,7 +94,7 @@ export const useAddLoan = defineStore("addLoan", {
               request_date: new Date().toLocaleDateString("en-US"),
               description: this.description,
               remarks: "Pending",
-              is_active: true,
+              is_archive: false,
             },
           ])
           .select("id");
@@ -137,6 +145,12 @@ export const useAddLoan = defineStore("addLoan", {
         alert(error + "line 131");
         console.log(error);
       }
+    },
+    resetForm() {
+      this.employeeOption = null;
+      this.type = null;
+      this.description = null;
+      this.amount = null;
     },
   },
 });
