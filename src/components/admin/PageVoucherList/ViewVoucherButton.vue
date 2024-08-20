@@ -62,10 +62,15 @@ function openmodel(row) {
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn
           flat
-          :class="selectedRow.isArchive ? 'tw-bg-green-400' : 'tw-bg-red-400'"
+          :class="selectedRow.is_archive ? 'tw-bg-green-400' : 'tw-bg-red-400'"
           icon="mdi-archive"
-          :label="selectedRow.isArchive ? 'Unarchive' : 'Archive'"
-          @click="storeViewVoucher.archivedVoucher(selectedRow.id)"
+          :label="selectedRow.is_archive ? 'Unarchive' : 'Archive'"
+          @click="
+            storeViewVoucher.archivedVoucher(
+              selectedRow.id,
+              selectedRow.is_archive
+            )
+          "
           v-close-popup
         />
       </q-card-actions>

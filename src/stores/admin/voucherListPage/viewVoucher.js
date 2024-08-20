@@ -51,12 +51,12 @@ export const useViewVoucherStore = defineStore("viewVoucher", {
       }
     },
 
-    async archivedVoucher(id) {
+    async archivedVoucher(id, isArchive) {
       try {
         const { data, error } = await supabase
           .from("voucher")
           .update({
-            is_archive: true,
+            is_archive: !isArchive,
           })
           .eq("id", id);
         if (error) {
