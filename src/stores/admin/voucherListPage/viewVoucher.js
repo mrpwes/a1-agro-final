@@ -32,12 +32,13 @@ export const useViewVoucherStore = defineStore("viewVoucher", {
               type,
               date_issued,
               recipient:employee_id(first_name, middle_name, last_name),
-              issuer:employee_id(first_name, middle_name, last_name),
+              issuer:employee_id(first_name, middle_name, last_name), 
               issuer,
               description,
               amount,
               is_archive
             `);
+        // TODO: recipient and issuer same code
         if (error) {
           throw error;
         } else {

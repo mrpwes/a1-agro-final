@@ -45,7 +45,7 @@ function numberWithCommas(x) {
           <tr>
             <td>
               Recipient: {{ selectedRow.employee.last_name }},
-              {{ selectedRow.employee.first_name }} - CONTACTNUMBER
+              {{ selectedRow.employee.first_name }} - CONTACTNUMBERTODO!
             </td>
             <td>
               Issuer:

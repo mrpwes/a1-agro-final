@@ -21,14 +21,19 @@ TODO:  Pending, Initiating, Finishing, Completed
         Payroll Sheet - Pending
         Loan - Initiating -- 
                                 View Loan -- CONTACTNUMBER in recipient name
-                                Add Loan Fetch Loan List
                                 REGEX CHECKING // INPUT
 
+
+                                Add Loan Fetch Loan List and Reset Form // FINISHED
                                 Archive the List in request / request_confirmation / within specific loan table~ // FINISHED
                                 fix the archived loan button // FINISHED
                                 Tapusin ang View Loan and Archive Loan    // FINISHED
         Voucher List - Finishing
-        Approval - Pending
+        Approval - Initiating
+                                View Button // Approve and Disapprove Unarchive Status
+
+                                Add Request //Finished
+                                Archived Button //Finished
         Reports - Pending
         Settings - Pending 
         Support - Finished
