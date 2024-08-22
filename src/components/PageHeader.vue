@@ -9,6 +9,8 @@ const storePageHeader = usePageHeader();
 onMounted(() => {
   storePageHeader.getProfilePicture();
 });
+
+storePageHeader.getCurrentUserName();
 </script>
 
 <template>
@@ -28,7 +30,7 @@ onMounted(() => {
           {{ storePageHeader.currentPage }}
         </h2>
       </div>
-      <router-link class="no-decoration" to="/profile">
+      <router-link class="no-decoration" to="dashboard">
         <div
           class="tw-mr-5 designed raisedbox"
           style="
@@ -43,7 +45,7 @@ onMounted(() => {
           "
         >
           <h6 class="col q-ma-none text-weight-regular">
-            <!-- {{ store.getEmployeeName }}&nbsp; -->
+            {{ storePageHeader.currentUserName }}&nbsp;&nbsp;
           </h6>
           <q-avatar size="2.5rem">
             <img

@@ -30,6 +30,7 @@ TODO:  Pending, Initiating, Finishing, Completed
                                 Tapusin ang View Loan and Archive Loan    // FINISHED
         Voucher List - Finishing
         Approval - Initiating
+                                Leave Request Add and Regex
                                 View Button // Approve and Disapprove Unarchive Status
 
                                 Add Request //Finished
