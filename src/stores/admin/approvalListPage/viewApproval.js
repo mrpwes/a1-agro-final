@@ -45,6 +45,41 @@ export const useViewApprovalStore = defineStore("viewApproval", {
           .eq("request_type_id", 3);
         if (error) throw error;
         this.rows = data;
+        this.getApprovalList();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async archivedRequest(requestID, requestIsArchive) {
+      try {
+        const { error } = await supabase
+          .from("request")
+          .update({
+            is_archive: !requestIsArchive,
+          })
+          .eq("id", requestID);
+        if (error) throw error;
+        this.getApprovalList();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async requestConfirmationStatus(
+      requestConfirmationID,
+      requestConfirmationStatus
+    ) {
+      try {
+        const { error } = await supabase
+          .from("request_confirmation")
+          .update({
+            status:
+              requestConfirmationStatus === "Approved"
+                ? "Disapproved"
+                : "Approved",
+          })
+          .eq("id", requestConfirmationID);
+        if (error) throw error;
+        this.getApprovalList();
       } catch (error) {
         console.log(error);
       }

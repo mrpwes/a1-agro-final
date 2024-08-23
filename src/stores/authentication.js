@@ -32,8 +32,8 @@ export const useAuthenticationStore = defineStore("authentication", {
     async logout() {
       try {
         this.logoutLoading = true;
-        getActivePinia()._s.forEach((store) => store.$reset());
         let { error } = await supabase.auth.signOut();
+        getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
         if (error) {
           throw error;
         } else {
@@ -43,7 +43,8 @@ export const useAuthenticationStore = defineStore("authentication", {
           this.logoutLoading = false;
         }
       } catch (error) {
-        alert("Error logging out:", error.message);
+        alert("Error logging out:", error);
+        console.log(error);
         this.logoutLoading = false;
       }
     },
@@ -83,4 +84,5 @@ export const useAuthenticationStore = defineStore("authentication", {
       return this.data.user.app_metadata.userrole;
     },
   },
+  // persist: true,
 });

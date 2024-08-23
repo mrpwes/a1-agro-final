@@ -10,15 +10,15 @@ export const useViewLoan = defineStore("viewLoan", {
     getArchivedLoanList(state) {
       return state.rows.filter((row) =>
         row.request_type.request_type_name === "VALE"
-          ? row.vale[0].is_archive == true
-          : row.partial_to_ar[0].is_archive == true
+          ? row.vale.is_archive == true
+          : row.partial_to_ar.is_archive == true
       );
     },
     getUnarchivedLoanList(state) {
       return state.rows.filter((row) =>
         row.request_type.request_type_name === "VALE"
-          ? row.vale[0].is_archive == false
-          : row.partial_to_ar[0].is_archive == false
+          ? row.vale.is_archive == false
+          : row.partial_to_ar.is_archive == false
       );
     },
   },

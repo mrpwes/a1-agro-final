@@ -1,6 +1,10 @@
 <script setup>
 import { date } from "quasar";
 import { ref } from "vue";
+import { useViewApprovalStore } from "src/stores/admin/approvalListPage/viewApproval";
+
+const storeViewApproval = useViewApprovalStore();
+
 defineProps(["rows"]);
 
 const viewPrompt = ref(false);
@@ -65,26 +69,43 @@ function openmodel(row) {
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup />
         <q-btn
-          v-if="selectedRow.isArchive == false"
+          v-if="selectedRow.request_confirmation.status == 'Pending'"
           flat
           class="tw-bg-red-500"
           icon="mdi-close"
           label="Disapprove"
           @click="
-            selectedRow.isApproved = false;
-            selectedRow.isArchive = true;
+            storeViewApproval.requestConfirmationStatus(
+              selectedRow.request_confirmation.id,
+              'Disapproved'
+            )
           "
           v-close-popup
         />
         <q-btn
-          v-if="selectedRow.isArchive == false"
+          v-if="selectedRow.request_confirmation.status == 'Pending'"
           flat
           class="tw-bg-green-400"
           icon="mdi-check-bold"
           label="Approve"
           @click="
-            selectedRow.isApproved = true;
-            selectedRow.isArchive = true;
+            storeViewApproval.requestConfirmationStatus(
+              selectedRow.request_confirmation.id,
+              'Approved'
+            )
+          "
+          v-close-popup
+        />
+        <q-btn
+          flat
+          :class="selectedRow.is_archive ? 'tw-bg-green-400' : 'tw-bg-red-400'"
+          icon="mdi-archive"
+          :label="selectedRow.is_archive ? 'Unarchive' : 'Archive'"
+          @click="
+            storeViewApproval.archivedRequest(
+              selectedRow.id,
+              selectedRow.is_archive
+            )
           "
           v-close-popup
         />
