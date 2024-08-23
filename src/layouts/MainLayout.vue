@@ -133,7 +133,6 @@ const adminMenuList = [
           flat
           label="Yes"
           color="primary"
-          to="/login"
           v-close-popup
           @click="storeAuthentication.logoutUser()"
         />

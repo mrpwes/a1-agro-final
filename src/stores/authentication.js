@@ -9,7 +9,7 @@ export const useAuthenticationStore = defineStore("authentication", {
     loginLoading: false,
     email: null,
     password: null,
-    data: null,
+    // data: null,
     isAuthenticated: true,
     loginOption: "admin",
 
@@ -33,6 +33,7 @@ export const useAuthenticationStore = defineStore("authentication", {
       try {
         this.logoutLoading = true;
         let { error } = await supabase.auth.signOut();
+        this.router.push("/login");
         getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
         if (error) {
           throw error;
@@ -84,5 +85,5 @@ export const useAuthenticationStore = defineStore("authentication", {
       return this.data.user.app_metadata.userrole;
     },
   },
-  // persist: true,
+  persist: true,
 });
