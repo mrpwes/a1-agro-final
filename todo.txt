@@ -19,7 +19,7 @@ TODO:  Pending, Initiating, Finishing, Completed
         Dashboard - Finishing
         Employee List - Finishing
         Payroll Sheet - Pending
-        Loan - Initiating -- 
+        Loan - Finishing -- 
                                 View Loan -- CONTACTNUMBER in recipient name
                                 REGEX CHECKING // INPUT
 
@@ -29,13 +29,34 @@ TODO:  Pending, Initiating, Finishing, Completed
                                 fix the archived loan button // FINISHED
                                 Tapusin ang View Loan and Archive Loan    // FINISHED
         Voucher List - Finishing
-        Approval - Initiating
+        Approval - Finishing
                                 Leave Request Add and Regex
                                 View Button // Approve and Disapprove Unarchive Status
 
                                 Add Request //Finished
                                 Archived Button //Finished
-        Reports - Pending
+        Reports - Initiating
+                                //FINISHED
+                                        get adjustment_salary all startDate, endDate for back track history
+                                then 
+                                        based on that salary_history fetch all attendance that within that salary_history
+
+                                        allEmployeesID within that startDate, endDate get Attendance and employees firstName, middleName, lastName
+
+                                Dynamic Table based on days of the given salary_history, and determine leave and absent
+
+
+
+                                For Attendance Testing
+                                        Check if employee have adjustment salary that is in range of that date //finished
+                                else
+                                        Create Row in that Employee without adjustment_salary in that range  //finished
+                                then
+                                        insert attendance based today          
+
+
+
+
         Settings - Pending 
         Support - Finished
 

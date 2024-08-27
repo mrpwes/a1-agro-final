@@ -9,7 +9,7 @@ export const useAuthenticationStore = defineStore("authentication", {
     loginLoading: false,
     email: null,
     password: null,
-    // data: null,
+    data: null,
     isAuthenticated: true,
     loginOption: "admin",
 

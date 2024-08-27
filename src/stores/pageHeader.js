@@ -55,7 +55,7 @@ export const usePageHeader = defineStore("pageHeader", {
         if (error) {
           throw error;
         }
-        console.log(data);
+        // console.log(data);
         this.currentUserName =
           data[0].last_name +
           ", " +

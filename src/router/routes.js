@@ -22,12 +22,16 @@ const routes = [
         component: () => import("pages/admin/AdminLoanListPage.vue"),
       },
       {
+        path: "voucherList",
+        component: () => import("pages/admin/AdminVoucherListPage.vue"),
+      },
+      {
         path: "approvalList",
         component: () => import("pages/admin/AdminApprovalListPage.vue"),
       },
       {
-        path: "voucherList",
-        component: () => import("pages/admin/AdminVoucherListPage.vue"),
+        path: "reports",
+        component: () => import("pages/admin/AdminReportsPage.vue"),
       },
       {
         path: "support",
@@ -37,7 +41,7 @@ const routes = [
     beforeEnter: (to, from, next) => {
       const storeAuthentication = useAuthenticationStore();
       if (
-        // storeAuthentication.getUserRole().includes("website_admin") &&
+        storeAuthentication.getUserRole().includes("website_admin") &&
         storeAuthentication.isAuthenticated
       ) {
         next();
