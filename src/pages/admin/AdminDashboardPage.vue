@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from "vue";
+import { date } from "quasar";
 import { usePageHeader } from "stores/pageHeader";
-import { useApprovalListStore } from "src/stores/admin/approvalList";
 import { useDashboardStore } from "src/stores/admin/dashboard";
+import ViewApprovalButton from "components/admin/PageApprovalList/ViewApprovalButton.vue";
+import { useViewApprovalStore } from "stores/admin/approvalListPage/viewApproval";
 
 const storeDashboard = useDashboardStore();
 storeDashboard.fetchTotalEmployees();
@@ -10,32 +12,34 @@ storeDashboard.fetchTotalEmployees();
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Dashboard";
 
-const storeApprovalList = useApprovalListStore();
-
 const tableSearch = ref("");
 
-const viewPrompt = ref(false);
-const selectedRow = ref(null);
-function openmodel(row) {
-  selectedRow.value = row;
-  viewPrompt.value = true;
-}
+const storeViewApproval = useViewApprovalStore();
 
+storeViewApproval.getApprovalList();
 const columns = [
   {
-    name: "Reference Id",
+    name: "Request ID",
     required: true,
-    label: "Reference Id",
+    label: "Request ID",
     align: "left",
-    field: (row) => row.referenceId,
+    field: (row) => row.id,
     format: (val) => `${val}`,
     sortable: true,
   },
   {
-    name: "Employee Name",
+    name: "Request Date",
     align: "center",
-    label: "Employee Name",
-    field: "employeeName",
+    label: "Request Date",
+    field: (row) => row.request_confirmation.application_date,
+    format: (val) => date.formatDate(val, "MMM D, YYYY"),
+    sortable: true,
+  },
+  {
+    name: "Subject",
+    align: "center",
+    label: "Subject",
+    field: "subject",
     sortable: true,
   },
   {
@@ -43,20 +47,20 @@ const columns = [
     align: "center",
     label: "Description",
     field: "description",
-    format: (val) => (val.length > 30 ? `${val.slice(0, 30)}...` : val),
     sortable: true,
   },
   {
-    name: "Request Date",
+    name: "Recipient",
     align: "center",
-    label: "Request Date",
-    field: "requestDate",
+    label: "Recipient",
+    field: (row) => row.recipient.last_name + " " + row.recipient.first_name,
     sortable: true,
   },
   {
     name: "actions",
     align: "center",
     label: "",
+    field: "",
   },
 ];
 </script>
@@ -103,23 +107,20 @@ const columns = [
     </div>
   </div>
   <div class="tw-w-8/12 tw-mx-auto">
-    <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5"></div>
     <q-table
       class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
       flat
       bordered
-      title="TODO Approval List"
-      title-class=" tw-font-bold"
       :filter="tableSearch"
       :columns="columns"
-      :rows="storeApprovalList.getApprovedIsNull"
+      :rows="storeViewApproval.getUnarchivedApprovalList"
       :rows-per-page-options="[10, 20, 0]"
       row-key="name"
     >
       <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn icon="visibility" label="View" @click="openmodel(props.row)" />
-        </q-td>
+        <q-td key="actions" class="tw-w-2/12" :props="props"
+          ><ViewApprovalButton :rows="props.row"></ViewApprovalButton
+        ></q-td>
       </template>
       <template v-slot:top-right>
         <q-input
@@ -134,48 +135,5 @@ const columns = [
           </template>
         </q-input> </template
     ></q-table>
-    <q-dialog v-model="viewPrompt">
-      <div class="!tw-h-min !tw-w-4/12 !tw-max-w-full tw-bg-white tw-p-6">
-        <div class="tw-grid tw-grid-cols-3 tw-gap-5 tw-pb-5">
-          <div>Reference ID: {{ selectedRow.referenceId }}</div>
-          <div>Name: {{ selectedRow.employeeName }}</div>
-          <div>Request Date: {{ selectedRow.requestDate }}</div>
-          <div class="tw-col-span-3">Description:</div>
-          <div class="tw-col-span-3">
-            <q-input
-              :dense="dense"
-              v-model="selectedRow.description"
-              disable
-              autogrow
-              filled
-              hide-bottom-space
-            />
-          </div>
-          <div class="tw-col-span-3">Remarks:</div>
-          <div class="tw-col-span-3 !tw-h-2/6">
-            <q-input v-model="text" filled autogrow />
-          </div>
-        </div>
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" v-close-popup />
-          <q-btn
-            flat
-            class="tw-bg-red-500"
-            icon="mdi-close"
-            label="Disapprove"
-            @click="selectedRow.isApproved = false"
-            v-close-popup
-          />
-          <q-btn
-            flat
-            class="tw-bg-green-400"
-            icon="mdi-check-bold"
-            label="Approve"
-            @click="selectedRow.isApproved = true"
-            v-close-popup
-          />
-        </q-card-actions>
-      </div>
-    </q-dialog>
   </div>
 </template>
