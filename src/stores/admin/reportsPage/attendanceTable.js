@@ -162,8 +162,13 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
               label: `${formattedDate}`,
               sortable: true,
               field: (row) =>
-                row[currentCounter].time_in && row[currentCounter].time_out
+                row[currentCounter] &&
+                row[currentCounter].time_in &&
+                row[currentCounter].time_out
                   ? "Present"
+                  : row[currentCounter] === undefined ||
+                    row[currentCounter] === null
+                  ? "N/A"
                   : "Absent",
               format: (val) => `${val}`,
             };
