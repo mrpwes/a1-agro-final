@@ -12,12 +12,7 @@ import { useAttendanceTableStore } from "stores/admin/reportsPage/attendanceTabl
 const attendanceListStore = useAttendanceTableStore();
 
 const tableSearch = ref("");
-
 // const popupEdit = ref(false);
-
-attendanceListStore.getSalaryHistory();
-attendanceListStore.fetchAttendanceInRange();
-
 // CSV SAVE
 
 // function wrapCsvValue(val, formatFn, row) {
@@ -75,132 +70,11 @@ attendanceListStore.fetchAttendanceInRange();
 //   }
 // }
 
-const columns = [
-  {
-    name: "employeeName",
-    align: "center",
-    label: "Name",
-    sortable: true,
-    field: (row) => row[0].id,
-    format: (val) => `${val}`,
-  },
-  {
-    name: "1",
-    align: "center",
-    label: "1",
-    sortable: true,
-    field: (row) => (row[1].time_in && row[1].time_out ? "Present" : "Absent"),
-    format: (val) => `${val}`,
-  },
-  {
-    name: "2",
-    align: "center",
-    label: "2",
-    sortable: true,
-  },
-  {
-    name: "3",
-    align: "center",
-    label: "3",
-    sortable: true,
-  },
-  {
-    name: "4",
-    align: "center",
-    label: "4",
-    sortable: true,
-  },
-  {
-    name: "5",
-    align: "center",
-    label: "5",
-    sortable: true,
-  },
-  {
-    name: "6",
-    align: "center",
-    label: "6",
-    sortable: true,
-  },
-  {
-    name: "7",
-    align: "center",
-    label: "7",
-    sortable: true,
-  },
-  {
-    name: "8",
-    align: "center",
-    label: "8",
-    sortable: true,
-  },
-  {
-    name: "9",
-    align: "center",
-    label: "9",
-    sortable: true,
-  },
-  {
-    name: "10",
-    align: "center",
-    label: "10",
-    sortable: true,
-  },
-  {
-    name: "11",
-    align: "center",
-    label: "11",
-    sortable: true,
-  },
-  {
-    name: "12",
-    align: "center",
-    label: "12",
-    sortable: true,
-  },
-  {
-    name: "13",
-    align: "center",
-    label: "13",
-    sortable: true,
-  },
-  {
-    name: "14",
-    align: "center",
-    label: "14",
-    sortable: true,
-  },
-  {
-    name: "15",
-    align: "center",
-    label: "15",
-    sortable: true,
-  },
-  {
-    name: "totalPresent",
-    align: "center",
-    label: "P",
-    sortable: true,
-  },
-  {
-    name: "totalLate",
-    align: "center",
-    label: "L",
-    sortable: true,
-  },
-  {
-    name: "totalAbsent",
-    align: "center",
-    label: "A",
-    sortable: true,
-  },
-  {
-    name: "totalLeave",
-    align: "center",
-    label: "LVE",
-    sortable: true,
-  },
-];
+// function getNumberOfColumns() {
+//   return columns.length;
+// }
+
+attendanceListStore.fetchAttendanceReports();
 </script>
 
 <!-- 
@@ -215,12 +89,32 @@ const columns = [
     title="Attendance Report"
     :title-class="['tw-text-xl', 'tw-font-bold']"
     :filter="tableSearch"
-    :columns="columns"
+    :columns="attendanceListStore.attendanceColumns['columns']"
     :rows="attendanceListStore.rows"
     :rows-per-page-options="[0]"
     separator="cell"
     row-key="name"
-    style="height: 400px"
   >
+    <template v-slot:top-left>
+      <q-select
+        filled
+        v-model="attendanceListStore.selectedDate"
+        @update:model-value="attendanceListStore.fetchAttendanceReports()"
+        use-input
+        hide-selected
+        fill-input
+        hide-bottom-space
+        input-debounce="0"
+        :options="attendanceListStore.selectedDateOptions"
+        :option-label="(opt) => opt.date_start + ' ' + opt.date_end"
+        class="!tw-pb-0"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey"> No results </q-item-section>
+          </q-item>
+        </template>
+      </q-select></template
+    >
   </q-table>
 </template>

@@ -4,12 +4,22 @@ import { supabase } from "../../../lib/supabaseClient.js";
 export const useAttendanceTableStore = defineStore("attendanceTable", {
   state: () => ({
     rows: [],
+
+    selectedDate: null,
+    selectedDateOptions: null,
+
+    attendanceColumns: {
+      columns: [],
+    },
   }),
 
-  getters: {},
+  getters: {
+    getSelectedDate() {
+      return this.selectedDate;
+    },
+  },
 
   actions: {
-    // Helper function to format date as "YYYY-MM-DD"
     formatDate(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -23,19 +33,14 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       const year = today.getFullYear();
       const month = today.getMonth(); // Months are 0-indexed in JavaScript (0 = January, 11 = December)
 
-      // Get the first day of the current month
       const firstDayOfMonth = new Date(year, month, 1);
 
-      // Get the 15th day of the current month
       const fifteenthDayOfMonth = new Date(year, month, 15);
 
-      // Get the 16th day of the current month
       const sixteenthDayOfMonth = new Date(year, month, 16);
 
-      // Get the last day of the current month
       const lastDayOfMonth = new Date(year, month + 1, 0);
 
-      // Format the date ranges
       const dateRanges = {
         firstHalf: {
           start: this.formatDate(firstDayOfMonth),
@@ -47,7 +52,6 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
         },
       };
 
-      // Determine which half of the month today falls into
       const todayDate = this.formatDate(today);
 
       const firstHalfStart = new Date(dateRanges.firstHalf.start);
@@ -59,30 +63,15 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       let endDate;
 
       if (today >= firstHalfStart && today <= firstHalfEnd) {
-        // halfOfMonth =
-        //   this.formatDate(firstHalfStart) + " " + this.formatDate(firstHalfEnd);
         startDate = this.formatDate(firstHalfStart);
         endDate = this.formatDate(firstHalfEnd);
       } else if (today >= secondHalfStart && today <= secondHalfEnd) {
-        // halfOfMonth =
-        //   this.formatDate(secondHalfStart) +
-        //   " " +
-        //   this.formatDate(secondHalfEnd);
         startDate = this.formatDate(secondHalfStart);
         endDate = this.formatDate(secondHalfEnd);
       } else {
         startDate = "out of range";
         endDate = "out of range";
       }
-
-      // console.log(
-      //   `Today Date: ${todayDate}
-      //    startDate kung saan pasok: ${startDate}
-      //    endDate kung saan pasok: ${endDate}
-      //    `
-      //   // ${todayDate}) is within the ${startDate} ${endDate} of the month.`
-      // );
-
       return {
         todayDate,
         startDate,
@@ -96,16 +85,15 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
         if (error) {
           console.error(error);
         }
-        console.log(data);
-        return data;
+        this.selectedDateOptions = data;
       } catch (error) {
         console.error(error);
       }
     },
 
     async fetchAttendanceInRange(
-      dateStart = "2024-08-16",
-      dateEnd = "2024-08-31"
+      dateStart = this.selectedDate.date_start,
+      dateEnd = this.selectedDate.date_end
     ) {
       try {
         const { data, error } = await supabase
@@ -136,11 +124,136 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           // Convert the grouped object into an array of arrays (optional)
           this.rows = Object.values(groupedByEmployeeId);
 
-          console.log(this.rows);
+          console.log("This is row", this.rows);
         }
       } catch (error) {
         console.error(error);
       }
+    },
+
+    columns(
+      inputStartDate = this.selectedDate.date_start,
+      inputEndDate = this.selectedDate.date_end
+    ) {
+      const startDate = new Date(inputStartDate);
+      const endDate = new Date(inputEndDate);
+      const dayColumns = [];
+      const dateFormatOptions = { day: "numeric", month: "numeric" };
+
+      //COUNTER FOR DATES
+      let counter = 0;
+      for (
+        let currentDate = new Date(startDate);
+        currentDate <= endDate;
+        currentDate.setDate(currentDate.getDate() + 1)
+      ) {
+        const day = currentDate.getDate();
+        const formattedDate = new Intl.DateTimeFormat(
+          "en-US",
+          dateFormatOptions
+        ).format(currentDate);
+
+        dayColumns.push(
+          (() => {
+            const currentCounter = counter;
+            return {
+              name: `${day}`,
+              align: "center",
+              label: `${formattedDate}`,
+              sortable: true,
+              field: (row) =>
+                row[currentCounter].time_in && row[currentCounter].time_out
+                  ? "Present"
+                  : "Absent",
+              format: (val) => `${val}`,
+            };
+          })()
+        );
+
+        counter++;
+      }
+
+      console.log(dayColumns);
+
+      const newColumns = [
+        {
+          name: "employeeName",
+          align: "center",
+          label: "Name",
+          sortable: true,
+          field: (row) =>
+            row[0].employee.first_name + " " + row[0].employee.last_name,
+          format: (val) => `${val}`,
+        },
+        ...dayColumns,
+        {
+          name: "totalPresent",
+          align: "center",
+          label: "P",
+          sortable: true,
+        },
+        {
+          name: "totalLate",
+          align: "center",
+          label: "L",
+          sortable: true,
+        },
+        {
+          name: "totalAbsent",
+          align: "center",
+          label: "A",
+          sortable: true,
+        },
+        {
+          name: "totalLeave",
+          align: "center",
+          label: "LVE",
+          sortable: true,
+        },
+      ];
+      this.attendanceColumns.columns.push(...newColumns);
+    },
+
+    getNearestDateRange() {
+      if (this.selectedDate != null) {
+        return;
+      }
+      const today = new Date();
+
+      function parseDate(dateStr) {
+        return new Date(dateStr);
+      }
+
+      function getDistance(date) {
+        return Math.abs(today - date);
+      }
+
+      let nearestRange = null;
+      let minDistance = Infinity;
+
+      for (const range of this.selectedDateOptions) {
+        const startDate = parseDate(range.date_start);
+        const endDate = parseDate(range.date_end);
+
+        const distanceToStart = getDistance(startDate);
+        const distanceToEnd = getDistance(endDate);
+
+        const nearestDistance = Math.min(distanceToStart, distanceToEnd);
+
+        if (nearestDistance < minDistance) {
+          minDistance = nearestDistance;
+          nearestRange = range;
+        }
+      }
+      this.selectedDate = nearestRange;
+    },
+
+    async fetchAttendanceReports() {
+      this.attendanceColumns["columns"] = [];
+      await this.getSalaryHistory();
+      this.getNearestDateRange();
+      this.columns();
+      this.fetchAttendanceInRange();
     },
   },
 });

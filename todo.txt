@@ -36,26 +36,23 @@ TODO:  Pending, Initiating, Finishing, Completed
                                 Add Request //Finished
                                 Archived Button //Finished
         Reports - Initiating
-                                //FINISHED
                                         get adjustment_salary all startDate, endDate for back track history
+                                        get numbers based on startDate upto endDate
+                                        then for loop to present to column
                                 then 
                                         based on that salary_history fetch all attendance that within that salary_history
-
                                         allEmployeesID within that startDate, endDate get Attendance and employees firstName, middleName, lastName
 
                                 Dynamic Table based on days of the given salary_history, and determine leave and absent
 
 
-
+                                //FINISHED
                                 For Attendance Testing
                                         Check if employee have adjustment salary that is in range of that date //finished
                                 else
                                         Create Row in that Employee without adjustment_salary in that range  //finished
                                 then
                                         insert attendance based today          
-
-
-
 
         Settings - Pending 
         Support - Finished
