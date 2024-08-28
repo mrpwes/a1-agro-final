@@ -4,6 +4,7 @@ import { supabase } from "../../lib/supabaseClient.js";
 export const useDashboardStore = defineStore("dashboard", {
   state: () => ({
     totalEmployees: null,
+    employeesCurrentBirthdays: null,
   }),
 
   getters: {
@@ -21,10 +22,27 @@ export const useDashboardStore = defineStore("dashboard", {
         if (error) {
           throw error;
         }
-        console.log(count);
+        // console.log(count);
         this.totalEmployees = count;
       } catch (error) {
         console.log("Error getting total employees:", error.message);
+      }
+    },
+    async fetchEmployeesBornInCurrentMonth() {
+      try {
+        const { data, error } = await supabase
+          .from("employees_born_in_current_month")
+          .select("*");
+        if (error) {
+          throw error;
+        }
+        console.log(data);
+        this.employeesCurrentBirthdays = data;
+      } catch (error) {
+        console.log(
+          "Error getting employees with birthdays in January:",
+          error.message
+        );
       }
     },
   },

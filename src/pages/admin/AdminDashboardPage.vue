@@ -17,6 +17,8 @@ const tableSearch = ref("");
 const storeViewApproval = useViewApprovalStore();
 
 storeViewApproval.getApprovalList();
+
+storeDashboard.fetchEmployeesBornInCurrentMonth();
 const columns = [
   {
     name: "Request ID",
@@ -76,32 +78,21 @@ const columns = [
         <div class="tw-text-xl tw-font-bold">Present</div>
         <div class="tw-text-lg">TODO</div>
       </div>
-      <div class="tw-bg-white tw-rounded-3xl tw-shadow-md tw-p-10">
-        <div class="tw-text-xl tw-font-bold">Absent</div>
-        <div class="tw-text-lg">TODO</div>
-      </div>
-      <div class="tw-bg-white tw-rounded-3xl tw-shadow-md tw-p-10">
-        <div class="tw-text-xl tw-font-bold">Late</div>
-        <div class="tw-text-lg">TODO</div>
-      </div>
     </div>
     <div>
       <div class="tw-bg-white tw-rounded-3xl tw-shadow-md tw-p-10">
         <div class="tw-text-center">
           <div class="tw-text-xl tw-font-bold">Birthday</div>
-          <div class="tw-text-lg tw-pb-3">January TODO</div>
         </div>
         <div
+          v-for="(value, key) in storeDashboard.employeesCurrentBirthdays"
+          :key="key"
           class="tw-grid tw-grid-cols-2 tw-gap-7 tw-justify-between tw-text-end"
         >
-          <div class="tw-text-nowrap tw-text-left">TODO</div>
-          <div>TODO</div>
-        </div>
-        <div
-          class="tw-grid tw-grid-cols-2 tw-gap-7 tw-justify-between tw-text-end"
-        >
-          <div class="tw-text-nowrap tw-text-left">Arnieno Maraan</div>
-          <div>01/30</div>
+          <div class="tw-text-nowrap tw-text-left">
+            {{ value.first_name }} {{ value.last_name }}
+          </div>
+          <div>{{ value.date_of_birth }}</div>
         </div>
       </div>
     </div>
