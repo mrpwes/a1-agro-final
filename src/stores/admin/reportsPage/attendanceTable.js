@@ -103,7 +103,8 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             *,
             employee:employee_id (
               first_name,
-              last_name
+              last_name,
+              middle_name
             )
           `
           ) // Select all columns or specify the columns you need
@@ -124,7 +125,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           // Convert the grouped object into an array of arrays (optional)
           this.rows = Object.values(groupedByEmployeeId);
 
-          console.log("This is row", this.rows);
+          // console.log("This is row", this.rows);
         }
       } catch (error) {
         console.error(error);
@@ -166,19 +167,20 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                 row[currentCounter].time_in &&
                 row[currentCounter].time_out
                   ? "Present"
-                  : row[currentCounter] === undefined ||
-                    row[currentCounter] === null
-                  ? "N/A"
                   : "Absent",
-              format: (val) => `${val}`,
+              format: (val) => `${val == "Present" ? "P" : "A"}`,
+              classes: (row) =>
+                row[currentCounter] &&
+                row[currentCounter].time_in &&
+                row[currentCounter].time_out
+                  ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
+                  : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg",
             };
           })()
         );
 
         counter++;
       }
-
-      console.log(dayColumns);
 
       const newColumns = [
         {
@@ -187,7 +189,12 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           label: "Name",
           sortable: true,
           field: (row) =>
-            row[0].employee.first_name + " " + row[0].employee.last_name,
+            row[0].employee.last_name +
+            ", " +
+            row[0].employee.first_name +
+            " " +
+            row[0].employee.middle_name[0] +
+            ".",
           format: (val) => `${val}`,
         },
         ...dayColumns,
@@ -196,18 +203,34 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           align: "center",
           label: "P",
           sortable: true,
-        },
-        {
-          name: "totalLate",
-          align: "center",
-          label: "L",
-          sortable: true,
+          field: (row) => {
+            let presentCounter = 0;
+
+            for (let i = 0; i < row.length; i++) {
+              // Increment presentCounter if both time_in and time_out are not empty
+              row[i].time_in && row[i].time_out && row[i].date
+                ? presentCounter++
+                : null;
+            }
+            return presentCounter;
+          },
         },
         {
           name: "totalAbsent",
           align: "center",
           label: "A",
           sortable: true,
+          field: (row) => {
+            let absentCounter = 0;
+
+            for (let i = 0; i < row.length; i++) {
+              // Increment presentCounter if both time_in and time_out are not empty
+              row[i] && row[i].time_in && row[i].time_out
+                ? null
+                : absentCounter++;
+            }
+            return absentCounter;
+          },
         },
         {
           name: "totalLeave",
