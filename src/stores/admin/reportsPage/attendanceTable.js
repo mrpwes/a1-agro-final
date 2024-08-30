@@ -91,6 +91,62 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       }
     },
 
+    fillMissingDates(dateObj, dateStart, dateEnd) {
+      // Helper function to format a date object as 'YYYY-MM-DD'
+      const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      };
+
+      // Convert start and end dates to Date objects
+      const startDate = new Date(dateStart);
+      const endDate = new Date(dateEnd);
+
+      // Iterate over each employee in the date object
+      for (const employeeId in dateObj) {
+        // Create a set of existing dates for quick lookup
+        const existingDates = new Set(
+          dateObj[employeeId].map((entry) => entry.date)
+        );
+
+        // Initialize the current date to start date
+        let currentDate = new Date(startDate);
+
+        // Iterate over each date in the range
+        while (currentDate <= endDate) {
+          const formattedDate = formatDate(currentDate);
+
+          // If the date is missing, add an entry with null values
+          if (!existingDates.has(formattedDate)) {
+            dateObj[employeeId].push({
+              id: null,
+              adjustment_salary_id: null,
+              employee_id: employeeId,
+              time_in: null,
+              time_out: null,
+              remarks: null,
+              date: formattedDate,
+              employee: {
+                last_name: null,
+                first_name: null,
+                middle_name: null,
+              },
+            });
+          }
+
+          // Move to the next date
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        // Optionally sort the entries by date
+        dateObj[employeeId].sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+
+      return dateObj;
+    },
+
     async fetchAttendanceInRange(
       dateStart = this.selectedDate.date_start,
       dateEnd = this.selectedDate.date_end
@@ -123,7 +179,10 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           }, {});
 
           // Convert the grouped object into an array of arrays (optional)
-          this.rows = Object.values(groupedByEmployeeId);
+          // console.log(JSON.stringify(groupedByEmployeeId));
+          this.rows = Object.values(
+            this.fillMissingDates(groupedByEmployeeId, dateStart, dateEnd)
+          );
 
           // console.log("This is row", this.rows);
         }
@@ -166,9 +225,9 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                 row[currentCounter] &&
                 row[currentCounter].time_in &&
                 row[currentCounter].time_out
-                  ? "Present"
+                  ? row[currentCounter].date
                   : "Absent",
-              format: (val) => `${val == "Present" ? "P" : "A"}`,
+              // format: (val) => `${val == "Present" ? "P" : "A"}`,
               classes: (row) =>
                 row[currentCounter] &&
                 row[currentCounter].time_in &&
@@ -188,12 +247,14 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           align: "center",
           label: "Name",
           sortable: true,
-          field: (row) =>
-            row[0].employee.last_name +
+          field: (
+            row //AWAIT FOR ATTENDANCE TO LOAD BEFORE RENDERING
+          ) =>
+            row[1].employee.last_name +
             ", " +
-            row[0].employee.first_name +
+            row[1].employee.first_name +
             " " +
-            row[0].employee.middle_name[0] +
+            row[1].employee.middle_name[1] +
             ".",
           format: (val) => `${val}`,
         },
