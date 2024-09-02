@@ -18,7 +18,18 @@ TODO:  Pending, Initiating, Finishing, Completed
         Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
-        Payroll Sheet - Pending
+        Payroll Sheet - Initiating
+                based on date_start to date_end
+                fetch every attendance and rate/day
+
+                fetch days worked
+                fetch rate/day
+
+                sss contribution
+                philhealth contribution
+                pag-ibig contribution
+
+
         Loan - Finishing -- 
                                 View Loan -- CONTACTNUMBER in recipient name
                                 REGEX CHECKING // INPUT
@@ -57,3 +68,4 @@ TODO:  Pending, Initiating, Finishing, Completed
         Settings - Pending 
         Support - Finished
 
+        Personal Images
