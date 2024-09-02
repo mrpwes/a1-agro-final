@@ -79,7 +79,12 @@ const columns = [
         <div class="tw-text-lg">TODO</div>
       </div>
     </div>
-    <div>
+    <div
+      v-if="
+        storeDashboard.employeesCurrentBirthdays &&
+        storeDashboard.employeesCurrentBirthdays.length > 0
+      "
+    >
       <div class="tw-bg-white tw-rounded-3xl tw-shadow-md tw-p-10">
         <div class="tw-text-center">
           <div class="tw-text-xl tw-font-bold">Birthday</div>
