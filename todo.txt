@@ -13,21 +13,31 @@ TODO: Insert Data To Database Add Loan
         insertCompanyLoan error +++ PRIORITY    // Done
 
 
+
+
+TODO: Overall Dates should be readable "Jan 30 2003"
+
 TODO:  Pending, Initiating, Finishing, Completed
        
         Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
         Payroll Sheet - Initiating
-                based on date_start to date_end
+                
+                --FINISHED
+                based on date_start to date_end          
                 fetch every attendance and rate/day
-
                 fetch days worked
                 fetch rate/day
+
+                dynamic rate/day ang sahod sa payroll sheet 
+                        -- either audit logs for rate/day or audit logs for whole payroll
 
                 sss contribution
                 philhealth contribution
                 pag-ibig contribution
+
+                view button and initial sms
 
 
         Loan - Finishing -- 

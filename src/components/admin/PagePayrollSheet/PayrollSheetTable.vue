@@ -16,6 +16,8 @@ const payrollTableStore = usePayrollTableStore();
 const tableSearch = ref("");
 
 const popupEdit = ref(false);
+
+payrollTableStore.fetchAttendanceReports();
 </script>
 t
 <template>
@@ -45,6 +47,10 @@ t
       <q-select
         filled
         use-input
+        v-model="payrollTableStore.selectedDate"
+        @update:model-value="payrollTableStore.fetchAttendanceReports()"
+        :options="payrollTableStore.selectedDateOptions"
+        :option-label="(opt) => opt.date_start + ' ' + opt.date_end"
         hide-selected
         fill-input
         hide-bottom-space
@@ -66,13 +72,15 @@ t
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="employeeId" :props="props" auto-width>{{
-          props.row.employeeId
+          props.row[1].employee.company_employee_id
         }}</q-td>
         <q-td key="employeeName" :props="props" auto-width>{{
-          props.row.employeeName
+          props.row[1].employee.first_name +
+          " " +
+          props.row[1].employee.last_name
         }}</q-td>
         <q-td key="noDaysWorked" :props="props" auto-width>
-          {{ props.row.noDaysWorked }}
+          {{ props.row.length }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.noDaysWorked"
@@ -89,7 +97,7 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="ratePerDay" :props="props" auto-width>
-          {{ props.row.ratePerDay }}
+          {{ props.row[1].employee.rate_per_day }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.ratePerDay"
@@ -106,7 +114,7 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="total" :props="props" auto-width>{{
-          props.row.noDaysWorked * props.row.ratePerDay
+          props.row.length * props.row[1].employee.rate_per_day
         }}</q-td>
         <q-td key="sss" :props="props" auto-width>
           {{ props.row.sss }}
