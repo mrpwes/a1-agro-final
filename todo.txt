@@ -17,11 +17,13 @@ TODO: Insert Data To Database Add Loan
 
 TODO: Overall Dates should be readable "Jan 30 2003"
 
+
 TODO:  Pending, Initiating, Finishing, Completed
-       
         Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
+                -- Set Employee for admin privilege
+
         Payroll Sheet - Initiating
                 
                 --FINISHED

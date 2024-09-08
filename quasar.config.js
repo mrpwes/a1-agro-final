@@ -51,7 +51,7 @@ module.exports = configure(function (/* ctx */) {
 
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
-      // publicPath: "/deploy-a1-agro",
+      publicPath: "/deploy-a1-agro",
       // analyze: true,
       // env: {},
       // rawDefine: {}
