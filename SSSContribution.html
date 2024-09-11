@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Textarea to Table</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Convert Textarea Input to Table</h2>
+    <textarea
+      id="inputData"
+      rows="10"
+      cols="100"
+      placeholder="Paste your data here..."
+    ></textarea
+    ><br />
+    <button onclick="generateTable()">Generate Table</button>
+
+    <div id="tableContainer"></div>
+
+    <script>
+      function generateTable() {
+        const input = document.getElementById("inputData").value;
+        const rows = input.trim().split("\n");
+        let tableHTML =
+          "<table><thead><tr><th>Range Value</th><th>Value 1</th><th>Value 2</th><th>Value 3</th><th>Value 4</th><th>Value 5</th><th>Value 6</th><th>Value 7</th><th>Value 8</th><th>Value 9</th><th>Value 10</th><th>Value 11</th><th>Value 12</th><th>Value 13</th><th>Value 14</th><th>Value 15</th></tr></thead><tbody>";
+
+        rows.forEach((row, index) => {
+          const columns = row.split(/\s+/); // Split by whitespace
+          let combinedValue;
+
+          // Combine first two values for the first row, and first three for others
+          if (index === 0) {
+            combinedValue = `${columns[0]} ${columns[1]}`; // Combine first two columns
+          } else {
+            combinedValue = `${columns[0]} ${columns[1]} ${columns[2]}`; // Combine first three columns
+          }
+
+          const values = columns.slice(index === 0 ? 2 : 3); // Remaining columns are values
+          // Create a new row in the table
+          tableHTML += "<tr>";
+          tableHTML += `<td>${combinedValue}</td>`; // Add the combined value in the first column
+
+          // Add remaining values, ensuring we have a total of 16 columns
+          for (let i = 0; i < 15; i++) {
+            tableHTML += `<td>${values[i] || ""}</td>`; // Fill with values or empty if not available
+          }
+          tableHTML += "</tr>";
+        });
+
+        tableHTML += "</tbody></table>";
+        document.getElementById("tableContainer").innerHTML = tableHTML;
+      }
+    </script>
+  </body>
+</html>

@@ -12,11 +12,14 @@ TODO: Insert Data To Database Add Loan
         Add Loan Data To DB
         insertCompanyLoan error +++ PRIORITY    // Done
 
+TODO: 
+        Overall Dates should be readable "Jan 30 2003"
+        Selector Names should be Employee number "Arnieno Maraan" - Employee ID "1"
+        Import Bracketing Contribution - Setting and Payroll  
+        Export to Excel Tables
 
-
-
-TODO: Overall Dates should be readable "Jan 30 2003"
-
+        AT LAST
+                Edit Enable Login Filter Admin and Regular Employee 
 
 TODO:  Pending, Initiating, Finishing, Completed
         Admin Panel
@@ -43,6 +46,9 @@ TODO:  Pending, Initiating, Finishing, Completed
 
 
         Loan - Finishing -- 
+                                Leave Counter for Request Leave
+                                Id as a selector not employee name
+
                                 View Loan -- CONTACTNUMBER in recipient name
                                 REGEX CHECKING // INPUT
 

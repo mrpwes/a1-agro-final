@@ -232,7 +232,12 @@ const adminMenuList = [
           height: 150px;
         "
       >
-        <img class="tw-size-28 tw-mx-auto tw-mt-3" src="./../assets/logo.png" />
+        <router-link class="no-decoration" to="dashboard">
+          <img
+            class="tw-size-28 tw-mx-auto tw-mt-3"
+            src="./../assets/logo.png"
+          />
+        </router-link>
         <div class="q-ma-xs" style="text-align: center">
           A1 Agro Fertilizer and Chemical Supply
         </div>
