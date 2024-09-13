@@ -219,7 +219,7 @@ const adminMenuList = [
             <q-item-section avatar>
               <q-icon name="logout" />
             </q-item-section>
-            <q-item-section> Log-ouASDASt </q-item-section>
+            <q-item-section> Log-out </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>
