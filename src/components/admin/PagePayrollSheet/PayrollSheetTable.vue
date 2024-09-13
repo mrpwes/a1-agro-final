@@ -18,6 +18,47 @@ const tableSearch = ref("");
 const popupEdit = ref(false);
 
 payrollTableStore.fetchAttendanceReports();
+
+function getEmployeeId(row) {
+  for (let i = 0; i < row.length; i++) {
+    if (row[i] && row[i].employee && row[i].employee.company_employee_id) {
+      return row[i].employee.company_employee_id;
+    }
+  }
+  return "N/A";
+}
+
+function getEmployeeFullName(row) {
+  for (let i = 0; i < row.length; i++) {
+    if (
+      row[i] &&
+      row[i].employee &&
+      row[i].employee.first_name &&
+      row[i].employee.last_name
+    ) {
+      return row[i].employee.first_name + " " + row[i].employee.last_name;
+    }
+  }
+  return "N/A";
+}
+
+function getRatePerDay(row) {
+  for (let i = 0; i < row.length; i++) {
+    if (row[i] && row[i].employee && row[i].employee.rate_per_day) {
+      return row[i].employee.rate_per_day;
+    }
+  }
+  return "N/A";
+}
+
+function calculateTotal(row) {
+  for (let i = 0; i < row.length; i++) {
+    if (row[i] && row[i].employee && row[i].employee.rate_per_day) {
+      return row.length * row[i].employee.rate_per_day;
+    }
+  }
+  return "N/A";
+}
 </script>
 t
 <template>
@@ -71,13 +112,11 @@ t
     </template>
     <template v-slot:body="props">
       <q-tr :props="props">
-        <q-td key="employeeId" :props="props" auto-width>{{
-          props.row[1].employee.company_employee_id
-        }}</q-td>
+        <q-td key="employeeId" :props="props" auto-width
+          >{{ getEmployeeId(props.row) }}
+        </q-td>
         <q-td key="employeeName" :props="props" auto-width>{{
-          props.row[1].employee.first_name +
-          " " +
-          props.row[1].employee.last_name
+          getEmployeeFullName(props.row)
         }}</q-td>
         <q-td key="noDaysWorked" :props="props" auto-width>
           {{ props.row.length }}
@@ -97,7 +136,7 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="ratePerDay" :props="props" auto-width>
-          {{ props.row[1].employee.rate_per_day }}
+          {{ getRatePerDay(props.row) }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.ratePerDay"
@@ -114,7 +153,7 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="total" :props="props" auto-width>{{
-          props.row.length * props.row[1].employee.rate_per_day
+          calculateTotal(props.row)
         }}</q-td>
         <q-td key="sss" :props="props" auto-width>
           {{ props.row.sss }}
