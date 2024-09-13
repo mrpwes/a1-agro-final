@@ -6,6 +6,17 @@ const addApprovalStore = useAddApprovalStore();
 const addVoucherDialog = ref(false);
 
 addApprovalStore.fetchEmployeeOptions();
+
+function filterFn(val, update) {
+  update(() => {
+    console.log(val);
+    const needle = val.toLowerCase();
+    addApprovalStore.selectorRecipientOptions =
+      addApprovalStore.recipientOptions.filter(
+        (v) => String(v.company_employee_id).toLowerCase().indexOf(needle) > -1
+      );
+  });
+}
 </script>
 
 <template>
@@ -34,14 +45,15 @@ addApprovalStore.fetchEmployeeOptions();
               fill-input
               hide-bottom-space
               input-debounce="0"
-              :options="addApprovalStore.recipientOptions"
+              :options="addApprovalStore.selectorRecipientOptions"
               :option-label="
                 (opt) =>
                   'first_name' in opt
-                    ? opt.first_name + ' ' + opt.last_name
+                    ? opt.company_employee_id + ' - ' + opt.last_name
                     : ''
               "
               :option-value="id"
+              @filter="filterFn"
               class="!tw-pb-0; tw-capitalize"
               popup-content-class="tw-capitalize"
             >

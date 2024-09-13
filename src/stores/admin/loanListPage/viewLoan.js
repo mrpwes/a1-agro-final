@@ -57,7 +57,6 @@ export const useViewLoan = defineStore("viewLoan", {
     ),
     partial_to_ar(
         id,
-        company_loan_payment,
         request_id,
         amount,
         date,
