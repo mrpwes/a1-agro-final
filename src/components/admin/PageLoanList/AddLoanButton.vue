@@ -5,7 +5,18 @@ import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
 const storeAddLoan = useAddLoan();
 const addLoanDialog = ref(false);
 
+storeAddLoan.getTypeOptions();
 storeAddLoan.getDetails();
+
+function filterFn(val, update) {
+  update(() => {
+    console.log(val);
+    const needle = val.toLowerCase();
+    storeAddLoan.selectorEmployeeOptions = storeAddLoan.employeeOptions.filter(
+      (v) => String(v.company_employee_id).toLowerCase().indexOf(needle) > -1
+    );
+  });
+}
 </script>
 
 <template>
@@ -34,13 +45,14 @@ storeAddLoan.getDetails();
               fill-input
               hide-bottom-space
               input-debounce="0"
-              :options="storeAddLoan.employeeOptions"
+              :options="storeAddLoan.selectorEmployeeOptions"
               :option-label="
                 (opt) =>
                   'first_name' in opt
-                    ? opt.first_name + ' ' + opt.last_name
+                    ? opt.company_employee_id + ' - ' + opt.last_name
                     : ''
               "
+              @filter="filterFn"
               :option-value="id"
               class="!tw-pb-0; tw-capitalize"
               popup-content-class="tw-capitalize"
@@ -66,6 +78,7 @@ storeAddLoan.getDetails();
               hide-bottom-space
               input-debounce="0"
               :options="storeAddLoan.typeOptions"
+              :option-label="(opt) => opt.request_type_name"
               class="!tw-pb-0; tw-capitalize;"
               popup-content-class="tw-capitalize"
             >

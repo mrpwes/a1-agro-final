@@ -13,21 +13,22 @@ TODO: Insert Data To Database Add Loan
         insertCompanyLoan error +++ PRIORITY    // Done
 
 TODO: 
-        Change Password Under Employee List
         Overall Dates should be readable "Jan 30 2003"
-        Selector Names should be Employee number "Arnieno Maraan" - Employee ID "1"
+        Selector Names should be Employee number "Arnieno Maraan" - Employee ID "1"  //FINISHED UNDER LOAN JUST COPY
         Import Bracketing Contribution - Setting and Payroll  
         Export to Excel Tables
         Get Remaining Leave Based on Everything
 
         AT LAST
                 Edit Enable Login Filter Admin and Regular Employee 
+                Change Password Under Employee List
 
 TODO:  Pending, Initiating, Finishing, Completed
         Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
                 -- Set Employee for admin privilege
+                -- Fix Contact Number
 
         Payroll Sheet - Initiating
                 

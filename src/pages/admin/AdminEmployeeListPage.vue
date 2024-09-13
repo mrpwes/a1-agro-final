@@ -45,7 +45,7 @@ const columns = [
     name: "Contact Number",
     align: "center",
     label: "Contact Number",
-    field: (row) => row.date_of_birth,
+    field: (row) => row.phone_number[0].phone_number,
     sortable: true,
   },
   {
