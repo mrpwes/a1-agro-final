@@ -70,7 +70,9 @@ export const useAddVoucherStore = defineStore("addVoucher", {
       try {
         const { data, error } = await supabase
           .from("employee")
-          .select("id, first_name, middle_name, last_name");
+          .select(
+            "id, company_employee_id, first_name, middle_name, last_name"
+          );
         if (error) {
           throw error;
         } else {
