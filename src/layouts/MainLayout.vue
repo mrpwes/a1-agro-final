@@ -208,18 +208,18 @@ const adminMenuList = [
                 style="width: 7rem"
               />
             </template>
+            <q-item></q-item>
           </div>
-
           <q-item
             clickable
-            class="absolute-bottom"
+            class="fixed-bottom tw-bg-gray-100"
             @click="storeAuthentication.logout"
             :disable="storeAuthentication.logoutLoading"
           >
             <q-item-section avatar>
               <q-icon name="logout" />
             </q-item-section>
-            <q-item-section> Log-out </q-item-section>
+            <q-item-section> Log-ouASDASt </q-item-section>
           </q-item>
         </q-list>
       </q-scroll-area>

@@ -221,23 +221,37 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
               align: "center",
               label: `${formattedDate}`,
               sortable: true,
-              field: (row) =>
-                row[currentCounter] &&
-                row[currentCounter].time_in &&
-                row[currentCounter].time_out
-                  ? row[currentCounter].date
-                  : "Absent",
-              // format: (val) => `${val == "Present" ? "P" : "A"}`,
-              classes: (row) =>
-                row[currentCounter] &&
-                row[currentCounter].time_in &&
-                row[currentCounter].time_out
+              field: (row) => {
+                const currentDate = new Date();
+                const rowDate = new Date(row[currentCounter].date);
+
+                if (rowDate >= currentDate) {
+                  return "N/A";
+                }
+
+                return row[currentCounter] &&
+                  row[currentCounter].time_in &&
+                  row[currentCounter].time_out
+                  ? "P"
+                  : "A";
+              },
+              classes: (row) => {
+                const currentDate = new Date();
+                const rowDate = new Date(row[currentCounter].date);
+
+                if (rowDate >= currentDate) {
+                  return "!tw-bg-gray-300 !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+                }
+
+                return row[currentCounter] &&
+                  row[currentCounter].time_in &&
+                  row[currentCounter].time_out
                   ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
-                  : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg",
+                  : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+              },
             };
           })()
         );
-
         counter++;
       }
 
@@ -247,14 +261,12 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           align: "center",
           label: "Name",
           sortable: true,
-          field: (
-            row //AWAIT FOR ATTENDANCE TO LOAD BEFORE RENDERING
-          ) =>
-            row[1].employee.last_name +
+          field: (row) =>
+            row[0].employee.last_name +
             ", " +
-            row[1].employee.first_name +
+            row[0].employee.first_name +
             " " +
-            row[1].employee.middle_name[1] +
+            row[0].employee.middle_name[0] +
             ".",
           format: (val) => `${val}`,
         },
@@ -268,7 +280,6 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             let presentCounter = 0;
 
             for (let i = 0; i < row.length; i++) {
-              // Increment presentCounter if both time_in and time_out are not empty
               row[i].time_in && row[i].time_out && row[i].date
                 ? presentCounter++
                 : null;
@@ -283,13 +294,18 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           sortable: true,
           field: (row) => {
             let absentCounter = 0;
+            const currentDate = new Date();
 
             for (let i = 0; i < row.length; i++) {
-              // Increment presentCounter if both time_in and time_out are not empty
-              row[i] && row[i].time_in && row[i].time_out
-                ? null
-                : absentCounter++;
+              const rowDate = new Date(row[i].date);
+
+              if (rowDate <= currentDate) {
+                if (!row[i].time_in || !row[i].time_out) {
+                  absentCounter++;
+                }
+              }
             }
+
             return absentCounter;
           },
         },
