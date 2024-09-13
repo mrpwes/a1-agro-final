@@ -5,7 +5,6 @@ import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
 const storeAddLoan = useAddLoan();
 const addLoanDialog = ref(false);
 
-storeAddLoan.getTypeOptions();
 storeAddLoan.getDetails();
 
 function filterFn(val, update) {
@@ -78,7 +77,6 @@ function filterFn(val, update) {
               hide-bottom-space
               input-debounce="0"
               :options="storeAddLoan.typeOptions"
-              :option-label="(opt) => opt.request_type_name"
               class="!tw-pb-0; tw-capitalize;"
               popup-content-class="tw-capitalize"
             >

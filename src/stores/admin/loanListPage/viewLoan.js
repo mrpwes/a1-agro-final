@@ -8,18 +8,10 @@ export const useViewLoan = defineStore("viewLoan", {
 
   getters: {
     getArchivedLoanList(state) {
-      return state.rows.filter((row) =>
-        row.request_type.request_type_name === "VALE"
-          ? row.vale.is_archive == true
-          : row.partial_to_ar.is_archive == true
-      );
+      return state.rows.filter((row) => row.is_archive);
     },
     getUnarchivedLoanList(state) {
-      return state.rows.filter((row) =>
-        row.request_type.request_type_name === "VALE"
-          ? row.vale.is_archive == false
-          : row.partial_to_ar.is_archive == false
-      );
+      return state.rows.filter((row) => !row.is_archive);
     },
   },
   actions: {
@@ -75,7 +67,10 @@ export const useViewLoan = defineStore("viewLoan", {
       if (error) {
         throw error;
       } else {
-        this.rows = data;
+        // Filter out rows where request_type_id is not 1 or 2
+        this.rows = data.filter(
+          (row) => row.request_type_id === 1 || row.request_type_id === 2
+        );
         // console.table(this.rows);
         // console.log(this.rows[0].vale[0].id);
         return data;

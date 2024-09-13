@@ -1,9 +1,9 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
-import { useAttendanceTest } from "stores/attendance";
+// import { useAttendanceTest } from "stores/attendance";
 import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
 
-const storeAttendance = useAttendanceTest();
+// const storeAttendance = useAttendanceTest();
 
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Reports";
@@ -16,7 +16,7 @@ storePageHeader.currentPage = "Reports";
       <AttendanceTable></AttendanceTable>
       &nbsp;
       <!-- <LoanTable></LoanTable> -->
-      <q-btn
+      <!-- <q-btn
         icon="mdi-plus"
         label="Check Date Ranges for Current Month"
         @click="storeAttendance.getAndCheckDateRangesForCurrentMonth"
@@ -39,7 +39,7 @@ storePageHeader.currentPage = "Reports";
         label="createAdjustmentSalary"
         @click="storeAttendance.processAttendance"
         class="tw-bg-white"
-      />
+      /> -->
     </div>
   </div>
 </template>

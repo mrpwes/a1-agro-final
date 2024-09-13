@@ -23,6 +23,9 @@ TODO:
                 Edit Enable Login Filter Admin and Regular Employee 
                 Change Password Under Employee List
 
+        Call every New User and Every Day SELECT handle_adjustment_salary_for_all();
+
+
 TODO:  Pending, Initiating, Finishing, Completed
         Admin Panel
         Dashboard - Finishing

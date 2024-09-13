@@ -261,13 +261,21 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           align: "center",
           label: "Name",
           sortable: true,
-          field: (row) =>
-            row[0].employee.last_name +
-            ", " +
-            row[0].employee.first_name +
-            " " +
-            row[0].employee.middle_name[0] +
-            ".",
+          field: (row) => {
+            for (let i = 0; i < row.length; i++) {
+              if (row[i] && row[i].employee) {
+                const employee = row[i].employee;
+                return (
+                  employee.last_name +
+                  ", " +
+                  employee.first_name +
+                  " " +
+                  (employee.middle_name ? employee.middle_name[0] + "." : "")
+                );
+              }
+            }
+            return "N/A"; // Return 'N/A' if no valid employee is found
+          },
           format: (val) => `${val}`,
         },
         ...dayColumns,

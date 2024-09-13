@@ -11,7 +11,7 @@ const selectedRow = ref(null);
 function openmodel(row) {
   selectedRow.value = row;
   viewPrompt.value = true;
-  console.table(selectedRow.value);
+  // console.table(selectedRow.value);
 }
 
 function numberWithCommas(x) {
@@ -33,7 +33,7 @@ function numberWithCommas(x) {
           Loan ID - {{ selectedRow.id }}
           <br />
           <span class="tw-text-base tw-font-normal tw-text-gray-500">
-            VALE
+            {{ selectedRow.request_type.request_type_name }} -
             {{
               selectedRow.vale && selectedRow.vale.length > 0
                 ? selectedRow.vale[0].id

@@ -13,9 +13,9 @@ storePageHeader.currentPage = "Loan List";
 const storeViewLoan = useViewLoan();
 storeViewLoan.getLoanList();
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+// function numberWithCommas(x) {
+//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+// }
 
 const columns = [
   {
@@ -31,12 +31,12 @@ const columns = [
     name: "Loan Type",
     align: "center",
     label: "Loan Type",
-    field: (row) =>
-      (row.request_type.request_type_name === "VALE"
-        ? row.vale[0].id
-        : row.partial_to_ar[0].id) +
-      " - " +
-      row.request_type.request_type_name,
+    // field: (row) =>
+    //   (row.request_type.request_type_name === "VALE"
+    //     ? row.vale[0].id
+    //     : row.partial_to_ar[0].id) +
+    //   " - " +
+    //   row.request_type.request_type_name,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -68,11 +68,11 @@ const columns = [
     name: "Amount",
     align: "center",
     label: "Amount",
-    field: (row) =>
-      "₱" +
-      (row.request_type.request_type_name === "VALE"
-        ? numberWithCommas(row.vale[0].amount)
-        : numberWithCommas(row.partial_to_ar[0].amount)),
+    // field: (row) =>
+    //   "₱" +
+    //   (row.request_type.request_type_name === "VALE"
+    //     ? numberWithCommas(row.vale[0].amount)
+    //     : numberWithCommas(row.partial_to_ar[0].amount)),
     sortable: true,
   },
   {
