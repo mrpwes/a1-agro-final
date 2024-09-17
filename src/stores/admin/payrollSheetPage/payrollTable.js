@@ -227,6 +227,20 @@ export const usePayrollTableStore = defineStore("payrollTable", {
               middle_name,
               company_employee_id,
               rate_per_day
+            ),
+            adjustment_salary (
+              id, 
+              date_start,
+              date_end,
+              deductions (
+                id,
+                date_start,
+                date_end,
+                emp_philhealth_contrib ( id, amount, update_datetime),
+                emp_sss_contrib ( id, amount, update_datetime),
+                emp_pagibig_contrib ( id, amount, update_datetime),
+                emp_incometax_contrib ( id, amount, update_datetime)
+              )
             )
           `
           ) // Select all columns or specify the columns you need
@@ -236,6 +250,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
         if (error) {
           console.error("Error fetching data:", error);
         } else {
+          console.log(data);
           const groupedByEmployeeId = data.reduce((acc, item) => {
             if (!acc[item.employee_id]) {
               acc[item.employee_id] = [];

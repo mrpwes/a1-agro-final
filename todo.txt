@@ -11,6 +11,9 @@ TODO:
         Voucher List Add Voucher Regex
 
 TODO: 
+        Fetch PayrollTable Details even no attendance and unarchive
+        
+
         Overall Dates should be readable "Jan 30 2003"
         Selector Names should be Employee number "Arnieno Maraan" - Employee ID "1"  //FINISHED UNDER LOAN JUST COPY
         Import Bracketing Contribution - Setting and Payroll  

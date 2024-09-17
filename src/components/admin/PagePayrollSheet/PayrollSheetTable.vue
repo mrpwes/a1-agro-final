@@ -5,6 +5,7 @@ import { usePayrollTableStore } from "stores/admin/payrollSheetPage/payrollTable
 // import { format } from "date-fns";
 
 import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollRowButton.vue";
+import { useContributionStore } from "stores/admin/payrollSheetPage/contribution";
 
 //FIXME: PROFILE IMAGE ATTENDANCE REPORT
 
@@ -12,12 +13,14 @@ import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollR
 // BETTER CODE FOR DISPLAYING VALUE DERIVED FROM FIELD IN Q-TABLE COLUMN
 
 const payrollTableStore = usePayrollTableStore();
+const contributionStore = useContributionStore();
 
 const tableSearch = ref("");
 
 const popupEdit = ref(false);
 
 payrollTableStore.fetchAttendanceReports();
+contributionStore.getContributions();
 
 function getEmployeeId(row) {
   for (let i = 0; i < row.length; i++) {
@@ -156,11 +159,11 @@ t
           calculateTotal(props.row)
         }}</q-td>
         <q-td key="sss" :props="props" auto-width>
-          {{ props.row.sss }}
+          {{ props.row[0].adjustment_salary.deductions.emp_sss_contrib.amount }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.sss"
-            buttons
+            button
             v-slot="scope"
           >
             <q-input
@@ -173,7 +176,10 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="philHealth" :props="props" auto-width>
-          {{ props.row.philHealth }}
+          {{
+            props.row[0].adjustment_salary.deductions.emp_philhealth_contrib
+              .amount
+          }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.philHealth"
@@ -190,7 +196,9 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="pagIbig" :props="props" auto-width>
-          {{ props.row.pagIbig }}
+          {{
+            props.row[0].adjustment_salary.deductions.emp_pagibig_contrib.amount
+          }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.pagIbig"
