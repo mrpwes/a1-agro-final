@@ -1,16 +1,14 @@
-TODO: 
+TODO: IMPORTANT LAST: 
+        New Database Table Per Employee Payment for Contribution
+        Restructure SSS Contribution Bracketing For Table
+        Rate Per Day Audit Logs
 
+TODO: 
         Images of Users Add Employee and PageHeader
         Employee List View Null Values
         Employee List Inactive View Null Values
         Employee List Add Employee Regex
         Voucher List Add Voucher Regex
-
-
-TODO: Insert Data To Database Add Loan
-        
-        Add Loan Data To DB
-        insertCompanyLoan error +++ PRIORITY    // Done
 
 TODO: 
         Overall Dates should be readable "Jan 30 2003"
@@ -20,6 +18,7 @@ TODO:
         Get Remaining Leave Based on Everything
 
         AT LAST
+                User Profile Pic upload and use
                 Edit Enable Login Filter Admin and Regular Employee 
                 Change Password Under Employee List
 
@@ -27,69 +26,72 @@ TODO:
 
 
 TODO:  Pending, Initiating, Finishing, Completed
-        Admin Panel
+
+Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
                 -- Set Employee for admin privilege
-                -- Fix Contact Number
+
 
         Payroll Sheet - Initiating
-                
-                --FINISHED
-                based on date_start to date_end          
-                fetch every attendance and rate/day
-                fetch days worked
-                fetch rate/day
+                sss contribution estimate for net pay
+                philhealth contribution estimate for net pay
+                pag-ibig contribution estimate for net pay
 
-                dynamic rate/day ang sahod sa payroll sheet 
-                        -- either audit logs for rate/day or audit logs for whole payroll
+                connected to company loan dynamic button if you want to include the payment to deduction the loan 
 
-                sss contribution
-                philhealth contribution
-                pag-ibig contribution
-
+                government loan recurring date of payment
                 view button and initial sms
 
+                                --FINISHED
+                                        based on date_start to date_end          
+                                        fetch every attendance and rate/day
+                                        fetch days worked
+                                        fetch rate/day
 
+                                        dynamic rate/day ang sahod sa payroll sheet 
+                                                -- either audit logs for rate/day or audit logs for whole payroll
         Loan - Finishing -- 
-                                Leave Counter for Request Leave
-                                Id as a selector not employee name
-
                                 View Loan -- CONTACTNUMBER in recipient name
                                 REGEX CHECKING // INPUT
 
 
-                                Add Loan Fetch Loan List and Reset Form // FINISHED
-                                Archive the List in request / request_confirmation / within specific loan table~ // FINISHED
-                                fix the archived loan button // FINISHED
-                                Tapusin ang View Loan and Archive Loan    // FINISHED
+                                        Id as a selector not employee name //FINISHED
+                                        Add Loan Fetch Loan List and Reset Form // FINISHED
+                                        Archive the List in request / request_confirmation / within specific loan table~ // FINISHED
+                                        fix the archived loan button // FINISHED
+                                        Tapusin ang View Loan and Archive Loan    // FINISHED
         Voucher List - Finishing
         Approval - Finishing
+                                Leave Counter for Request Leave
                                 Leave Request Add and Regex
-                                View Button // Approve and Disapprove Unarchive Status
 
-                                Add Request //Finished
-                                Archived Button //Finished
+                                        View Button // Approve and Disapprove Unarchive Status // FINISHED
+                                        Add Request //Finished
+                                        Archived Button //Finished
         Reports - Initiating
-                                        get adjustment_salary all startDate, endDate for back track history
-                                        get numbers based on startDate upto endDate
-                                        then for loop to present to column
-                                then 
-                                        based on that salary_history fetch all attendance that within that salary_history
-                                        allEmployeesID within that startDate, endDate get Attendance and employees firstName, middleName, lastName
+                                //FINISHED
+                                                get adjustment_salary all startDate, endDate for back track history
+                                                get numbers based on startDate upto endDate
+                                                then for loop to present to column
+                                        then 
+                                                based on that salary_history fetch all attendance that within that salary_history
+                                                allEmployeesID within that startDate, endDate get Attendance and employees firstName, middleName, lastName
 
-                                Dynamic Table based on days of the given salary_history, and determine leave and absent
+                                        Dynamic Table based on days of the given salary_history, and determine leave and absent
 
 
                                 //FINISHED
-                                For Attendance Testing
-                                        Check if employee have adjustment salary that is in range of that date //finished
-                                else
-                                        Create Row in that Employee without adjustment_salary in that range  //finished
-                                then
-                                        insert attendance based today          
+                                        For Attendance Testing
+                                                Check if employee have adjustment salary that is in range of that date //finished
+                                        else
+                                                Create Row in that Employee without adjustment_salary in that range  //finished
+                                        then
+                                                insert attendance based today          
 
         Settings - Pending 
-        Support - Finished
+                All Government Contribution Bracket, For Estimating Contribution
 
-        Personal Images
+
+        Support - Finished
+                Just Pictures
