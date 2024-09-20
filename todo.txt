@@ -3,6 +3,10 @@ TODO: IMPORTANT LAST:
         Restructure SSS Contribution Bracketing For Table
         Rate Per Day Audit Logs
 
+RatePerDay audit logs 
+
+HalfMonthIndicator then the value is 0 and 1
+
 TODO: 
         Images of Users Add Employee and PageHeader
         Employee List View Null Values

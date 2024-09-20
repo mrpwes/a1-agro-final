@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
-
 export const usePayrollTableStore = defineStore("payrollTable", {
   state: () => ({
     payrollColumns: {
@@ -211,58 +210,251 @@ export const usePayrollTableStore = defineStore("payrollTable", {
       }
     },
 
+    customLogic(a, b) {
+      return !(a && b);
+    },
+
     async fetchAttendanceInRange(
       dateStart = this.selectedDate.date_start,
       dateEnd = this.selectedDate.date_end
     ) {
       try {
         const { data, error } = await supabase
-          .from("attendance") // Replace with your table name
+          .from("employee")
           .select(
-            `
-            *,
-            employee:employee_id (
-              first_name,
-              last_name,
-              middle_name,
-              company_employee_id,
-              rate_per_day
+            `*,
+            attendance(*),
+            employee_audit(*),
+            emp_sss_contrib!emp_sss_contrib_employee_id_fkey(
+              emp_sss_contrib_audit(*)
             ),
-            adjustment_salary (
-              id, 
-              date_start,
-              date_end,
-              deductions (
-                id,
-                date_start,
-                date_end,
-                emp_philhealth_contrib ( id, amount, update_datetime),
-                emp_sss_contrib ( id, amount, update_datetime),
-                emp_pagibig_contrib ( id, amount, update_datetime),
-                emp_incometax_contrib ( id, amount, update_datetime)
-              )
+            emp_pagibig_contrib!emp_pagibig_contrib_employee_id_fkey(
+              emp_pagibig_contrib_audit(*)
+            ),
+            emp_philhealth_contrib!emp_philhealth_contrib_employee_id_fkey(
+              emp_philhealth_contrib_audit(*)
+            ),
+            emp_incometax_contrib!emp_incometax_contrib_employee_id_fkey(
+              emp_incometax_contrib_audit(*)
             )
-          `
-          ) // Select all columns or specify the columns you need
-          .gte("date", dateStart) // Greater than or equal to dateStart
-          .lte("date", dateEnd); // Less than or equal to dateEnd
-
+            `
+          )
+          .eq("is_archive", false)
+          .gte("attendance.date", dateStart) // Greater than or equal to dateStart
+          .lte("attendance.date", dateEnd); // Less than or equal to dateEnd
         if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          console.log(data);
-          const groupedByEmployeeId = data.reduce((acc, item) => {
-            if (!acc[item.employee_id]) {
-              acc[item.employee_id] = [];
-            }
-            acc[item.employee_id].push(item);
-            return acc;
-          }, {});
-
-          // Convert the grouped object into an array of arrays (optional)
-          // console.log(JSON.stringify(groupedByEmployeeId));
-          this.rows = Object.values(groupedByEmployeeId);
+          console.error(error);
         }
+        data.forEach((employee) => {
+          if (
+            !employee.employee_audit ||
+            employee.employee_audit.length === 0
+          ) {
+            return; // Exit if there are no audits
+          }
+
+          // Filter audits to find those with dates <= dateEnd
+          const filteredAudits = employee.employee_audit.filter((audit) => {
+            const auditDate = new Date(audit.change_timestamp);
+            return auditDate <= new Date(dateEnd);
+          });
+
+          if (filteredAudits.length > 0) {
+            // Find the nearest date
+            const groupedByDate = filteredAudits.reduce((acc, audit) => {
+              const date = audit.change_timestamp.split("T")[0]; // Get the date part
+              if (!acc[date]) {
+                acc[date] = [];
+              }
+              acc[date].push(audit);
+              return acc;
+            }, {});
+
+            // Find the latest date
+            const nearestDate = Object.keys(groupedByDate).sort().pop();
+
+            // Get the audits for the nearest date
+            const nearestAudits = groupedByDate[nearestDate];
+
+            // Find the audit with the highest audit_id
+            const highestAudit = nearestAudits.reduce((max, audit) => {
+              return audit.audit_id > max.audit_id ? audit : max;
+            });
+
+            // Update the employee's rate_per_day based on the highest audit
+            employee.rate_per_day = highestAudit.rate_per_day;
+
+            // Optionally, you can add custom logic here if needed
+            // For example, if you want to check some condition before updating
+            // if (this.customLogic(...)) { ... }
+          }
+        });
+        data.forEach((employee) => {
+          if (!employee.emp_sss_contrib[0]) {
+            return; // Exit the function if emp_pagibig_contrib does not exist
+          }
+          employee.emp_sss_contrib.forEach((contrib) => {
+            const audits = contrib.emp_sss_contrib_audit;
+
+            // Filter audits to find those with dates <= dateEnd
+            const filteredAudits = audits.filter((audit) => {
+              const auditDate = new Date(audit.change_timestamp);
+              return auditDate <= new Date(dateEnd);
+            });
+
+            if (filteredAudits.length > 0) {
+              // Find the nearest date and highest audit_id
+              const groupedByDate = filteredAudits.reduce((acc, audit) => {
+                const date = audit.change_timestamp.split("T")[0]; // Get the date part
+                if (!acc[date]) {
+                  acc[date] = [];
+                }
+                acc[date].push(audit);
+                return acc;
+              }, {});
+
+              // Find the latest date
+              const nearestDate = Object.keys(groupedByDate).sort().pop();
+
+              // Get the audits for the nearest date
+              const nearestAudits = groupedByDate[nearestDate];
+
+              // Find the audit with the highest audit_id
+              const highestAudit = nearestAudits.reduce((max, audit) => {
+                return audit.audit_id > max.audit_id ? audit : max;
+              });
+
+              // Check if highestAudit half_month_indicator is true
+              if (
+                this.customLogic(
+                  highestAudit.half_month_indicator,
+                  dateEnd.split("-")[2] === "15"
+                )
+              ) {
+                // This condition checks if half_month_indicator is false and the day is 15
+                contrib.emp_sss_contrib_audit = [highestAudit];
+              } else {
+                // This will handle all other cases
+
+                contrib.emp_sss_contrib_audit = [];
+              }
+            } else {
+              // If no audits are found, clear the array
+              contrib.emp_sss_contrib_audit = [];
+            }
+          });
+        });
+        data.forEach((employee) => {
+          if (!employee.emp_philhealth_contrib[0]) {
+            return; // Exit the function if emp_pagibig_contrib does not exist
+          }
+          employee.emp_philhealth_contrib.forEach((contrib) => {
+            const audits = contrib.emp_philhealth_contrib_audit;
+
+            // Filter audits to find those with dates <= dateEnd
+            const filteredAudits = audits.filter((audit) => {
+              const auditDate = new Date(audit.change_timestamp);
+              return auditDate <= new Date(dateEnd);
+            });
+
+            if (filteredAudits.length > 0) {
+              // Find the nearest date and highest audit_id
+              const groupedByDate = filteredAudits.reduce((acc, audit) => {
+                const date = audit.change_timestamp.split("T")[0]; // Get the date part
+                if (!acc[date]) {
+                  acc[date] = [];
+                }
+                acc[date].push(audit);
+                return acc;
+              }, {});
+
+              // Find the latest date
+              const nearestDate = Object.keys(groupedByDate).sort().pop();
+
+              // Get the audits for the nearest date
+              const nearestAudits = groupedByDate[nearestDate];
+
+              // Find the audit with the highest audit_id
+              const highestAudit = nearestAudits.reduce((max, audit) => {
+                return audit.audit_id > max.audit_id ? audit : max;
+              });
+
+              // Check if highestAudit half_month_indicator is true
+              if (
+                this.customLogic(
+                  highestAudit.half_month_indicator,
+                  dateEnd.split("-")[2] === "15"
+                )
+              ) {
+                contrib.emp_philhealth_contrib_audit = [highestAudit];
+              } else {
+                // This will handle all other cases
+
+                contrib.emp_philhealth_contrib_audit = [];
+              }
+            } else {
+              // If no audits are found, clear the array
+              contrib.emp_philhealth_contrib_audit = [];
+            }
+          });
+        });
+        data.forEach((employee) => {
+          if (!employee.emp_pagibig_contrib[0]) {
+            return; // Exit the function if emp_pagibig_contrib does not exist
+          }
+          employee.emp_pagibig_contrib.forEach((contrib) => {
+            const audits = contrib.emp_pagibig_contrib_audit;
+
+            // Filter audits to find those with dates <= dateEnd
+            const filteredAudits = audits.filter((audit) => {
+              const auditDate = new Date(audit.change_timestamp);
+              return auditDate <= new Date(dateEnd);
+            });
+
+            if (filteredAudits.length > 0) {
+              // Find the nearest date and highest audit_id
+              const groupedByDate = filteredAudits.reduce((acc, audit) => {
+                const date = audit.change_timestamp.split("T")[0]; // Get the date part
+                if (!acc[date]) {
+                  acc[date] = [];
+                }
+                acc[date].push(audit);
+                return acc;
+              }, {});
+
+              // Find the latest date
+              const nearestDate = Object.keys(groupedByDate).sort().pop();
+
+              // Get the audits for the nearest date
+              const nearestAudits = groupedByDate[nearestDate];
+
+              // Find the audit with the highest audit_id
+              const highestAudit = nearestAudits.reduce((max, audit) => {
+                return audit.audit_id > max.audit_id ? audit : max;
+              });
+
+              // Check if highestAudit half_month_indicator is true
+              if (
+                this.customLogic(
+                  highestAudit.half_month_indicator,
+                  dateEnd.split("-")[2] === "15"
+                )
+              ) {
+                // This condition checks if half_month_indicator is false and the day is 15
+                contrib.emp_pagibig_contrib_audit = [highestAudit];
+              } else {
+                // This will handle all other cases
+
+                contrib.emp_pagibig_contrib_audit = [];
+              }
+            } else {
+              // If no audits are found, clear the array
+              contrib.emp_pagibig_contrib_audit = [];
+            }
+          });
+        });
+        this.rows = data;
+        // console.log(JSON.stringify(data));
       } catch (error) {
         console.error(error);
       }
@@ -304,7 +496,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
 
     async fetchAttendanceReports() {
       this.rows = [];
-      console.log("fetching attendance reports");
+      // console.log("fetching attendance reports");
       await this.getSalaryHistory();
       this.getNearestDateRange();
       this.fetchAttendanceInRange();

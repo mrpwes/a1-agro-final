@@ -5,7 +5,7 @@ import { usePayrollTableStore } from "stores/admin/payrollSheetPage/payrollTable
 // import { format } from "date-fns";
 
 import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollRowButton.vue";
-import { useContributionStore } from "stores/admin/payrollSheetPage/contribution";
+// import { useContributionStore } from "stores/admin/payrollSheetPage/contribution";
 
 //FIXME: PROFILE IMAGE ATTENDANCE REPORT
 
@@ -13,57 +13,28 @@ import { useContributionStore } from "stores/admin/payrollSheetPage/contribution
 // BETTER CODE FOR DISPLAYING VALUE DERIVED FROM FIELD IN Q-TABLE COLUMN
 
 const payrollTableStore = usePayrollTableStore();
-const contributionStore = useContributionStore();
+// const contributionStore = useContributionStore();
 
 const tableSearch = ref("");
 
 const popupEdit = ref(false);
 
 payrollTableStore.fetchAttendanceReports();
-contributionStore.getContributions();
+// payrollTableStore.getEmployeeNoAttendance();
+// contributionStore.getContributions();
 
-function getEmployeeId(row) {
-  for (let i = 0; i < row.length; i++) {
-    if (row[i] && row[i].employee && row[i].employee.company_employee_id) {
-      return row[i].employee.company_employee_id;
-    }
-  }
-  return "N/A";
-}
+// function getContributionTable(row) {
+//   return
+// }
 
-function getEmployeeFullName(row) {
-  for (let i = 0; i < row.length; i++) {
-    if (
-      row[i] &&
-      row[i].employee &&
-      row[i].employee.first_name &&
-      row[i].employee.last_name
-    ) {
-      return row[i].employee.first_name + " " + row[i].employee.last_name;
-    }
-  }
-  return "N/A";
-}
-
-function getRatePerDay(row) {
-  for (let i = 0; i < row.length; i++) {
-    if (row[i] && row[i].employee && row[i].employee.rate_per_day) {
-      return row[i].employee.rate_per_day;
-    }
-  }
-  return "N/A";
-}
-
-function calculateTotal(row) {
-  for (let i = 0; i < row.length; i++) {
-    if (row[i] && row[i].employee && row[i].employee.rate_per_day) {
-      return row.length * row[i].employee.rate_per_day;
-    }
-  }
-  return "N/A";
-}
+// function getContributionBasedOnSelectedDate(row) {
+//   if (row == 0) {
+//     return 0;
+//   }
+//   console.log(row);
+// }
 </script>
-t
+
 <template>
   <q-table
     class="tw-border tw-rounded-3xl tw-shadow-lg"
@@ -116,13 +87,13 @@ t
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="employeeId" :props="props" auto-width
-          >{{ getEmployeeId(props.row) }}
+          >{{ props.row.company_employee_id }}
         </q-td>
         <q-td key="employeeName" :props="props" auto-width>{{
-          getEmployeeFullName(props.row)
+          props.row.first_name + " " + props.row.last_name
         }}</q-td>
         <q-td key="noDaysWorked" :props="props" auto-width>
-          {{ props.row.length }}
+          {{ props.row.attendance.length }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.noDaysWorked"
@@ -139,7 +110,7 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="ratePerDay" :props="props" auto-width>
-          {{ getRatePerDay(props.row) }}
+          {{ props.row.rate_per_day }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.ratePerDay"
@@ -156,10 +127,12 @@ t
           </q-popup-edit>
         </q-td>
         <q-td key="total" :props="props" auto-width>{{
-          calculateTotal(props.row)
+          props.row.attendance.length * props.row.rate_per_day
         }}</q-td>
         <q-td key="sss" :props="props" auto-width>
-          {{ props.row[0].adjustment_salary.deductions.emp_sss_contrib.amount }}
+          {{
+            props.row.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]?.amount ?? 0
+          }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.sss"
@@ -177,8 +150,8 @@ t
         </q-td>
         <q-td key="philHealth" :props="props" auto-width>
           {{
-            props.row[0].adjustment_salary.deductions.emp_philhealth_contrib
-              .amount
+            props.row.emp_philhealth_contrib[0]?.emp_philhealth_contrib_audit[0]
+              ?.amount ?? 0
           }}
           <q-popup-edit
             :disable="!popupEdit"
@@ -197,7 +170,8 @@ t
         </q-td>
         <q-td key="pagIbig" :props="props" auto-width>
           {{
-            props.row[0].adjustment_salary.deductions.emp_pagibig_contrib.amount
+            props.row.emp_pagibig_contrib[0]?.emp_pagibig_contrib_audit[0]
+              ?.amount ?? 0
           }}
           <q-popup-edit
             :disable="!popupEdit"
