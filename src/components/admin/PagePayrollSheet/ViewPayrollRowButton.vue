@@ -22,6 +22,20 @@ function sendSMS() {
   });
 }
 
+function totalDeductions() {
+  return (
+    (selectedRow.value.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]?.amount ??
+      0) +
+    (selectedRow.value.emp_philhealth_contrib[0]
+      ?.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.value.emp_pagibig_contrib[0]?.emp_pagibig_contrib_audit[0]
+      ?.amount ?? 0) +
+    (selectedRow.value.sssCalamityLoan ?? 0) +
+    (selectedRow.value.sssLoan ?? 0) +
+    (selectedRow.value.pagIbigLoan ?? 0)
+  );
+}
+
 //FIXME: CONTACT NUMBER ADD MORE
 </script>
 
@@ -31,7 +45,13 @@ function sendSMS() {
     <div class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
       <div id="section-to-print">
         <div class="tw-text-3xl tw-font-extrabold tw-pb-3">
-          {{ selectedRow.employeeName }}
+          {{
+            selectedRow.company_employee_id +
+            " - " +
+            selectedRow.first_name +
+            " " +
+            selectedRow.last_name
+          }}
         </div>
         <table class="tw-w-full tw-table-auto tw-border-collapse">
           <thead>
@@ -47,34 +67,57 @@ function sendSMS() {
           <tbody>
             <tr>
               <td class="tw-border">Rate Per Day:</td>
-              <td class="tw-border">{{ selectedRow.ratePerDay }}</td>
+              <td class="tw-border">{{ selectedRow.rate_per_day }}</td>
               <td class="tw-border"></td>
-              <td class="tw-border">VALE</td>
+              <td class="tw-border">VALE:</td>
               <td class="tw-border">{{ selectedRow.VALE }}</td>
             </tr>
             <tr>
               <td class="tw-border">Day Worked:</td>
-              <td class="tw-border">x{{ selectedRow.noDaysWorked }}</td>
               <td class="tw-border">
-                {{ selectedRow.noDaysWorked * selectedRow.ratePerDay }}
+                {{
+                  selectedRow.attendance.length === 0
+                    ? "N/A"
+                    : selectedRow.attendance.length === 1
+                    ? "1 Day"
+                    : selectedRow.attendance.length + " Days"
+                }}
               </td>
-              <td class="tw-border">A/R</td>
+              <td class="tw-border">
+                {{ selectedRow.attendance.length * selectedRow.rate_per_day }}
+              </td>
+              <td class="tw-border">Partial To A/R:</td>
               <td class="tw-border">{{ selectedRow.AR }}</td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Contribution:</td>
-              <td class="tw-border">{{ selectedRow.sss }}</td>
+              <td class="tw-border">
+                {{
+                  selectedRow.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]
+                    ?.amount ?? 0
+                }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">PhilHealth Contribution:</td>
-              <td class="tw-border">{{ selectedRow.philHealth }}</td>
+              <td class="tw-border">
+                {{
+                  selectedRow.emp_philhealth_contrib[0]
+                    ?.emp_philhealth_contrib_audit[0]?.amount ?? 0
+                }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">Pag-IBIG Contribution:</td>
-              <td class="tw-border">{{ selectedRow.pagIbig }}</td>
+              <td class="tw-border">
+                {{
+                  selectedRow.emp_pagibig_contrib[0]
+                    ?.emp_pagibig_contrib_audit[0]?.amount ?? 0
+                }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
@@ -94,20 +137,11 @@ function sendSMS() {
             <tr>
               <td colspan="2" class="tw-border">Total Gross Income:</td>
               <td class="tw-border">
-                {{ selectedRow.ratePerDay * selectedRow.noDaysWorked }}
+                {{ selectedRow.rate_per_day * selectedRow.attendance.length }}
               </td>
               <td class="tw-border">Total Deductions:</td>
               <td class="tw-border">
-                {{
-                  selectedRow.VALE +
-                  selectedRow.AR +
-                  selectedRow.sss +
-                  selectedRow.philHealth +
-                  selectedRow.pagIbig +
-                  selectedRow.sssCalamityLoan +
-                  selectedRow.sssLoan +
-                  selectedRow.pagIbigLoan
-                }}
+                {{ totalDeductions() }}
               </td>
             </tr>
             <tr>
