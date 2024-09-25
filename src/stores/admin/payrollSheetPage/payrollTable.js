@@ -224,7 +224,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           .select(
             `*,
             attendance(*),
-            employee_audit(*),
+            employee_audit!employee_audit_employee_id_fkey(*),
             emp_sss_contrib!emp_sss_contrib_employee_id_fkey(
               emp_sss_contrib_audit(*)
             ),
