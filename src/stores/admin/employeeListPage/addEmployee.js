@@ -1,6 +1,9 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
+import { useAuthenticationStore } from "src/stores/authentication.js";
 import { Notify } from "quasar";
+
+const authenticationStore = useAuthenticationStore();
 
 export const useAddEmployee = defineStore("addEmployee", {
   state: () => ({
@@ -49,6 +52,18 @@ export const useAddEmployee = defineStore("addEmployee", {
     is_archive: null,
     rows: [],
 
+    philhealth_contrib_amount: null,
+    philhealth_contrib_half_month_indicator: null,
+
+    pagibig_contrib_amount: null,
+    pagibig_contrib_half_month_indicator: null,
+
+    sss_contrib_amount: null,
+    sss_contrib_half_month_indicator: null,
+
+    incometax_contrib_amount: null,
+    incometax_contrib_half_month_indicator: null,
+
     registeredAuthID: null,
     loading: false,
   }),
@@ -61,9 +76,91 @@ export const useAddEmployee = defineStore("addEmployee", {
           this.addPhoneNumber(),
           this.addAddress(),
           this.uploadImage(),
+          this.addPhilHealthContrib(),
+          this.addPagibigContrib(),
+          this.addSSSContrib(),
+          this.addIncomeTaxContrib(),
           this.reset();
         this.loading = false;
       });
+    },
+
+    async addPhilHealthContrib() {
+      try {
+        const { error } = await supabase.from("emp_philhealth_contrib").insert({
+          employee_id: this.registeredAuthID,
+          amount: this.philhealth_contrib_amount,
+          emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+          half_month_indicator:
+            this.philhealth_contrib_half_month_indicator === "2nd Half"
+              ? true
+              : false,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async addPagibigContrib() {
+      try {
+        const { error } = await supabase.from("emp_pagibig_contrib").insert({
+          employee_id: this.registeredAuthID,
+          amount: this.pagibig_contrib_amount,
+          emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+          half_month_indicator:
+            this.pagibig_contrib_half_month_indicator === "2nd Half"
+              ? true
+              : false,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async addSSSContrib() {
+      try {
+        const { error } = await supabase.from("emp_sss_contrib").insert({
+          employee_id: this.registeredAuthID,
+          amount: this.sss_contrib_amount,
+          emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+          half_month_indicator:
+            this.sss_contrib_half_month_indicator === "2nd Half" ? true : false,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async addIncomeTaxContrib() {
+      try {
+        const { error } = await supabase.from("emp_incometax_contrib").insert({
+          employee_id: this.registeredAuthID,
+          amount: this.incometax_contrib_amount,
+          emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+          half_month_indicator:
+            this.incometax_contrib_half_month_indicator === "2nd Half"
+              ? true
+              : false,
+        });
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
     },
 
     async supabaseSignUpUserAuth() {
@@ -260,7 +357,16 @@ export const useAddEmployee = defineStore("addEmployee", {
       this.bir_tin = null;
       this.is_archive = null;
       this.rows = [];
+      this.philhealth_contrib_amount = null;
+      this.philhealth_contrib_half_month_indicator = null;
+      this.pagibig_contrib_amount = null;
+      this.pagibig_contrib_half_month_indicator = null;
+      this.sss_contrib_amount = null;
+      this.sss_contrib_half_month_indicator = null;
+      this.incometax_contrib_amount = null;
+      this.incometax_contrib_half_month_indicator = null;
       this.registeredAuthID = null;
+      this.loading = false;
     },
   },
 });

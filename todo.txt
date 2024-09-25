@@ -3,9 +3,15 @@ TODO: IMPORTANT LAST:
         Restructure SSS Contribution Bracketing For Table
         Rate Per Day Audit Logs
 
-RatePerDay audit logs 
+RatePerDay audit logs //Finished Reflected in Payroll
+HalfMonthIndicator then the value is 0 and 1 //Finished Reflected in Payroll using custom logic
 
-HalfMonthIndicator then the value is 0 and 1
+
+//ADD AND VIEW EMPLOYEE BUTTON FINISHED JUST COPY FOR OTHER AND CONNECT TO PAYROLL SHEET
+govt loans audit logs + connect to payroll 
+employee contribution on employee profile and modified by   
+
+!PRIORITY: fix contribution add employee and view employee 
 
 TODO: 
         Images of Users Add Employee and PageHeader
@@ -38,7 +44,7 @@ Admin Panel
         Dashboard - Finishing
         Employee List - Finishing
                 -- Set Employee for admin privilege
-
+                -- SELECT set_claim('8b009e8e-b82c-458f-aae8-0039b29d11d3', 'userrole', '"[website_admin, employee]"');
 
         Payroll Sheet - Initiating
                 sss contribution estimate for net pay

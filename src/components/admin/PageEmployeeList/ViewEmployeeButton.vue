@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { date } from "quasar";
 import { useViewEmployeeStore } from "src/stores/admin/employeeListPage/viewEmployee";
+import viewEmployeeAuditButton from "components/admin/PageEmployeeList/ViweEmployeeButtonHistory/ViewEmployeeAuditButton.vue";
 
 defineProps(["rows"]);
 
@@ -30,7 +31,7 @@ function capitalizeFirstLetterOfEachWord(str) {
   <q-dialog v-model="viewPrompt" persistent>
     <div class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
       <div class="tw-grid tw-grid-cols-4 tw-gap-5 tw-pb-5">
-        <div class="tw-col-span-4 tw-text-3xl tw-font-extrabold tw-pb-3">
+        <div class="tw-col-span-2 tw-text-3xl tw-font-extrabold tw-pb-3">
           {{
             capitalizeFirstLetterOfEachWord(
               selectedRow.first_name +
@@ -40,6 +41,13 @@ function capitalizeFirstLetterOfEachWord(str) {
                 selectedRow.last_name
             )
           }}
+        </div>
+        <div
+          class="tw-col-span-2 tw-text-3xl tw-font-extrabold tw-pb-3 tw-ml-auto"
+        >
+          <viewEmployeeAuditButton
+            :rows="selectedRow"
+          ></viewEmployeeAuditButton>
         </div>
         <div class="tw-col-span-2">
           <!-- TODO: Update Image Responsiveness -->
@@ -365,6 +373,54 @@ function capitalizeFirstLetterOfEachWord(str) {
         </div>
         <div class="tw-col-span-1">
           <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">PhilHealth Contribution:</span>
+            <div class="tw-max-w-52">
+              <q-input
+                filled
+                v-model="selectedRow.emp_philhealth_contrib[0].amount"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">PhilHealth Monthly Schedule:</span>
+            <div class="tw-min-w-32">
+              <q-select
+                filled
+                v-model="
+                  selectedRow.emp_philhealth_contrib[0].half_month_indicator
+                "
+                :options="['1st Half', '2nd Half']"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+                :display-value="
+                  selectedRow.emp_philhealth_contrib[0].half_month_indicator ===
+                  false
+                    ? '1st Half'
+                    : selectedRow.emp_philhealth_contrib[0]
+                        .half_month_indicator === true
+                    ? '2nd Half'
+                    : selectedRow.emp_philhealth_contrib[0]
+                        .half_month_indicator === '1st Half'
+                    ? '1st Half'
+                    : selectedRow.emp_philhealth_contrib[0]
+                        .half_month_indicator === '2nd Half'
+                    ? '2nd Half'
+                    : 'N/A'
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
             <span class="tw-font-semibold">Pag-IBIG Number:</span>
             <div class="tw-max-w-52">
               <q-input
@@ -380,6 +436,54 @@ function capitalizeFirstLetterOfEachWord(str) {
         </div>
         <div class="tw-col-span-1">
           <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">Pag-IBIG Contribution:</span>
+            <div class="tw-max-w-52">
+              <q-input
+                filled
+                v-model="selectedRow.emp_pagibig_contrib[0].amount"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">Pag-IBIG Monthly Schedule:</span>
+            <div class="tw-min-w-32">
+              <q-select
+                filled
+                v-model="
+                  selectedRow.emp_pagibig_contrib[0].half_month_indicator
+                "
+                :options="['1st Half', '2nd Half']"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+                :display-value="
+                  selectedRow.emp_pagibig_contrib[0].half_month_indicator ===
+                  false
+                    ? '1st Half'
+                    : selectedRow.emp_pagibig_contrib[0]
+                        .half_month_indicator === true
+                    ? '2nd Half'
+                    : selectedRow.emp_pagibig_contrib[0]
+                        .half_month_indicator === '1st Half'
+                    ? '1st Half'
+                    : selectedRow.emp_pagibig_contrib[0]
+                        .half_month_indicator === '2nd Half'
+                    ? '2nd Half'
+                    : 'N/A'
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
             <span class="tw-font-semibold">SSS Number:</span>
             <div class="tw-max-w-52">
               <q-input
@@ -389,6 +493,51 @@ function capitalizeFirstLetterOfEachWord(str) {
                 :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
                 :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">SSS Contribution:</span>
+            <div class="tw-max-w-52">
+              <q-input
+                filled
+                v-model="selectedRow.emp_sss_contrib[0].amount"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">SSS Monthly Schedule:</span>
+            <div class="tw-min-w-32">
+              <q-select
+                filled
+                v-model="selectedRow.emp_sss_contrib[0].half_month_indicator"
+                :options="['1st Half', '2nd Half']"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+                :display-value="
+                  selectedRow.emp_sss_contrib[0].half_month_indicator === false
+                    ? '1st Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      true
+                    ? '2nd Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      '1st Half'
+                    ? '1st Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      '2nd Half'
+                    ? '2nd Half'
+                    : 'N/A'
+                "
               />
             </div>
           </div>

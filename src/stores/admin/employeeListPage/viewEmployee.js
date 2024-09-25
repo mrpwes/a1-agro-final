@@ -1,5 +1,8 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
+import { useAuthenticationStore } from "src/stores/authentication.js";
+
+const authenticationStore = useAuthenticationStore();
 
 export const useViewEmployeeStore = defineStore("viewEmployee", {
   state: () => ({
@@ -28,6 +31,10 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
       try {
         this.updateEmployeePhoneNumber(selectedRow);
         this.updateEmployeeAddress(selectedRow);
+        this.updatePhilHealthContrib(selectedRow);
+        this.updatePagibigContrib(selectedRow);
+        this.updateSSSContrib(selectedRow);
+        this.updateIncomeTaxContrib(selectedRow);
         const { data, error } = await supabase
           .from("employee")
           .update({
@@ -45,6 +52,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
             bir_tin: selectedRow.bir_tin,
             hired_date: selectedRow.hired_date,
             rate_per_day: selectedRow.rate_per_day,
+            emp_id_modified_by: authenticationStore.getEmployeeId,
           })
           .eq("id", selectedRow.id)
           .select();
@@ -84,6 +92,106 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
         console.table(data);
       } catch (error) {
         console.error("Error updating:", error.message);
+      }
+    },
+
+    async updatePhilHealthContrib(selectedRow) {
+      try {
+        const { error } = await supabase
+          .from("emp_philhealth_contrib")
+          .update({
+            // employee_id: this.registeredAuthID,
+            amount: selectedRow.emp_philhealth_contrib[0].amount,
+            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            half_month_indicator:
+              selectedRow.emp_philhealth_contrib[0]
+                .philhealth_contrib_half_month_indicator === "2nd Half"
+                ? true
+                : false,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async updatePagibigContrib(selectedRow) {
+      try {
+        const { error } = await supabase
+          .from("emp_pagibig_contrib")
+          .update({
+            // employee_id: this.registeredAuthID,
+            amount: selectedRow.emp_pagibig_contrib[0].amount,
+            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            half_month_indicator:
+              selectedRow.emp_pagibig_contrib[0]
+                .pagibig_contrib_half_month_indicator === "2nd Half"
+                ? true
+                : false,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async updateSSSContrib(selectedRow) {
+      try {
+        const { error } = await supabase
+          .from("emp_sss_contrib")
+          .update({
+            // employee_id: this.registeredAuthID,
+            amount: selectedRow.emp_sss_contrib[0].amount,
+            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            half_month_indicator:
+              selectedRow.emp_sss_contrib[0]
+                .sss_contrib_half_month_indicator === "2nd Half"
+                ? true
+                : false,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async updateIncomeTaxContrib(selectedRow) {
+      try {
+        const { error } = await supabase
+          .from("emp_incometax_contrib")
+          .update({
+            // employee_id: this.registeredAuthID,
+            amount: selectedRow.emp_incometax_contrib[0].amount,
+            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            half_month_indicator:
+              selectedRow.emp_incometax_contrib[0]
+                .incometax_contrib_half_month_indicator === "2nd Half"
+                ? true
+                : false,
+          })
+          .eq("employee_id", selectedRow.id)
+          .select();
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
       }
     },
 
@@ -143,7 +251,39 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           pag_ibig_number,
           sss_number,
           bir_tin,
-          is_archive
+          is_archive,
+
+          emp_philhealth_contrib!emp_philhealth_contrib_employee_id_fkey (
+            id,
+            employee_id,
+            amount,
+            emp_id_modified_by,
+            half_month_indicator
+          ),
+
+          emp_sss_contrib!emp_sss_contrib_employee_id_fkey (
+            id,
+            employee_id,
+            amount,
+            emp_id_modified_by,
+            half_month_indicator
+          ),
+
+          emp_pagibig_contrib!emp_pagibig_contrib_employee_id_fkey (
+            id,
+            employee_id,
+            amount,
+            emp_id_modified_by,
+            half_month_indicator
+          ),
+          
+          emp_incometax_contrib!emp_incometax_contrib_employee_id_fkey (
+            id,
+            employee_id,
+            amount,
+            emp_id_modified_by,
+            half_month_indicator
+          )
         `);
         if (error) {
           throw error;

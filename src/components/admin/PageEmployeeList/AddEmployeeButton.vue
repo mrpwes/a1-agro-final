@@ -421,11 +421,79 @@ storeAddEmployee.getReferencedData();
             </div>
             <div class="tw-col-span-1">
               <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">PhilHealth Contribution:</span>
+                <div class="tw-max-w-52">
+                  <q-input
+                    filled
+                    v-model="storeAddEmployee.philhealth_contrib_amount"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold"
+                  >PhilHealth Monthly Schedule:</span
+                >
+                <div class="tw-min-w-32">
+                  <q-select
+                    filled
+                    v-model="
+                      storeAddEmployee.philhealth_contrib_half_month_indicator
+                    "
+                    :options="['1st Half', '2nd Half']"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
                 <span class="tw-font-semibold">Pag-IBIG Number:</span>
                 <div class="tw-max-w-52">
                   <q-input
                     filled
                     v-model="storeAddEmployee.pag_ibig_number"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">Pag-IBIG Contribution:</span>
+                <div class="tw-max-w-52">
+                  <q-input
+                    filled
+                    v-model="storeAddEmployee.pagibig_contrib_amount"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">Pag-IBIG Monthly Schedule:</span>
+                <div class="tw-min-w-32">
+                  <q-select
+                    filled
+                    v-model="
+                      storeAddEmployee.pagibig_contrib_half_month_indicator
+                    "
+                    :options="['1st Half', '2nd Half']"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
@@ -451,11 +519,77 @@ storeAddEmployee.getReferencedData();
             </div>
             <div class="tw-col-span-1">
               <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">SSS Contribution:</span>
+                <div class="tw-max-w-52">
+                  <q-input
+                    filled
+                    v-model="storeAddEmployee.sss_contrib_amount"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">SSS Monthly Schedule:</span>
+                <div class="tw-min-w-32">
+                  <q-select
+                    filled
+                    v-model="storeAddEmployee.sss_contrib_half_month_indicator"
+                    :options="['1st Half', '2nd Half']"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
                 <span class="tw-font-semibold">BIR Tin:</span>
                 <div class="tw-max-w-52">
                   <q-input
                     filled
                     v-model="storeAddEmployee.bir_tin"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold">Income Tax:</span>
+                <div class="tw-max-w-52">
+                  <q-input
+                    filled
+                    v-model="storeAddEmployee.incometax_contrib_amount"
+                    :dense="dense"
+                    :rules="[(val) => val.length >= 3]"
+                    hide-bottom-space
+                    :disable="storeAddEmployee.loading"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="tw-col-span-1">
+              <div class="tw-flex tw-items-center">
+                <span class="tw-font-semibold"
+                  >Income Tax Monthly Schedule:</span
+                >
+                <div class="tw-min-w-32">
+                  <q-select
+                    filled
+                    v-model="
+                      storeAddEmployee.incometax_contrib_half_month_indicator
+                    "
+                    :options="['1st Half', '2nd Half']"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
                     hide-bottom-space
