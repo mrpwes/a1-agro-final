@@ -9,49 +9,74 @@ const viewPrompt = ref(false);
 async function openmodel(row) {
   employeeAuditLogs.selectedRow = row;
   viewPrompt.value = true;
-  await employeeAuditLogs.getEmployeeAuditLogs();
-  createAuditLogs(employeeAuditLogs.formattedLogs);
+  employeeAuditLogs.callLogs();
 }
 
-function createAuditLogs(data) {
-  console.log(data);
-  const auditLogsContainer = document.getElementById("audit-logs");
-
-  data.forEach((audit) => {
-    const collapsibleButton = document.createElement("button");
-    collapsibleButton.className = "collapsible";
-    collapsibleButton.innerText = `Audit ID: ${audit.audit_id} ${audit.table_name} - Operation: ${audit.operation_type} - Date: ${audit.timestamp} | Modified By: ${audit.modified_by}`;
-
-    const contentDiv = document.createElement("div");
-    contentDiv.className = "content";
-
-    const changesList = document.createElement("ul");
-    for (const [key, value] of Object.entries(audit.changes)) {
-      const listItem = document.createElement("li");
-      listItem.innerText = `${key}: From: ${value.previous}, To: ${value.current}`;
-      changesList.appendChild(listItem);
-    }
-
-    contentDiv.appendChild(changesList);
-    auditLogsContainer.appendChild(collapsibleButton);
-    auditLogsContainer.appendChild(contentDiv);
-
-    collapsibleButton.addEventListener("click", function () {
-      this.classList.toggle("active");
-      const content = this.nextElementSibling;
-      content.style.display =
-        content.style.display === "block" ? "none" : "block";
-    });
-  });
+function convertToTitleCase(input) {
+  return input
+    .replace(/_/g, " ") // Replace underscores with spaces
+    .split(" ") // Split the string into words
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()) // Capitalize the first letter of each word
+    .join(" "); // Join the words back into a single string
 }
 </script>
 
 <template>
   <q-btn icon="mdi-history" label="History" @click="openmodel(rows)" />
   <q-dialog v-model="viewPrompt" persistent>
-    <div class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
-      <div id="audit-logs"></div>
-
+    <div class="!tw-h-min !tw-w-9/12 !tw-max-w-full tw-bg-white tw-p-6">
+      <q-table
+        class="tw-border tw-rounded-3xl tw-shadow-lg"
+        flat
+        bordered
+        dense
+        :title-class="['tw-text-xl', 'tw-font-bold']"
+        :filter="tableSearch"
+        :columns="employeeAuditLogs.employeeAuditColumns['columns']"
+        :rows="employeeAuditLogs.formattedLogs"
+        :rows-per-page-options="[0]"
+        separator="cell"
+        row-key="audit_id"
+      >
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td key="audit_id" :props="props" auto-width
+              >{{ props.row.audit_id }} - {{ props.row.table_name }}
+            </q-td>
+            <q-td key="operation_type" :props="props" auto-width
+              >{{ props.row.operation_type }}
+            </q-td>
+            <q-td key="changes" :props="props" auto-width>
+              <q-expansion-item
+                :dense="true"
+                expand-separator
+                :default-opened="false"
+                :header-class="['tw-py-2', 'tw-px-4']"
+                :content-class="['tw-py-2', 'tw-px-4']"
+                ><div v-for="(change, index) in props.row.changes" :key="index">
+                  <p>
+                    {{ convertToTitleCase(index) }} Previous: "{{
+                      change.previous
+                    }}" to "{{ change.current }}"
+                  </p>
+                </div>
+              </q-expansion-item>
+            </q-td>
+            <q-td key="modified_by" :props="props" auto-width
+              >{{
+                props.row.modified_by
+                  ? `${props.row.modified_by.last_name ?? ""} ${
+                      props.row.modified_by.first_name ?? ""
+                    } - ${props.row.modified_by.company_employee_id ?? ""}`
+                  : "System Admin"
+              }}
+            </q-td>
+            <q-td key="timestamp" :props="props" auto-width
+              >{{ props.row.timestamp }}
+            </q-td>
+          </q-tr>
+        </template>
+      </q-table>
       <q-card-actions align="right" class="text-primary">
         <q-btn
           flat
@@ -65,31 +90,22 @@ function createAuditLogs(data) {
   </q-dialog>
 </template>
 
-<style>
-.collapsible {
-  background-color: #eee;
-  color: #444;
-  cursor: pointer;
-  padding: 10px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-  margin: 5px 0;
+<style scoped>
+.tw-py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
-
-.active,
-.collapsible:hover {
-  background-color: #ccc;
+.tw-px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
-
-.content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-  background-color: white;
-  border: 1px solid #ccc;
-  margin-bottom: 5px;
+.tw-ml-4 {
+  margin-left: 1rem;
+}
+.tw-flex {
+  display: flex;
+}
+.tw-items-center {
+  align-items: center;
 }
 </style>

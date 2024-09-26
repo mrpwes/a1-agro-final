@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { format } from "date-fns";
 import { supabase } from "../../../../lib/supabaseClient.js";
 
 export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
@@ -6,10 +7,73 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
     selectedRow: null,
     logs: [],
     formattedLogs: [],
+    employeeAuditColumns: {
+      columns: [
+        {
+          name: "audit_id",
+          align: "center",
+          label: "Audit ID",
+          sortable: true,
+          field: (row) => {
+            row.audit_id;
+          },
+          format: (val) => `${val}`,
+        },
+        {
+          name: "operation_type",
+          align: "center",
+          label: "Operation Type",
+          sortable: true,
+          field: (row) => {
+            return row.operation_type;
+          },
+          format: (val) => `${val}`,
+        },
+        {
+          name: "changes",
+          align: "center",
+          label: "Changes",
+          sortable: true,
+          field: (row) => {
+            row.changes;
+          },
+          format: (val) => `${val}`,
+        },
+        {
+          name: "modified_by",
+          align: "center",
+          label: "Modified By",
+          sortable: true,
+          field: (row) => {
+            row.modified_by;
+          },
+          format: (val) => `${val}`,
+        },
+        {
+          name: "timestamp",
+          align: "center",
+          label: "Timestamp",
+          sortable: true,
+          field: (row) => {
+            row.timestamp;
+          },
+          format: (val) => `${val}`,
+        },
+      ],
+    },
   }),
 
   getters: {},
   actions: {
+    async callLogs() {
+      await this.getEmployeeAuditLogs();
+      await this.getPhilhealthContrib();
+      await this.getSSSContrib();
+      await this.getPagibigContrib();
+      await this.getIncomeTaxContrib();
+      this.transformLogs(this.logs);
+    },
+
     async getEmployeeAuditLogs() {
       try {
         const { data, error } = await supabase
@@ -26,10 +90,9 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
         data.forEach((record) => {
           record.table_name = "Employee"; // Add the new field
         });
-        this.logs = data;
+
         console.log(data);
-        await this.getPhilhealthContrib();
-        this.getChangedValues(this.logs);
+        this.logs.push(...data);
       } catch (error) {
         console.log("Error", error);
       }
@@ -54,95 +117,146 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
 
         console.log(data);
         this.logs.push(...data);
-        // this.getChangedValues(this.logs);
       } catch (error) {
         console.log("Error", error);
       }
     },
 
-    getChangedValues(auditLogs) {
+    async getSSSContrib() {
       try {
-        const changes = [];
+        const { data, error } = await supabase
+          .from("emp_sss_contrib_audit")
+          .select(
+            "*, modified_by:employee!emp_sss_contrib_audit_emp_id_modified_by_fkey(first_name, last_name, company_employee_id)"
+          )
+          .eq("employee_id", this.selectedRow.id);
 
-        const formatDate = (dateString) => {
-          const date = new Date(dateString);
-          const options = { month: "long", day: "2-digit", year: "numeric" };
-          const formattedDate = date.toLocaleDateString("en-US", options);
-          const hours = date.getHours() % 12 || 12; // Convert to 12-hour format
-          const minutes = String(date.getMinutes()).padStart(2, "0"); // Ensure two digits
-          const ampm = date.getHours() >= 12 ? "PM" : "AM"; // Determine AM/PM
+        if (error) {
+          // console.log(selectedRow);
+          throw error;
+        }
+        data.forEach((record) => {
+          record.table_name = "SSS"; // Add the new field
+        });
 
-          return `${formattedDate} ${hours}:${minutes} ${ampm}`;
-        };
+        console.log(data);
+        this.logs.push(...data);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    },
 
-        for (let i = 0; i < auditLogs.length; i++) {
-          const current = auditLogs[i];
+    async getPagibigContrib() {
+      try {
+        const { data, error } = await supabase
+          .from("emp_pagibig_contrib_audit")
+          .select(
+            "*, modified_by:employee!emp_pagibig_contrib_audit_emp_id_modified_by_fkey(first_name, last_name, company_employee_id)"
+          )
+          .eq("employee_id", this.selectedRow.id);
 
-          if (current.operation_type === "INSERT") {
-            // Log the initial values for the INSERT operation
-            const initialValues = {};
-            for (const key in current) {
-              if (
-                key !== "audit_id" &&
-                key !== "operation_type" &&
-                key !== "change_timestamp"
-              ) {
-                initialValues[key] = {
-                  previous: null,
-                  current: current[key],
+        if (error) {
+          // console.log(selectedRow);
+          throw error;
+        }
+        data.forEach((record) => {
+          record.table_name = "Pag-IBIG"; // Add the new field
+        });
+
+        console.log(data);
+        this.logs.push(...data);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    },
+
+    async getIncomeTaxContrib() {
+      try {
+        const { data, error } = await supabase
+          .from("emp_incometax_contrib_audit")
+          .select(
+            "*, modified_by:employee!emp_incometax_contrib_audit_emp_id_modified_by_fkey(first_name, last_name, company_employee_id)"
+          )
+          .eq("employee_id", this.selectedRow.id);
+
+        if (error) {
+          // console.log(selectedRow);
+          throw error;
+        }
+        data.forEach((record) => {
+          record.table_name = "Income Tax"; // Add the new field
+        });
+
+        console.log(data);
+        this.logs.push(...data);
+      } catch (error) {
+        console.log("Error", error);
+      }
+    },
+
+    transformLogs(auditLogs) {
+      const formattedLogs = [];
+
+      // Create a map to store the last seen values for each employee_id
+      const lastSeen = {};
+
+      auditLogs.forEach((log) => {
+        const {
+          audit_id,
+          operation_type,
+          employee_id,
+          change_timestamp,
+          modified_by,
+          table_name,
+        } = log;
+
+        // Initialize the changes object
+        const changes = {};
+
+        // Check if we have seen this employee_id before
+        if (lastSeen[employee_id]) {
+          const previousLog = lastSeen[employee_id];
+
+          // Compare current log with the previous log to find changes
+          for (const key in log) {
+            if (
+              key !== "audit_id" &&
+              key !== "operation_type" &&
+              key !== "employee_id" &&
+              key !== "change_timestamp" &&
+              key !== "modified_by" &&
+              key !== "table_name"
+            ) {
+              if (log[key] !== previousLog[key]) {
+                changes[key] = {
+                  current: log[key],
+                  previous: previousLog[key],
                 };
               }
-            }
-            changes.push({
-              audit_id: current.audit_id,
-              table_name: current.table_name,
-              operation_type: current.operation_type,
-              timestamp: formatDate(current.change_timestamp),
-              changes: initialValues,
-            });
-          } else if (current.operation_type === "UPDATE") {
-            const previous = auditLogs[i - 1]; // Get the previous entry
-            const changed = {};
-
-            // Ensure previous is defined before accessing its properties
-            if (previous) {
-              for (const key in current) {
-                if (
-                  key !== "audit_id" &&
-                  key !== "operation_type" &&
-                  key !== "change_timestamp"
-                ) {
-                  if (current[key] !== previous[key]) {
-                    changed[key] = {
-                      previous: previous[key],
-                      current: current[key],
-                    };
-                  }
-                }
-              }
-            }
-
-            if (Object.keys(changed).length > 0) {
-              changes.push({
-                audit_id: current.audit_id,
-                table_name: current.table_name,
-                operation_type: current.operation_type,
-                timestamp: formatDate(current.change_timestamp), // Format timestamp
-                changes: changed,
-                modified_by: current.modified_by
-                  ? `${current.modified_by.first_name ?? ""} ${
-                      current.modified_by.last_name ?? ""
-                    } ${current.modified_by.company_employee_id ?? ""}`
-                  : "",
-              });
             }
           }
         }
 
-        this.formattedLogs = changes;
-      } catch (error) {
-        console.log("Error", error);
-      }
+        // Update the last seen log for this employee_id
+        lastSeen[employee_id] = log;
+
+        // Only add to formattedLogs if there are actual changes
+        if (Object.keys(changes).length > 0) {
+          formattedLogs.push({
+            audit_id,
+            changes,
+            modified_by,
+            operation_type,
+            table_name,
+            timestamp: format(
+              new Date(change_timestamp),
+              "MMMM dd yyyy hh:mm a"
+            ),
+          });
+        }
+      });
+
+      this.formattedLogs = formattedLogs;
     },
 
     reset() {
