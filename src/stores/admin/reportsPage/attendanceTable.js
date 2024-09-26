@@ -263,7 +263,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           sortable: true,
           field: (row) => {
             for (let i = 0; i < row.length; i++) {
-              if (row[i] && row[i].employee) {
+              if (row[i] && row[i].employee.first_name) {
                 const employee = row[i].employee;
                 return (
                   employee.last_name +

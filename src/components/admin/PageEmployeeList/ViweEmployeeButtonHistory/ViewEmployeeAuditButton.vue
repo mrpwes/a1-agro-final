@@ -20,7 +20,7 @@ function createAuditLogs(data) {
   data.forEach((audit) => {
     const collapsibleButton = document.createElement("button");
     collapsibleButton.className = "collapsible";
-    collapsibleButton.innerText = `Audit ID: ${audit.audit_id} - Operation: ${audit.operation_type} - Date: ${audit.timestamp} | Modified By: ${audit.modified_by}`;
+    collapsibleButton.innerText = `Audit ID: ${audit.audit_id} ${audit.table_name} - Operation: ${audit.operation_type} - Date: ${audit.timestamp} | Modified By: ${audit.modified_by}`;
 
     const contentDiv = document.createElement("div");
     contentDiv.className = "content";

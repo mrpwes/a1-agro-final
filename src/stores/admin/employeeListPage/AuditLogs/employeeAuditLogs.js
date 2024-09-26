@@ -23,8 +23,11 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
           // console.log(selectedRow);
           throw error;
         }
-
+        data.forEach((record) => {
+          record.table_name = "Employee"; // Add the new field
+        });
         this.logs = data;
+        console.log(data);
         await this.getPhilhealthContrib();
         this.getChangedValues(this.logs);
       } catch (error) {
@@ -45,7 +48,11 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
           // console.log(selectedRow);
           throw error;
         }
+        data.forEach((record) => {
+          record.table_name = "PhilHealth"; // Add the new field
+        });
 
+        console.log(data);
         this.logs.push(...data);
         // this.getChangedValues(this.logs);
       } catch (error) {
@@ -88,6 +95,7 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
             }
             changes.push({
               audit_id: current.audit_id,
+              table_name: current.table_name,
               operation_type: current.operation_type,
               timestamp: formatDate(current.change_timestamp),
               changes: initialValues,
@@ -117,16 +125,15 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
             if (Object.keys(changed).length > 0) {
               changes.push({
                 audit_id: current.audit_id,
+                table_name: current.table_name,
                 operation_type: current.operation_type,
                 timestamp: formatDate(current.change_timestamp), // Format timestamp
                 changes: changed,
-                modified_by:
-                  current.modified_by.first_name +
-                  " " +
-                  current.modified_by.last_name +
-                  " " +
-                  current.modified_by.company_employee_id +
-                  "",
+                modified_by: current.modified_by
+                  ? `${current.modified_by.first_name ?? ""} ${
+                      current.modified_by.last_name ?? ""
+                    } ${current.modified_by.company_employee_id ?? ""}`
+                  : "",
               });
             }
           }

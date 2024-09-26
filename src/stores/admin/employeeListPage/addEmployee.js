@@ -201,6 +201,7 @@ export const useAddEmployee = defineStore("addEmployee", {
             hired_date: this.hired_date,
             rate_per_day: this.rate_per_day,
             is_archive: false,
+            emp_id_modified_by: authenticationStore.getEmployeeId,
           })
           .eq("id", this.registeredAuthID);
 
