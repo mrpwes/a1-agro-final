@@ -27,6 +27,40 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
   },
 
   actions: {
+    getCurrentTimestampUTCPlus8() {
+      // Create a new Date object for the current time
+      const now = new Date();
+
+      // Convert to Asia/Manila timezone
+      const options = {
+        timeZone: "Asia/Manila",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // Use 24-hour format
+      };
+
+      // Format the date
+      const formatter = new Intl.DateTimeFormat("en-GB", options);
+      const parts = formatter.formatToParts(now);
+
+      // Extract the formatted parts
+      const year = parts.find((part) => part.type === "year").value;
+      const month = parts.find((part) => part.type === "month").value;
+      const day = parts.find((part) => part.type === "day").value;
+      const hour = parts.find((part) => part.type === "hour").value;
+      const minute = parts.find((part) => part.type === "minute").value;
+      const second = parts.find((part) => part.type === "second").value;
+
+      // Construct the PostgreSQL timestamp format
+      const timestamp = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
+
+      return timestamp;
+    },
+
     async updateEmployeeData(selectedRow) {
       try {
         this.updateEmployeePhoneNumber(selectedRow);
@@ -53,6 +87,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
             hired_date: selectedRow.hired_date,
             rate_per_day: selectedRow.rate_per_day,
             emp_id_modified_by: authenticationStore.getEmployeeId,
+            change_timestamp: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("id", selectedRow.id)
           .select();
@@ -60,7 +95,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           throw error;
         }
         this.fetchListOfEmployee();
-        console.log("Successfully updated");
+        // console.log("Successfully updated");
         console.table(data);
       } catch (error) {
         console.error("Error updating:", error.message);
@@ -88,7 +123,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           throw error;
         }
         this.fetchListOfEmployee();
-        console.log("Successfully Address");
+        // console.log("Successfully Address");
         console.table(data);
       } catch (error) {
         console.error("Error updating:", error.message);
@@ -102,12 +137,13 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           .update({
             // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_philhealth_contrib[0].amount,
-            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
-              selectedRow.emp_philhealth_contrib[0]
-                .philhealth_contrib_half_month_indicator === "2nd Half"
+              selectedRow.emp_philhealth_contrib[0].half_month_indicator ===
+              "2nd Half"
                 ? true
                 : false,
+            change_timestamp: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -127,12 +163,13 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           .update({
             // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_pagibig_contrib[0].amount,
-            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
-              selectedRow.emp_pagibig_contrib[0]
-                .pagibig_contrib_half_month_indicator === "2nd Half"
+              selectedRow.emp_pagibig_contrib[0].half_month_indicator ===
+              "2nd Half"
                 ? true
                 : false,
+            change_timestamp: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -147,23 +184,25 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
 
     async updateSSSContrib(selectedRow) {
       try {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from("emp_sss_contrib")
           .update({
             // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_sss_contrib[0].amount,
-            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
-              selectedRow.emp_sss_contrib[0]
-                .sss_contrib_half_month_indicator === "2nd Half"
+              selectedRow.emp_sss_contrib[0].half_month_indicator == "2nd Half"
                 ? true
                 : false,
+            change_timestamp: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
         if (error) {
           throw error;
         }
+        console.log("Successfully SSS");
+        console.table(data);
       } catch (error) {
         alert(error);
         console.log(error);
@@ -177,12 +216,13 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           .update({
             // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_incometax_contrib[0].amount,
-            emp_id_modified_by: authenticationStore.getEmployeeId, //!TODO: Should be the current admin
+            emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
-              selectedRow.emp_incometax_contrib[0]
-                .incometax_contrib_half_month_indicator === "2nd Half"
+              selectedRow.emp_incometax_contrib[0].half_month_indicator ===
+              "2nd Half"
                 ? true
                 : false,
+            change_timestamp: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -208,7 +248,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
           throw error;
         }
         this.fetchListOfEmployee();
-        console.log("Successfully Phone Number");
+        // console.log("Successfully Phone Number");
         console.table(data);
       } catch (error) {
         console.error("Error updating:", error.message);
@@ -332,7 +372,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
         if (error) {
           throw error;
         }
-        console.log("Successfully updated country:", data);
+        // console.log("Successfully updated country:", data);
         this.fetchListOfEmployee();
       } catch (error) {
         console.error("Error updating country:", error.message);
