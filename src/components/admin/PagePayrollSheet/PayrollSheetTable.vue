@@ -50,14 +50,14 @@ payrollTableStore.fetchAttendanceReports();
     separator="cell"
     row-key="name"
   >
-    <template v-slot:top-right>
+    <!-- <template v-slot:top-right>
       <q-toggle
         v-model="popupEdit"
         label="Edit"
         color="blue"
         class="tw-mr-16"
       />
-    </template>
+    </template> -->
     <template v-slot:top-left>
       <q-select
         filled
