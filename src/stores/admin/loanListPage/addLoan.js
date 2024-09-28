@@ -116,7 +116,10 @@ export const useAddLoan = defineStore("addLoan", {
           const { data, error } = await supabase.from("vale").insert([
             {
               request_id: this.insertRequestID,
+              employee_id: this.employeeOption.id,
               amount: this.amount,
+              balance: this.amount,
+              emp_id_modified_by: this.employee_id,
               date: new Date().toLocaleDateString("en-US"),
               is_archive: false,
             },
@@ -130,7 +133,10 @@ export const useAddLoan = defineStore("addLoan", {
           const { data, error } = await supabase.from("partial_to_ar").insert([
             {
               request_id: this.insertRequestID,
+              employee_id: this.employeeOption.id,
               amount: this.amount,
+              balance: this.amount,
+              emp_id_modified_by: this.employee_id,
               date: new Date().toLocaleDateString("en-US"),
               is_archive: false,
             },
