@@ -358,6 +358,66 @@ function capitalizeFirstLetterOfEachWord(str) {
         </div>
         <div class="tw-col-span-1">
           <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">SSS Number:</span>
+            <div class="tw-max-w-52">
+              <q-input
+                filled
+                v-model="selectedRow.sss_number"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">SSS Contribution:</span>
+            <div class="tw-max-w-52">
+              <q-input
+                filled
+                v-model="selectedRow.emp_sss_contrib[0].amount"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
+            <span class="tw-font-semibold">SSS Monthly Schedule:</span>
+            <div class="tw-min-w-32">
+              <q-select
+                filled
+                v-model="selectedRow.emp_sss_contrib[0].half_month_indicator"
+                :options="['1st Half', '2nd Half']"
+                :dense="dense"
+                :rules="[(val) => val.length >= 3]"
+                hide-bottom-space
+                :disable="!editingInformation"
+                :display-value="
+                  selectedRow.emp_sss_contrib[0].half_month_indicator === false
+                    ? '1st Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      true
+                    ? '2nd Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      '1st Half'
+                    ? '1st Half'
+                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
+                      '2nd Half'
+                    ? '2nd Half'
+                    : 'N/A'
+                "
+              />
+            </div>
+          </div>
+        </div>
+        <div class="tw-col-span-1">
+          <div class="tw-flex tw-items-center">
             <span class="tw-font-semibold">PhilHealth Number:</span>
             <div class="tw-max-w-52">
               <q-input
@@ -482,66 +542,7 @@ function capitalizeFirstLetterOfEachWord(str) {
             </div>
           </div>
         </div>
-        <div class="tw-col-span-1">
-          <div class="tw-flex tw-items-center">
-            <span class="tw-font-semibold">SSS Number:</span>
-            <div class="tw-max-w-52">
-              <q-input
-                filled
-                v-model="selectedRow.sss_number"
-                :dense="dense"
-                :rules="[(val) => val.length >= 3]"
-                hide-bottom-space
-                :disable="!editingInformation"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="tw-col-span-1">
-          <div class="tw-flex tw-items-center">
-            <span class="tw-font-semibold">SSS Contribution:</span>
-            <div class="tw-max-w-52">
-              <q-input
-                filled
-                v-model="selectedRow.emp_sss_contrib[0].amount"
-                :dense="dense"
-                :rules="[(val) => val.length >= 3]"
-                hide-bottom-space
-                :disable="!editingInformation"
-              />
-            </div>
-          </div>
-        </div>
-        <div class="tw-col-span-1">
-          <div class="tw-flex tw-items-center">
-            <span class="tw-font-semibold">SSS Monthly Schedule:</span>
-            <div class="tw-min-w-32">
-              <q-select
-                filled
-                v-model="selectedRow.emp_sss_contrib[0].half_month_indicator"
-                :options="['1st Half', '2nd Half']"
-                :dense="dense"
-                :rules="[(val) => val.length >= 3]"
-                hide-bottom-space
-                :disable="!editingInformation"
-                :display-value="
-                  selectedRow.emp_sss_contrib[0].half_month_indicator === false
-                    ? '1st Half'
-                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
-                      true
-                    ? '2nd Half'
-                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
-                      '1st Half'
-                    ? '1st Half'
-                    : selectedRow.emp_sss_contrib[0].half_month_indicator ===
-                      '2nd Half'
-                    ? '2nd Half'
-                    : 'N/A'
-                "
-              />
-            </div>
-          </div>
-        </div>
+
         <div class="tw-col-span-1">
           <div class="tw-flex tw-items-center">
             <span class="tw-font-semibold">BIR Tin:</span>

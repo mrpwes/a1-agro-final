@@ -87,7 +87,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
             hired_date: selectedRow.hired_date,
             rate_per_day: selectedRow.rate_per_day,
             emp_id_modified_by: authenticationStore.getEmployeeId,
-            change_timestamp: this.getCurrentTimestampUTCPlus8(),
+            change_date: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("id", selectedRow.id)
           .select();
@@ -143,7 +143,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
               "2nd Half"
                 ? true
                 : false,
-            change_timestamp: this.getCurrentTimestampUTCPlus8(),
+            change_date: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -169,7 +169,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
               "2nd Half"
                 ? true
                 : false,
-            change_timestamp: this.getCurrentTimestampUTCPlus8(),
+            change_date: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -194,7 +194,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
               selectedRow.emp_sss_contrib[0].half_month_indicator == "2nd Half"
                 ? true
                 : false,
-            change_timestamp: this.getCurrentTimestampUTCPlus8(),
+            change_date: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
@@ -222,7 +222,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
               "2nd Half"
                 ? true
                 : false,
-            change_timestamp: this.getCurrentTimestampUTCPlus8(),
+            change_date: this.getCurrentTimestampUTCPlus8(),
           })
           .eq("employee_id", selectedRow.id)
           .select();
