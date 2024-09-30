@@ -228,13 +228,90 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           )
           .eq("is_archive", false)
           .gte("attendance.date", dateStart) // Greater than or equal to dateStart
-          .lte("attendance.date", dateEnd) // Less than or equal to dateEnd
-          .gte("emp_sss_contrib_audit.change_date", dateStart) // Greater than or equal to dateStart
-          .lte("emp_sss_contrib_audit.change_date", dateEnd) // Less than or equal to dateEnd
-          .gte("emp_philhealth_contrib_audit.change_date", dateStart) // Greater than or equal to dateStart
-          .lte("emp_philhealth_contrib_audit.change_date", dateEnd) // Less than or equal to dateEnd
-          .gte("emp_pagibig_contrib_audit.change_date", dateStart) // Greater than or equal to dateStart
+          .lte("attendance.date", dateEnd) // Less than or equal to dateEnd// Greater than or equal to dateStart
+          .lte("emp_sss_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
+          .lte("emp_philhealth_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
           .lte("emp_pagibig_contrib_audit.change_date", dateEnd); // Less than or equal to dateEnd
+
+        // Use forEach to iterate over the data
+        data.forEach((employee) => {
+          const empSssContribAudit = employee.emp_sss_contrib_audit;
+
+          // Check if the emp_sss_contrib_audit array is not empty
+          if (empSssContribAudit.length > 0) {
+            // Get the last element
+            const lastElement =
+              empSssContribAudit[empSssContribAudit.length - 1];
+            if (
+              lastElement.half_month_indicator == true &&
+              [28, 29, 30, 31].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("is true.");
+            } else if (
+              lastElement.half_month_indicator == false &&
+              [15].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("is true 2.");
+            } else {
+              console.log("EMPLOYEE SSS is false.");
+              employee.emp_sss_contrib_audit = [];
+            }
+          } else {
+            console.log("emp_sss_contrib_audit array is empty.");
+          }
+        });
+
+        data.forEach((employee) => {
+          const empPhilhealthContribAudit =
+            employee.emp_philhealth_contrib_audit;
+
+          if (empPhilhealthContribAudit.length > 0) {
+            // Get the last element
+            const lastElement =
+              empPhilhealthContribAudit[empPhilhealthContribAudit.length - 1];
+            if (
+              lastElement.half_month_indicator == true &&
+              [28, 29, 30, 31].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("Philhealth is true.");
+            } else if (
+              lastElement.half_month_indicator == false &&
+              [15].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("Philhealth is true 2.");
+            } else {
+              employee.emp_philhealth_contrib_audit = [];
+            }
+          } else {
+            console.log("emp_philhealth_contrib_audit array is empty.");
+          }
+        });
+
+        data.forEach((employee) => {
+          const empPagibigContribAudit = employee.emp_pagibig_contrib_audit;
+
+          if (empPagibigContribAudit.length > 0) {
+            // Get the last element
+            const lastElement =
+              empPagibigContribAudit[empPagibigContribAudit.length - 1];
+            if (
+              lastElement.half_month_indicator == true &&
+              [28, 29, 30, 31].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("Pagibig is true.");
+            } else if (
+              lastElement.half_month_indicator == false &&
+              [15].includes(parseInt(dateEnd.split("-")[2]))
+            ) {
+              console.log("Pagibig is true 2.");
+            } else {
+              employee.emp_pagibig_contrib_audit = [];
+            }
+          } else {
+            console.log("emp_pagibig_contrib_audit array is empty.");
+          }
+        });
+
         if (error) {
           console.error(error);
         }
