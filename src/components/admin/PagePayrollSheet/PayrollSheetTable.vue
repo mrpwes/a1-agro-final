@@ -249,7 +249,7 @@ payrollTableStore.fetchAttendanceReports();
             />
           </q-popup-edit>
         </q-td>
-        <q-td key="VALE" :props="props" auto-width>
+        <!-- <q-td key="VALE" :props="props" auto-width>
           {{ props.row.VALE }}
           <q-popup-edit
             :disable="!popupEdit"
@@ -282,7 +282,7 @@ payrollTableStore.fetchAttendanceReports();
               @keyup.enter="scope.set"
             />
           </q-popup-edit>
-        </q-td>
+        </q-td> -->
         <q-td key="NetPay" :props="props" auto-width>
           {{
             (

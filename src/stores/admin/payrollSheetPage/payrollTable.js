@@ -76,19 +76,19 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           sortable: true,
           headerStyle: "width: 0px",
         },
-        {
-          name: "VALE",
-          align: "center",
-          label: "VALE",
-          sortable: true,
-          classes: "!tw-bg-neutral-300",
-        },
-        {
-          name: "AR",
-          align: "center",
-          label: "AR",
-          sortable: true,
-        },
+        // {
+        //   name: "VALE",
+        //   align: "center",
+        //   label: "VALE",
+        //   sortable: true,
+        //   classes: "!tw-bg-neutral-300",
+        // },
+        // {
+        //   name: "AR",
+        //   align: "center",
+        //   label: "AR",
+        //   sortable: true,
+        // },
         {
           name: "NetPay",
           align: "center",
