@@ -18,6 +18,8 @@ export const useAddLoan = defineStore("addLoan", {
 
     insertRequestConfirmationID: null,
     insertRequestID: null,
+
+    disableButtonExisting: false,
   }),
 
   getters: {},
@@ -152,6 +154,52 @@ export const useAddLoan = defineStore("addLoan", {
         console.log(error);
       }
     },
+
+    async checkValidity() {
+      try {
+        if (this.type == "Partial to A/R") {
+          const { data, error } = await supabase
+            .from("partial_to_ar")
+            .select()
+            .eq("employee_id", this.employeeOption.id);
+
+          if (data.length > 0) {
+            alert("Employee already has an existing Partial To A/R");
+            this.disableButtonExisting = true;
+          } else {
+            this.disableButtonExisting = false;
+          }
+          if (error) {
+            throw error;
+          } else {
+            console.log("data ar", data);
+          }
+        } else if (this.type == "Vale") {
+          const { data, error } = await supabase
+            .from("vale")
+            .select()
+            .eq("employee_id", this.employeeOption.id);
+
+          if (data.length > 0) {
+            alert("Employee already has an existing vale");
+            this.disableButtonExisting = true;
+          } else {
+            this.disableButtonExisting = false;
+          }
+          if (error) {
+            throw error;
+          } else {
+            console.log("data vale", data);
+          }
+        } else {
+          this.disableButtonExisting = false;
+        }
+      } catch (error) {
+        alert(error + "line 142");
+        console.log(error);
+      }
+    },
+
     resetForm() {
       this.employeeOption = null;
       this.type = null;

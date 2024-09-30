@@ -10,6 +10,8 @@ HalfMonthIndicator then the value is 0 and 1 //Finished Reflected in Payroll usi
 //ADD AND VIEW EMPLOYEE BUTTON FINISHED JUST COPY FOR OTHER AND CONNECT TO PAYROLL SHEET
 enchance employee list history logs add naming of table logs
 
+
+!IMPORTANT: under payrollTable store, fetch vale and partial to ar audit
 govt loans audit logs + connect to payroll 
 employee contribution on employee profile and modified by   
 

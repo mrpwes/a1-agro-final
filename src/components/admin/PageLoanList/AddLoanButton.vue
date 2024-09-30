@@ -55,6 +55,7 @@ function filterFn(val, update) {
               :option-value="id"
               class="!tw-pb-0; tw-capitalize"
               popup-content-class="tw-capitalize"
+              @update:model-value="storeAddLoan.checkValidity"
             >
               <!-- @filter="filterRecipient" -->
               <template v-slot:no-option>
@@ -79,6 +80,7 @@ function filterFn(val, update) {
               :options="storeAddLoan.typeOptions"
               class="!tw-pb-0; tw-capitalize;"
               popup-content-class="tw-capitalize"
+              @update:model-value="storeAddLoan.checkValidity"
             >
               <!-- @filter="filterRecipient" -->
               <template v-slot:no-option>
@@ -121,6 +123,7 @@ function filterFn(val, update) {
               label="Add Loan"
               type="submit"
               v-close-popup
+              :disable="storeAddLoan.disableButtonExisting"
             />
           </q-card-actions>
         </div>
