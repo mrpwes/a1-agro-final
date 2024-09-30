@@ -1,3 +1,10 @@
+Questions For Tom: 
+        Audit Logs Employee 
+        Settings Contribution
+
+        Govt Loans
+
+
 TODO: IMPORTANT LAST: 
         New Database Table Per Employee Payment for Contribution
         Restructure SSS Contribution Bracketing For Table

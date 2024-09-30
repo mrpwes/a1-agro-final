@@ -1,5 +1,7 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
+import SSSContributionButton from "components/admin/PageSettings/SSSContributionButton.vue";
+
 // import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
 
 const storePageHeader = usePageHeader();
@@ -10,6 +12,7 @@ storePageHeader.currentPage = "Settings";
     class="tw-w-12/12 tw-max-w-full tw-mx-auto tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse tw-p-4 tw-mt-0"
   >
     <div>
+      <SSSContributionButton></SSSContributionButton>
       <!-- <AttendanceTable></AttendanceTable>
       &nbsp;
       <LoanTable></LoanTable>
