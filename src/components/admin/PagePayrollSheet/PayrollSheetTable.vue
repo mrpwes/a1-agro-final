@@ -131,7 +131,11 @@ payrollTableStore.fetchAttendanceReports();
         }}</q-td>
         <q-td key="sss" :props="props" auto-width>
           {{
-            props.row.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]?.amount ?? 0
+            props.row.emp_sss_contrib_audit.length > 0
+              ? props.row.emp_sss_contrib_audit[
+                  props.row.emp_sss_contrib_audit.length - 1
+                ].amount ?? 0
+              : 0
           }}
           <q-popup-edit
             :disable="!popupEdit"
@@ -150,8 +154,11 @@ payrollTableStore.fetchAttendanceReports();
         </q-td>
         <q-td key="philHealth" :props="props" auto-width>
           {{
-            props.row.emp_philhealth_contrib[0]?.emp_philhealth_contrib_audit[0]
-              ?.amount ?? 0
+            props.row.emp_philhealth_contrib_audit.length > 0
+              ? props.row.emp_philhealth_contrib_audit[
+                  props.row.emp_philhealth_contrib_audit.length - 1
+                ].amount ?? 0
+              : 0
           }}
           <q-popup-edit
             :disable="!popupEdit"
@@ -170,8 +177,11 @@ payrollTableStore.fetchAttendanceReports();
         </q-td>
         <q-td key="pagIbig" :props="props" auto-width>
           {{
-            props.row.emp_pagibig_contrib[0]?.emp_pagibig_contrib_audit[0]
-              ?.amount ?? 0
+            props.row.emp_pagibig_contrib_audit.length > 0
+              ? props.row.emp_pagibig_contrib_audit[
+                  props.row.emp_pagibig_contrib_audit.length - 1
+                ].amount ?? 0
+              : 0
           }}
           <q-popup-edit
             :disable="!popupEdit"
