@@ -50,12 +50,12 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
           format: (val) => `${val}`,
         },
         {
-          name: "timestamp",
+          name: "change_date",
           align: "center",
-          label: "Timestamp",
+          label: "Change Date",
           sortable: true,
           field: (row) => {
-            row.timestamp;
+            row.change_date;
           },
           format: (val) => `${val}`,
         },
@@ -205,7 +205,7 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
           audit_id,
           operation_type,
           employee_id,
-          change_timestamp,
+          change_date,
           modified_by,
           table_name,
         } = log;
@@ -223,7 +223,7 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
               key !== "audit_id" &&
               key !== "operation_type" &&
               key !== "employee_id" &&
-              key !== "change_timestamp" &&
+              key !== "change_date" &&
               key !== "modified_by" &&
               key !== "table_name"
             ) {
@@ -248,10 +248,7 @@ export const useEmployeeAuditLogs = defineStore("employeeAuditLogs", {
             modified_by,
             operation_type,
             table_name,
-            timestamp: format(
-              new Date(change_timestamp),
-              "MMMM dd yyyy hh:mm a"
-            ),
+            change_date: format(new Date(change_date), "MMMM dd yyyy"),
           });
         }
       });

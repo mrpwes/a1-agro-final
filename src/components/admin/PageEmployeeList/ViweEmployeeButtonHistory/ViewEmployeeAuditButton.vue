@@ -71,8 +71,8 @@ function convertToTitleCase(input) {
                   : "System Admin"
               }}
             </q-td>
-            <q-td key="timestamp" :props="props" auto-width
-              >{{ props.row.timestamp }}
+            <q-td key="change_date" :props="props" auto-width
+              >{{ props.row.change_date }}
             </q-td>
           </q-tr>
         </template>
