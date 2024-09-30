@@ -24,12 +24,9 @@ function sendSMS() {
 
 function totalDeductions() {
   return (
-    (selectedRow.value.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]?.amount ??
-      0) +
-    (selectedRow.value.emp_philhealth_contrib[0]
-      ?.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
-    (selectedRow.value.emp_pagibig_contrib[0]?.emp_pagibig_contrib_audit[0]
-      ?.amount ?? 0) +
+    (selectedRow.value.emp_sss_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.value.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.value.emp_pagibig_contrib_audit[0]?.amount ?? 0) +
     (selectedRow.value.sssCalamityLoan ?? 0) +
     (selectedRow.value.sssLoan ?? 0) +
     (selectedRow.value.pagIbigLoan ?? 0)
@@ -93,30 +90,21 @@ function totalDeductions() {
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Contribution:</td>
               <td class="tw-border">
-                {{
-                  selectedRow.emp_sss_contrib[0]?.emp_sss_contrib_audit[0]
-                    ?.amount ?? 0
-                }}
+                {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">PhilHealth Contribution:</td>
               <td class="tw-border">
-                {{
-                  selectedRow.emp_philhealth_contrib[0]
-                    ?.emp_philhealth_contrib_audit[0]?.amount ?? 0
-                }}
+                {{ selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0 }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">Pag-IBIG Contribution:</td>
               <td class="tw-border">
-                {{
-                  selectedRow.emp_pagibig_contrib[0]
-                    ?.emp_pagibig_contrib_audit[0]?.amount ?? 0
-                }}
+                {{ selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0 }}
               </td>
             </tr>
             <tr>

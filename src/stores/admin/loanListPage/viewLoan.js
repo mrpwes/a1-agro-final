@@ -4,6 +4,8 @@ import { supabase } from "../../../lib/supabaseClient.js";
 export const useViewLoan = defineStore("viewLoan", {
   state: () => ({
     rows: [],
+    paymentButton: false,
+    payment: null,
   }),
 
   getters: {
@@ -52,6 +54,7 @@ export const useViewLoan = defineStore("viewLoan", {
         id,
         request_id,
         amount,
+        balance,
         date,
         is_archive
     ),
@@ -59,6 +62,7 @@ export const useViewLoan = defineStore("viewLoan", {
         id,
         request_id,
         amount,
+        balance,
         date,
         is_archive
     )
@@ -138,6 +142,21 @@ export const useViewLoan = defineStore("viewLoan", {
         if (error) throw error;
       } catch (error) {
         console.log(error);
+      }
+    },
+
+    async insertPayment(companyLoan) {
+      if (companyLoan.vale.length > 0) {
+        console.log(companyLoan.vale[0].id);
+        console.log(companyLoan.vale[0].balance);
+        const { data } = await supabase
+          .from("vale")
+          .update({ balance: companyLoan.vale[0].balance - this.payment })
+          .select()
+          .eq("id", companyLoan.vale[0].id);
+        console.log(data);
+      } else if (companyLoan.partial_to_ar.length > 0) {
+        console.log("The partial_to_ar array is empty.");
       }
     },
   },

@@ -71,8 +71,14 @@ const columns = [
     field: (row) =>
       "₱" +
       (row.request_type.request_type_name === "VALE"
-        ? numberWithCommas(row.vale[0].amount)
-        : numberWithCommas(row.partial_to_ar[0].amount)),
+        ? numberWithCommas(row.vale[0].balance) +
+          " /" +
+          " ₱" +
+          numberWithCommas(row.vale[0].amount)
+        : numberWithCommas(row.partial_to_ar[0].balance) +
+          " /" +
+          " ₱" +
+          numberWithCommas(row.partial_to_ar[0].amount)),
     sortable: true,
   },
   {

@@ -231,7 +231,8 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           .lte("attendance.date", dateEnd) // Less than or equal to dateEnd// Greater than or equal to dateStart
           .lte("emp_sss_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
           .lte("emp_philhealth_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
-          .lte("emp_pagibig_contrib_audit.change_date", dateEnd); // Less than or equal to dateEnd
+          .lte("emp_pagibig_contrib_audit.change_date", dateEnd) // Less than or equal to dateEnd
+          .lte("vale_audit.change_date", dateEnd); // Less than or equal to dateEnd
 
         // Use forEach to iterate over the data
         data.forEach((employee) => {

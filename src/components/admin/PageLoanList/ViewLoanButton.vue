@@ -44,8 +44,9 @@ function numberWithCommas(x) {
         <table class="tw-w-full tw-table-auto tw-border-collapse">
           <tr>
             <td>
-              Recipient: {{ selectedRow.employee.last_name }},
-              {{ selectedRow.employee.first_name }} - CONTACTNUMBERTODO!
+              Recipient: {{ selectedRow.id }} -
+              {{ selectedRow.employee.last_name }},
+              {{ selectedRow.employee.first_name }}
             </td>
             <td>
               Issuer:
@@ -64,10 +65,46 @@ function numberWithCommas(x) {
               }}
             </td>
           </tr>
+          <tr>
+            <td></td>
+            <td>
+              Balance:
+              {{
+                selectedRow.request_type.request_type_name === "VALE"
+                  ? numberWithCommas(selectedRow.vale[0].balance)
+                  : numberWithCommas(selectedRow.partial_to_ar[0].balance)
+              }}
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+
+            <td v-if="storeViewLoan.paymentButton === true">
+              <q-input v-model="storeViewLoan.payment"> </q-input>
+            </td>
+          </tr>
         </table>
       </div>
       <q-card-actions align="right" class="text-primary noPrint">
-        <q-btn flat label="Cancel" v-close-popup />
+        <q-btn
+          flat
+          label="Cancel"
+          v-close-popup
+          @click="storeViewLoan.paymentButton = false"
+        />
+        <q-btn
+          v-if="storeViewLoan.paymentButton === false"
+          label="Payment"
+          @click="storeViewLoan.paymentButton = true"
+        />
+        <q-btn
+          v-else
+          label="Save"
+          @click="
+            storeViewLoan.paymentButton = false;
+            storeViewLoan.insertPayment(selectedRow);
+          "
+        />
         <q-btn
           flat
           :class="
