@@ -80,9 +80,61 @@ export const useAddEmployee = defineStore("addEmployee", {
           this.addPagibigContrib(),
           this.addSSSContrib(),
           this.addIncomeTaxContrib(),
-          this.reset();
+          this.pushProfileImgToStorage();
+        this.setPermission();
+        this.reset();
         this.loading = false;
       });
+    },
+
+    async setPermission() {
+      try {
+        const { data, error } = await supabase.rpc("set_claim", {
+          uid: this.registeredAuthID,
+          claim: "userrole",
+          value:
+            this.employment_type_id_selected.employment_type_name === "admin"
+              ? '"[website_admin, employee]"'
+              : '"[employee]"',
+        });
+        if (error) {
+          throw error;
+        }
+        console.log(data);
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    async pushProfileImgToStorage() {
+      try {
+        const { data, error } = await supabase.storage
+          .from("employee_avatar")
+          .upload(this.registeredAuthID + ".png", this.profileImageUpload, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+        console.log(data);
+        if (error) {
+          throw error;
+        }
+        console.log(this.registeredAuthID);
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
+    },
+
+    onFileInput(event) {
+      this.profileImage = URL.createObjectURL(event.target.files[0]);
+      this.profileImageUpload = event.target.files[0];
+
+      const name = event.target.files[0].name;
+      const lastDot = name.lastIndexOf(".");
+      const ext = name.substring(lastDot + 1);
+
+      this.profileImageFileExtension = ext;
     },
 
     async addPhilHealthContrib() {

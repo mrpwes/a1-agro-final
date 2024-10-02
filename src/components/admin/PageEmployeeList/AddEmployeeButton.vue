@@ -21,17 +21,6 @@ function resetForm() {
   storeAddEmployee.reset();
 }
 
-function onFileInput(event) {
-  storeAddEmployee.profileImage = URL.createObjectURL(event.target.files[0]);
-  storeAddEmployee.profileImageUpload = event.target.files[0];
-
-  const name = event.target.files[0].name;
-  const lastDot = name.lastIndexOf(".");
-  const ext = name.substring(lastDot + 1);
-
-  storeAddEmployee.profileImageFileExtension = ext;
-}
-
 storeAddEmployee.getReferencedData();
 </script>
 
@@ -55,7 +44,7 @@ storeAddEmployee.getReferencedData();
                 <input
                   type="file"
                   accept=".jpg, .png, .jpeg"
-                  @change="onFileInput($event)"
+                  @change="storeAddEmployee.onFileInput($event)"
                 />
               </div>
               <div class="tw-grid tw-justify-items-center">
@@ -72,6 +61,7 @@ storeAddEmployee.getReferencedData();
                   <q-select
                     filled
                     v-model="storeAddEmployee.employment_type_id_selected"
+                    @update:model-value="storeAddEmployee.setPermission"
                     :options="storeAddEmployee.employment_type"
                     option-label="employment_type_name"
                     :option-value="employment_type_name"
