@@ -4,6 +4,12 @@ Questions For Tom:
 
         Govt Loans
 
+Employee Biometrics 
+    print("Known face names:", combined_list)
+    print("Known face uuid:", known_face_uuid)   Not Same As Combined List
+    Line 58 - 72
+
+
 
 TODO: IMPORTANT LAST: 
         New Database Table Per Employee Payment for Contribution
