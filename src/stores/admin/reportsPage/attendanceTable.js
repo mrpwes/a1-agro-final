@@ -222,9 +222,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
               label: `${formattedDate}`,
               sortable: true,
               field: (row) => {
-                const currentDate = new Date(
-                  new Date().setDate(new Date().getDate() + 1)
-                );
+                const currentDate = new Date();
                 const rowDate = new Date(row[currentCounter].date);
 
                 if (rowDate >= currentDate) {
@@ -238,9 +236,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   : "A";
               },
               classes: (row) => {
-                const currentDate = new Date(
-                  new Date().setDate(new Date().getDate() + 1)
-                );
+                const currentDate = new Date();
                 const rowDate = new Date(row[currentCounter].date);
 
                 if (rowDate >= currentDate) {
@@ -306,9 +302,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           sortable: true,
           field: (row) => {
             let absentCounter = 0;
-            const currentDate = new Date(
-              new Date().setDate(new Date().getDate() + 1)
-            );
+            const currentDate = new Date();
 
             for (let i = 0; i < row.length; i++) {
               const rowDate = new Date(row[i].date);
