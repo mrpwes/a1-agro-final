@@ -361,8 +361,8 @@ export const usePayrollTableStore = defineStore("payrollTable", {
       this.rows = [];
       // console.log("fetching attendance reports");
       await this.getSalaryHistory();
-      this.getNearestDateRange();
-      this.fetchAttendanceInRange();
+      await this.getNearestDateRange();
+      await this.fetchAttendanceInRange();
     },
   },
 });

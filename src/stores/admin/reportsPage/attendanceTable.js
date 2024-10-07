@@ -229,10 +229,10 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   return "N/A";
                 }
 
-                return row[currentCounter] &&
-                  row[currentCounter].time_in &&
-                  row[currentCounter].time_out
-                  ? "P"
+                return row[currentCounter] && row[currentCounter].time_in
+                  ? row[currentCounter].time_out
+                    ? "P"
+                    : "Processing"
                   : "A";
               },
               classes: (row) => {
