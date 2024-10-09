@@ -7,6 +7,10 @@ const authenticationStore = useAuthenticationStore();
 export const useViewEmployeeStore = defineStore("viewEmployee", {
   state: () => ({
     rows: [],
+    profileImage: null,
+    profileImageFileExtension: null,
+    profileImageUpload: null,
+    publicUrl: null,
   }),
 
   getters: {
@@ -69,6 +73,7 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
         this.updatePagibigContrib(selectedRow);
         this.updateSSSContrib(selectedRow);
         this.updateIncomeTaxContrib(selectedRow);
+        this.uploadImage(selectedRow);
         const { data, error } = await supabase
           .from("employee")
           .update({
@@ -161,7 +166,6 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
         const { error } = await supabase
           .from("emp_pagibig_contrib")
           .update({
-            // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_pagibig_contrib[0].amount,
             emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
@@ -187,7 +191,6 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
         const { data, error } = await supabase
           .from("emp_sss_contrib")
           .update({
-            // employee_id: this.registeredAuthID,
             amount: selectedRow.emp_sss_contrib[0].amount,
             emp_id_modified_by: authenticationStore.getEmployeeId,
             half_month_indicator:
@@ -337,28 +340,77 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
       }
     },
 
-    async getProfilePicture() {
+    async getProfilePicture(id) {
       try {
         const { data, error } = await supabase.storage
-          .from("users")
-          .createSignedUrl(
-            "c9e5eeaf-913c-48d2-9f0b-109ae109ac83/profile_image.png", //TODO: .createSignedUrl(id + "/profile-image.png", 60);
-            60
-          );
+          .from("employee_avatar")
+          .getPublicUrl(id + ".jpg");
         if (error) {
           throw error;
         } else {
-          console.log(data.signedUrl);
-          this.profilePicture = data.signedUrl;
+          // console.log(data);
+          console.log(data.publicUrl);
+          this.publicUrl = data.publicUrl;
         }
       } catch (error) {
         // console.log("Error getting profile picture:", error.message);
-        this.getDefaultProfile();
+        // this.getDefaultProfile();
       }
     },
-    getDefaultProfile() {
-      this.profilePicture =
-        "https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/public-bucket/default-profile-image/avatar.png";
+    // getDefaultProfile() {
+    //   this.profilePicture =
+    //     "https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/public-bucket/default-profile-image/avatar.png";
+    // },
+
+    onFileInput(event) {
+      this.profileImage = URL.createObjectURL(event.target.files[0]);
+      this.profileImageUpload = event.target.files[0];
+
+      const name = event.target.files[0].name;
+      const lastDot = name.lastIndexOf(".");
+      const ext = name.substring(lastDot + 1);
+
+      this.profileImageFileExtension = ext;
+    },
+
+    async uploadImage(selectedRow) {
+      try {
+        const { data, error } = await supabase.storage
+          .from("employee_avatar")
+          .upload(selectedRow.id + ".jpg", this.profileImageUpload, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+        if (error) {
+          throw error;
+        } else {
+          console.log(data);
+          console.log("Image uploaded successfully");
+        }
+      } catch (error) {
+        this.updateImage(selectedRow);
+        console.log(JSON.stringify(error, null, 2));
+      }
+    },
+
+    async updateImage(selectedRow) {
+      try {
+        const { data, error } = await supabase.storage // { data,error }
+          .from("employee_avatar")
+          .update(selectedRow.id + ".jpg", this.profileImageUpload, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+        if (error) {
+          throw error;
+        } else {
+          console.log(data);
+          console.log("Image updated successfully");
+        }
+      } catch (error) {
+        alert(error);
+        console.log(error);
+      }
     },
 
     async inactiveEmployee(employeeId, is_archive) {
@@ -377,6 +429,14 @@ export const useViewEmployeeStore = defineStore("viewEmployee", {
       } catch (error) {
         console.error("Error updating country:", error.message);
       }
+    },
+
+    reset() {
+      // this.rows = [];
+      this.profileImage = null;
+      this.profileImageFileExtension = null;
+      this.profileImageUpload = null;
+      this.publicUrl = null;
     },
   },
 });

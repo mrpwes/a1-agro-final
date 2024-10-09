@@ -43,7 +43,7 @@ storeAddEmployee.getReferencedData();
               <div>
                 <input
                   type="file"
-                  accept=".jpg, .png, .jpeg"
+                  accept=".jpg"
                   @change="storeAddEmployee.onFileInput($event)"
                 />
               </div>

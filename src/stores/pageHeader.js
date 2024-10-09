@@ -46,7 +46,7 @@ export const usePageHeader = defineStore("pageHeader", {
       this.profilePicture =
         "https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/employee_avatar/" +
         storeAuthenticationStore.getEmployeeId +
-        ".png";
+        ".jpg";
     },
     async getCurrentUserName() {
       try {

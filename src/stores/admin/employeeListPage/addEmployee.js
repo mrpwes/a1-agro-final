@@ -111,7 +111,7 @@ export const useAddEmployee = defineStore("addEmployee", {
       try {
         const { data, error } = await supabase.storage
           .from("employee_avatar")
-          .upload(this.registeredAuthID + ".png", this.profileImageUpload, {
+          .upload(this.registeredAuthID + ".jpg", this.profileImageUpload, {
             cacheControl: "3600",
             upsert: false,
           });

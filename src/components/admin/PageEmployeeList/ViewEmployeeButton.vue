@@ -16,6 +16,7 @@ function openmodel(row) {
   selectedRow.value = row;
   viewPrompt.value = true;
   console.table(selectedRow.value);
+  storeViewEmployee.getProfilePicture(selectedRow.value.id);
 }
 
 function capitalizeFirstLetterOfEachWord(str) {
@@ -49,12 +50,31 @@ function capitalizeFirstLetterOfEachWord(str) {
             :rows="selectedRow"
           ></viewEmployeeAuditButton>
         </div>
-        <div class="tw-col-span-2">
+        <div v-if="!editingInformation" class="tw-col-span-2">
           <!-- TODO: Update Image Responsiveness -->
           <img
-            :src="storeViewEmployee.getProfilePicture(selectedRow.id)"
+            :src="storeViewEmployee.publicUrl"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
           />
+        </div>
+        <div
+          v-else
+          class="tw-col-span-2 tw-row-span-1 tw-self-center tw-mx-auto"
+        >
+          <div>
+            <input
+              type="file"
+              accept=".jpg"
+              @change="storeViewEmployee.onFileInput($event)"
+            />
+          </div>
+          <div class="tw-grid tw-justify-items-center">
+            <q-img
+              :src="storeViewEmployee.profileImage"
+              spinner-color="white"
+              style="height: 140px; max-width: 150px"
+            />
+          </div>
         </div>
         <div class="tw-col-span-2 tw-content-center tw-p-3">
           <div class="tw-flex tw-gap-3">
@@ -627,7 +647,10 @@ function capitalizeFirstLetterOfEachWord(str) {
         <q-btn
           flat
           label="Cancel"
-          @click="editingInformation = ref(false)"
+          @click="
+            editingInformation = ref(false);
+            storeViewEmployee.reset();
+          "
           v-close-popup
         />
         <q-btn
