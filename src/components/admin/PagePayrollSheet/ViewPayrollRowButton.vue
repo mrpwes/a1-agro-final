@@ -3,6 +3,10 @@ import { ref } from "vue";
 // import { date } from "quasar";
 import { Notify } from "quasar";
 
+import { usePayrollTableFormatterStore } from "stores/admin/payrollSheetPage/payrollTableFormatter";
+
+const payrollTableFormatterStore = usePayrollTableFormatterStore();
+
 defineProps(["rows"]);
 const counterSMS = ref(0);
 
@@ -66,35 +70,36 @@ function totalDeductions() {
               <td class="tw-border">Rate Per Day:</td>
               <td class="tw-border">{{ selectedRow.rate_per_day }}</td>
               <td class="tw-border"></td>
-              <td class="tw-border">VALE:</td>
-              <td class="tw-border">{{ selectedRow.VALE }}</td>
-            </tr>
-            <tr>
-              <td class="tw-border">Day Worked:</td>
-              <td class="tw-border">
-                {{
-                  selectedRow.attendance.length === 0
-                    ? "N/A"
-                    : selectedRow.attendance.length === 1
-                    ? "1 Day"
-                    : selectedRow.attendance.length + " Days"
-                }}
-              </td>
-              <td class="tw-border">
-                {{ selectedRow.attendance.length * selectedRow.rate_per_day }}
-              </td>
-              <td class="tw-border">Partial To A/R:</td>
-              <td class="tw-border">{{ selectedRow.AR }}</td>
-            </tr>
-            <tr>
-              <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Contribution:</td>
               <td class="tw-border">
                 {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
               </td>
             </tr>
             <tr>
-              <td colspan="3" class="tw-border"></td>
+              <td class="tw-border">Day Worked:</td>
+              <td class="tw-border">
+                {{
+                  payrollTableFormatterStore.noDaysWorkedFormatter(
+                    selectedRow.attendance
+                  ) === 0
+                    ? "N/A"
+                    : payrollTableFormatterStore.noDaysWorkedFormatter(
+                        selectedRow.attendance
+                      ) === 1
+                    ? "1 Day"
+                    : payrollTableFormatterStore.noDaysWorkedFormatter(
+                        selectedRow.attendance
+                      ) + " Days"
+                }}
+              </td>
+              <td class="tw-border">
+                {{
+                  payrollTableFormatterStore.grossIncomeFormatter(
+                    selectedRow.rate_per_day,
+                    selectedRow.attendance
+                  )
+                }}
+              </td>
               <td class="tw-border">PhilHealth Contribution:</td>
               <td class="tw-border">
                 {{ selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0 }}
@@ -106,6 +111,11 @@ function totalDeductions() {
               <td class="tw-border">
                 {{ selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0 }}
               </td>
+            </tr>
+            <tr>
+              <td colspan="3" class="tw-border">&nbsp;</td>
+              <td class="tw-border"></td>
+              <td class="tw-border"></td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
@@ -123,9 +133,19 @@ function totalDeductions() {
               <td class="tw-border">{{ selectedRow.pagIbigLoan }}</td>
             </tr>
             <tr>
+              <td colspan="3" class="tw-border">&nbsp;</td>
+              <td class="tw-border"></td>
+              <td class="tw-border"></td>
+            </tr>
+            <tr>
               <td colspan="2" class="tw-border">Total Gross Income:</td>
               <td class="tw-border">
-                {{ selectedRow.rate_per_day * selectedRow.attendance.length }}
+                {{
+                  payrollTableFormatterStore.grossIncomeFormatter(
+                    selectedRow.rate_per_day,
+                    selectedRow.attendance
+                  )
+                }}
               </td>
               <td class="tw-border">Total Deductions:</td>
               <td class="tw-border">
@@ -139,9 +159,7 @@ function totalDeductions() {
                 {{
                   (
                     selectedRow.ratePerDay * selectedRow.noDaysWorked -
-                    (selectedRow.VALE +
-                      selectedRow.AR +
-                      selectedRow.sss +
+                    (selectedRow.sss +
                       selectedRow.philHealth +
                       selectedRow.pagIbig +
                       selectedRow.sssCalamityLoan +

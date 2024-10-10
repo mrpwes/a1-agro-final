@@ -2,6 +2,8 @@
 import { ref } from "vue";
 // import { exportFile, useQuasar, date } from "quasar";
 import { usePayrollTableStore } from "stores/admin/payrollSheetPage/payrollTable";
+import { usePayrollTableFormatterStore } from "stores/admin/payrollSheetPage/payrollTableFormatter";
+
 // import { format } from "date-fns";
 
 import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollRowButton.vue";
@@ -13,6 +15,7 @@ import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollR
 // BETTER CODE FOR DISPLAYING VALUE DERIVED FROM FIELD IN Q-TABLE COLUMN
 
 const payrollTableStore = usePayrollTableStore();
+const payrollTableFormatterStore = usePayrollTableFormatterStore();
 // const contributionStore = useContributionStore();
 
 const tableSearch = ref("");
@@ -93,7 +96,11 @@ payrollTableStore.fetchAttendanceReports();
           props.row.first_name + " " + props.row.last_name
         }}</q-td>
         <q-td key="noDaysWorked" :props="props" auto-width>
-          {{ props.row.attendance.length }}
+          {{
+            payrollTableFormatterStore.noDaysWorkedFormatter(
+              props.row.attendance
+            )
+          }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.noDaysWorked"
@@ -110,7 +117,7 @@ payrollTableStore.fetchAttendanceReports();
           </q-popup-edit>
         </q-td>
         <q-td key="ratePerDay" :props="props" auto-width>
-          {{ props.row.rate_per_day }}
+          {{ props.row.rate_per_day.toFixed(2) }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.ratePerDay"
@@ -126,9 +133,14 @@ payrollTableStore.fetchAttendanceReports();
             />
           </q-popup-edit>
         </q-td>
-        <q-td key="total" :props="props" auto-width>{{
-          props.row.attendance.length * props.row.rate_per_day
-        }}</q-td>
+        <q-td key="total" :props="props" auto-width>
+          {{
+            payrollTableFormatterStore.grossIncomeFormatter(
+              props.row.rate_per_day,
+              props.row.attendance
+            )
+          }}
+        </q-td>
         <q-td key="sss" :props="props" auto-width>
           {{
             props.row.emp_sss_contrib_audit.length > 0

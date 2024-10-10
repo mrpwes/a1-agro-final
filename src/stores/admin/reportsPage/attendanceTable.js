@@ -85,13 +85,15 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
         if (error) {
           console.error(error);
         }
-        this.selectedDateOptions = data;
+        this.selectedDateOptions = data.sort(
+          (a, b) => new Date(a.date_start) - new Date(b.date_start)
+        );
       } catch (error) {
         console.error(error);
       }
     },
 
-    fillMissingDates(dateObj, dateStart, dateEnd) {
+    fillMissingDates(data, dateStart, dateEnd) {
       // Helper function to format a date object as 'YYYY-MM-DD'
       const formatDate = (date) => {
         const year = date.getFullYear();
@@ -104,47 +106,37 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       const startDate = new Date(dateStart);
       const endDate = new Date(dateEnd);
 
-      // Iterate over each employee in the date object
-      for (const employeeId in dateObj) {
-        // Create a set of existing dates for quick lookup
+      // Create a set of existing attendance dates for quick lookup
+      data.forEach((employee) => {
         const existingDates = new Set(
-          dateObj[employeeId].map((entry) => entry.date)
+          employee.attendance.map((att) => att.date)
         );
 
-        // Initialize the current date to start date
-        let currentDate = new Date(startDate);
+        // Iterate through each date from startDate to endDate
+        for (
+          let d = new Date(startDate);
+          d <= endDate;
+          d.setDate(d.getDate() + 1)
+        ) {
+          const formattedDate = formatDate(d);
 
-        // Iterate over each date in the range
-        while (currentDate <= endDate) {
-          const formattedDate = formatDate(currentDate);
-
-          // If the date is missing, add an entry with null values
+          // If the date is not in existing attendance, add a new entry
           if (!existingDates.has(formattedDate)) {
-            dateObj[employeeId].push({
-              id: null,
-              adjustment_salary_id: null,
-              employee_id: employeeId,
+            employee.attendance.push({
+              id: null, // You can generate a unique ID if needed
+              date: formattedDate,
+              remarks: null,
               time_in: null,
               time_out: null,
-              remarks: null,
-              date: formattedDate,
-              employee: {
-                last_name: null,
-                first_name: null,
-                middle_name: null,
-              },
+              employee_id: employee.id,
+              adjustment_salary_id: null, // Set this as needed
             });
           }
-
-          // Move to the next date
-          currentDate.setDate(currentDate.getDate() + 1);
         }
+        employee.attendance.sort((a, b) => new Date(a.date) - new Date(b.date));
+      });
 
-        // Optionally sort the entries by date
-        dateObj[employeeId].sort((a, b) => new Date(a.date) - new Date(b.date));
-      }
-
-      return dateObj;
+      return data;
     },
 
     async fetchAttendanceInRange(
@@ -153,39 +145,23 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
     ) {
       try {
         const { data, error } = await supabase
-          .from("attendance") // Replace with your table name
+          .from("employee") // Replace with your table name
           .select(
-            `
-            *,
-            employee:employee_id (
-              first_name,
-              last_name,
-              middle_name
-            )
-          `
+            `*,
+             is_archive,
+              attendance(*)`
           ) // Select all columns or specify the columns you need
-          .gte("date", dateStart) // Greater than or equal to dateStart
-          .lte("date", dateEnd); // Less than or equal to dateEnd
+          .gte("attendance.date", dateStart) // Greater than or equal to dateStart
+          .lte("attendance.date", dateEnd) // Less than or equal to dateEnd
+          .eq("is_archive", false); // Equal to false
 
         if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          const groupedByEmployeeId = data.reduce((acc, item) => {
-            if (!acc[item.employee_id]) {
-              acc[item.employee_id] = [];
-            }
-            acc[item.employee_id].push(item);
-            return acc;
-          }, {});
-
-          // Convert the grouped object into an array of arrays (optional)
-          // console.log(JSON.stringify(groupedByEmployeeId));
-          this.rows = Object.values(
-            this.fillMissingDates(groupedByEmployeeId, dateStart, dateEnd)
-          );
-
-          // console.log("This is row", this.rows);
+          console.error(error);
         }
+        this.rows = Object.values(
+          this.fillMissingDates(data, dateStart, dateEnd)
+        );
+        console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -223,29 +199,39 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
               sortable: true,
               field: (row) => {
                 const currentDate = new Date();
-                const rowDate = new Date(row[currentCounter].date);
+                const rowDate = new Date(row.attendance[currentCounter].date);
 
                 if (rowDate >= currentDate) {
                   return "N/A";
                 }
+                var totalHours;
+                if (
+                  row.attendance[currentCounter].time_out === null &&
+                  row.attendance[currentCounter].time_in !== null
+                ) {
+                  totalHours = "No Time Out";
+                } else {
+                  totalHours = (
+                    (new Date(row.attendance[currentCounter].time_out) -
+                      new Date(row.attendance[currentCounter].time_in)) /
+                    (1000 * 60 * 60)
+                  ).toFixed(2);
+                  console.log(totalHours);
+                }
 
-                return row[currentCounter] && row[currentCounter].time_in
-                  ? row[currentCounter].time_out
-                    ? "P"
-                    : "Processing"
-                  : "A";
+                return totalHours;
               },
               classes: (row) => {
                 const currentDate = new Date();
-                const rowDate = new Date(row[currentCounter].date);
+                const rowDate = new Date(row.attendance[currentCounter].date);
 
                 if (rowDate >= currentDate) {
                   return "!tw-bg-gray-300 !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
                 }
 
-                return row[currentCounter] &&
-                  row[currentCounter].time_in &&
-                  row[currentCounter].time_out
+                return row.attendance[currentCounter] &&
+                  row.attendance[currentCounter].time_in &&
+                  row.attendance[currentCounter].time_out
                   ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
                   : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
               },
@@ -262,37 +248,47 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           label: "Name",
           sortable: true,
           field: (row) => {
-            for (let i = 0; i < row.length; i++) {
-              if (row[i] && row[i].employee.first_name) {
-                const employee = row[i].employee;
-                return (
-                  employee.last_name +
-                  ", " +
-                  employee.first_name +
-                  " " +
-                  (employee.middle_name ? employee.middle_name[0] + "." : "")
-                );
-              }
-            }
-            return "N/A"; // Return 'N/A' if no valid employee is found
+            // for (let i = 0; i < row.length; i++) {
+            //   if (row[i] && row[i].employee.first_name) {
+            //     const employee = row[i].employee;
+            //     return (
+            //       employee.last_name +
+            //       ", " +
+            //       employee.first_name +
+            //       " " +
+            //       (employee.middle_name ? employee.middle_name[0] + "." : "")
+            //     );
+            //   }
+            // }
+            return (
+              row.company_employee_id +
+              " - " +
+              row.last_name +
+              ", " +
+              row.first_name
+            ); // Return 'N/A' if no valid employee is found
           },
           format: (val) => `${val}`,
         },
         ...dayColumns,
         {
-          name: "totalPresent",
+          name: "totalHours",
           align: "center",
-          label: "P",
+          label: "Total Hours",
           sortable: true,
           field: (row) => {
-            let presentCounter = 0;
+            let totalHours = 0;
 
-            for (let i = 0; i < row.length; i++) {
-              row[i].time_in && row[i].time_out && row[i].date
-                ? presentCounter++
-                : null;
-            }
-            return presentCounter;
+            row.attendance.forEach((entry) => {
+              if (entry.time_in && entry.time_out) {
+                const timeIn = new Date(entry.time_in);
+                const timeOut = new Date(entry.time_out);
+                const hours = (timeOut - timeIn) / (1000 * 60 * 60); // Convert milliseconds to hours
+                totalHours += hours;
+              }
+            });
+
+            return totalHours.toFixed(2);
           },
         },
         {
