@@ -198,7 +198,9 @@ export const usePayrollTableStore = defineStore("payrollTable", {
         if (error) {
           console.error(error);
         }
-        this.selectedDateOptions = data;
+        this.selectedDateOptions = data.sort(
+          (a, b) => new Date(a.date_start) - new Date(b.date_start)
+        );
       } catch (error) {
         console.error(error);
       }
