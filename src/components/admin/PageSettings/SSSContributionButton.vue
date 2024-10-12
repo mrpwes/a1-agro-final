@@ -102,17 +102,23 @@ td {
           <!-- // NewHistory Button -->
         </div>
       </div>
-      <div v-if="sssContributionTableStore.isEditing">
-        <textarea
-          id="inputData"
-          rows="10"
-          cols="100"
-          placeholder="Paste your data here..."
-        ></textarea>
-        <br />
-        <q-btn class="tw-bg-green-400" @click="generateTable"
-          >Change Table</q-btn
-        >
+      <div
+        v-if="sssContributionTableStore.isEditing"
+        class="tw-flex tw-justify-center tw-mb-6"
+      >
+        <div>
+          <textarea
+            id="inputData"
+            rows="10"
+            cols="100"
+            placeholder="Paste your data here..."
+            class="tw-border-4 tw-border-gray-400 tw-p-2"
+          ></textarea>
+          <br />
+          <q-btn class="tw-bg-green-400" @click="generateTable"
+            >Change Table</q-btn
+          >
+        </div>
       </div>
       <!-- Conditional rendering of the table container -->
       <div v-if="showTable">
