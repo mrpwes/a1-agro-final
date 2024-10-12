@@ -116,5 +116,34 @@ attendanceListStore.fetchAttendanceReports();
         </template>
       </q-select></template
     >
+
+    <template v-slot:bottom
+      ><div class="tw-flex tw-items-center tw-ml-5">
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#4ade80]"></div>
+          <div class="tw-ml-2">Present</div>
+        </div>
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#f87171]"></div>
+          <div class="tw-ml-2">Absent</div>
+        </div>
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#fb923c]"></div>
+          <div class="tw-ml-2">Late</div>
+        </div>
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#ec4899]"></div>
+          <div class="tw-ml-2">Undertime</div>
+        </div>
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#3b82f6]"></div>
+          <div class="tw-ml-2">Leave</div>
+        </div>
+        <div class="tw-flex tw-items-center tw-mr-3">
+          <div class="tw-rounded-lg tw-w-3 tw-h-6 !tw-bg-[#fef08a]"></div>
+          <div class="tw-ml-2">Holiday</div>
+        </div>
+      </div>
+    </template>
   </q-table>
 </template>

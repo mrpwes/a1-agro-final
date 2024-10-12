@@ -176,6 +176,8 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       const dayColumns = [];
       const dateFormatOptions = { day: "numeric", month: "numeric" };
 
+      const dayAbbreviations = ["S", "M", "T", "W", "TH", "F", "S"];
+
       //COUNTER FOR DATES
       let counter = 0;
       for (
@@ -188,14 +190,17 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           "en-US",
           dateFormatOptions
         ).format(currentDate);
+        const dayIndex = currentDate.getDay();
 
+        // Append the day abbreviation to the formatted date
+        const dateWithAbbreviation = `${formattedDate} ${dayAbbreviations[dayIndex]}`;
         dayColumns.push(
           (() => {
             const currentCounter = counter;
             return {
-              name: `${day}`,
+              name: `${day + "TESTING"}`,
               align: "center",
-              label: `${formattedDate}`,
+              label: `${dateWithAbbreviation}`,
               sortable: true,
               field: (row) => {
                 const currentDate = new Date();
@@ -204,36 +209,131 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                 if (rowDate >= currentDate) {
                   return "N/A";
                 }
+
                 var totalHours;
+
                 if (
                   row.attendance[currentCounter].time_out === null &&
                   row.attendance[currentCounter].time_in !== null
                 ) {
                   totalHours = "No Time Out";
                 } else {
-                  totalHours = (
-                    (new Date(row.attendance[currentCounter].time_out) -
-                      new Date(row.attendance[currentCounter].time_in)) /
-                    (1000 * 60 * 60)
-                  ).toFixed(2);
-                  console.log(totalHours);
-                }
+                  const timeIn = new Date(
+                    row.attendance[currentCounter].time_in
+                  );
+                  const timeOut = new Date(
+                    row.attendance[currentCounter].time_out
+                  );
 
+                  // Set timeIn to 8 AM if it's before 8 AM
+                  const eightAM = new Date(timeIn);
+                  eightAM.setHours(8, 0, 0, 0);
+                  if (timeIn < eightAM) {
+                    timeIn.setHours(8, 0, 0, 0);
+                  }
+
+                  // Set timeOut to 5 PM if it's after 5 PM
+                  const fivePM = new Date(timeOut);
+                  fivePM.setHours(17, 0, 0, 0);
+                  if (timeOut > fivePM) {
+                    timeOut.setHours(17, 0, 0, 0);
+                  }
+
+                  totalHours = ((timeOut - timeIn) / (1000 * 60 * 60)).toFixed(
+                    2
+                  );
+
+                  const onePM = new Date(timeOut);
+                  onePM.setHours(13, 0, 0, 0);
+                  if (timeOut > onePM) {
+                    totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
+                    console.log("Subtract 1 hour");
+                  }
+                }
                 return totalHours;
               },
               classes: (row) => {
+                // const currentDate = new Date();
+                // const rowDate = new Date(row.attendance[currentCounter].date);
+
+                // if (rowDate >= currentDate) {
+                //   return "!tw-bg-gray-300 !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+                // }
+
+                // return row.attendance[currentCounter] &&
+                //   row.attendance[currentCounter].time_in &&
+                //   row.attendance[currentCounter].time_out
+                //   ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
+                //   : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
                 const currentDate = new Date();
                 const rowDate = new Date(row.attendance[currentCounter].date);
 
                 if (rowDate >= currentDate) {
-                  return "!tw-bg-gray-300 !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+                  return "N/A";
                 }
+                var totalHours;
+                var classContent;
 
-                return row.attendance[currentCounter] &&
-                  row.attendance[currentCounter].time_in &&
-                  row.attendance[currentCounter].time_out
-                  ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
-                  : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+                if (
+                  row.attendance[currentCounter].time_out === null &&
+                  row.attendance[currentCounter].time_in !== null
+                ) {
+                  totalHours = "No Time Out";
+                  classContent = "!tw-bg-[#e11d48]"; // Assuming absent if no time out    /RED
+                } else {
+                  const timeIn = new Date(
+                    row.attendance[currentCounter].time_in
+                  );
+                  const timeOut = new Date(
+                    row.attendance[currentCounter].time_out
+                  );
+
+                  // Set timeIn to 8 AM if it's before 8 AM
+                  const eightAM = new Date(timeIn);
+                  eightAM.setHours(8, 0, 0, 0);
+                  if (timeIn < eightAM) {
+                    timeIn.setHours(8, 0, 0, 0);
+                  }
+
+                  // Set timeOut to 5 PM if it's after 5 PM
+                  const fivePM = new Date(timeOut);
+                  fivePM.setHours(17, 0, 0, 0);
+                  if (timeOut > fivePM) {
+                    timeOut.setHours(17, 0, 0, 0);
+                  }
+
+                  totalHours = ((timeOut - timeIn) / (1000 * 60 * 60)).toFixed(
+                    2
+                  );
+
+                  const onePM = new Date(timeOut);
+                  onePM.setHours(13, 0, 0, 0);
+                  if (timeOut > onePM) {
+                    totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
+                    console.log("Subtract 1 hour");
+                  }
+
+                  // Check for late arrival
+                  const eightTenAM = new Date(timeIn);
+                  eightTenAM.setHours(8, 10, 0, 0);
+
+                  // Determine classContent based on totalHours
+                  if (parseFloat(totalHours) >= 8) {
+                    classContent = "!tw-bg-[#4ade80]"; // IF PRESENT 8HRS / Green
+                    console.log("Present");
+                  } else if (parseFloat(totalHours) == 0) {
+                    classContent = "!tw-bg-[#f87171]"; // IF ABSENT / Red
+                    console.log("Absent");
+                  } else if (timeIn > eightTenAM) {
+                    classContent = "!tw-bg-[#fb923c]";
+                    if (parseFloat(totalHours) < 5) {
+                      classContent = "!tw-bg-[#ec4899]"; // IF LATE AND UNDERTIME / Pink
+                    }
+                  }
+                }
+                return (
+                  classContent + " !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
+                );
               },
             };
           })()
