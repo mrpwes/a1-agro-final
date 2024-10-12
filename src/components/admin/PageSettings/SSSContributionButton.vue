@@ -1,5 +1,9 @@
 <script setup>
 import { ref } from "vue";
+import { useSssContributionTableStore } from "stores/admin/settingsPage/sssContributionTable";
+import HistoryAuditButton from "components/admin/PageSettings/SSS/HistoryAuditButton.vue";
+
+const sssContributionTableStore = useSssContributionTableStore();
 
 const viewPrompt = ref(false);
 const selectedRow = ref(null);
@@ -34,12 +38,23 @@ function generateTable() {
       values: values.slice(0, 15), // Ensure we only take the first 15 values
     };
     newTableRows.push(rowData);
+    console.log(rowData);
   });
 
   // Update the reactive tableRows property
   tableRows.value = newTableRows;
+  console.log(JSON.stringify(tableRows.value));
+  showTable.value = true; // Show the table after generating it
+  sssContributionTableStore.insertSssContributionTable(tableRows.value);
+}
+
+async function showExistingTable() {
+  await sssContributionTableStore.fetchSssContributionTable();
+  tableRows.value = sssContributionTableStore.sssContributionHistory[0].data;
   showTable.value = true; // Show the table after generating it
 }
+
+showExistingTable();
 </script>
 
 <style scoped>
@@ -59,37 +74,71 @@ td {
   <q-btn label="SSS Contribution Table" @click="openmodel()" />
   <q-dialog v-model="viewPrompt" persistent>
     <div class="!tw-h-min !tw-w-full !tw-max-w-none tw-bg-white tw-p-6">
-      <h2>Convert Textarea Input to Table</h2>
-      <textarea
-        id="inputData"
-        rows="10"
-        cols="100"
-        placeholder="Paste your data here..."
-      ></textarea>
-      <br />
-      <button @click="generateTable">Generate Table</button>
+      <div
+        class="tw-text-3xl tw-font-extrabold tw-pb-3 tw-flex tw-justify-between"
+      >
+        <div>SSS Contribution Table</div>
+        <div>
+          Last Updated:
+          {{ sssContributionTableStore.sssContributionHistory[0].change_date }}
+        </div>
+      </div>
+      <div class="tw-flex tw-justify-end tw-mb-5">
+        <div>
+          <q-btn
+            v-if="sssContributionTableStore.isEditing == false"
+            flat
+            class="tw-bg-green-400"
+            :icon="sssContributionTableStore.isEditing ? 'save' : 'edit'"
+            label="Edit"
+            @click="
+              sssContributionTableStore.isEditing =
+                !sssContributionTableStore.isEditing
+            "
+          />
 
+          <HistoryAuditButton></HistoryAuditButton>
+          <!-- <q-btn icon="mdi-history" label="History" /> -->
+          <!-- // NewHistory Button -->
+        </div>
+      </div>
+      <div v-if="sssContributionTableStore.isEditing">
+        <textarea
+          id="inputData"
+          rows="10"
+          cols="100"
+          placeholder="Paste your data here..."
+        ></textarea>
+        <br />
+        <q-btn class="tw-bg-green-400" @click="generateTable"
+          >Change Table</q-btn
+        >
+      </div>
       <!-- Conditional rendering of the table container -->
       <div v-if="showTable">
         <q-markup-table dense>
           <thead>
             <tr>
-              <th class="text-left">Range Value</th>
-              <th class="text-right">Value 1</th>
-              <th class="text-right">Value 2</th>
-              <th class="text-right">Value 3</th>
-              <th class="text-right">Value 4</th>
-              <th class="text-right">Value 5</th>
-              <th class="text-right">Value 6</th>
-              <th class="text-right">Value 7</th>
-              <th class="text-right">Value 8</th>
-              <th class="text-right">Value 9</th>
-              <th class="text-right">Value 10</th>
-              <th class="text-right">Value 11</th>
-              <th class="text-right">Value 12</th>
-              <th class="text-right">Value 13</th>
-              <th class="text-right">Value 14</th>
-              <th class="text-right">Value 15</th>
+              <th rowspan="2" class="text-left">RANGE OF COMPENSATION</th>
+              <th colspan="3">TESTING</th>
+              <th colspan="12">AMOUNT OF CONTRIBUTIONS</th>
+            </tr>
+            <tr>
+              <th class="text-right">Regular SS EC</th>
+              <th class="text-right">WISP</th>
+              <th class="text-right">TOTAL</th>
+              <th class="text-right">ER</th>
+              <th class="text-right">EE</th>
+              <th class="text-right">TOTAL</th>
+              <th class="text-right">ER</th>
+              <th class="text-right">EE</th>
+              <th class="text-right">TOTAL</th>
+              <th class="text-right">ER</th>
+              <th class="text-right">EE</th>
+              <th class="text-right">TOTAL</th>
+              <th class="text-right">ER</th>
+              <th class="text-right">EE</th>
+              <th class="text-right">TOTAL</th>
             </tr>
           </thead>
           <tbody>
