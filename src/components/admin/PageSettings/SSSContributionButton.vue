@@ -38,20 +38,28 @@ function generateTable() {
       values: values.slice(0, 15), // Ensure we only take the first 15 values
     };
     newTableRows.push(rowData);
-    console.log(rowData);
+    // console.log(rowData);
   });
 
   // Update the reactive tableRows property
   tableRows.value = newTableRows;
-  console.log(JSON.stringify(tableRows.value));
+  // console.log(JSON.stringify(tableRows.value));
   showTable.value = true; // Show the table after generating it
   sssContributionTableStore.insertSssContributionTable(tableRows.value);
 }
 
 async function showExistingTable() {
   await sssContributionTableStore.fetchSssContributionTable();
-  tableRows.value = sssContributionTableStore.sssContributionHistory[0].data;
-  showTable.value = true; // Show the table after generating it
+  if (
+    sssContributionTableStore.sssContributionHistory[0] &&
+    sssContributionTableStore.sssContributionHistory[0].data
+  ) {
+    tableRows.value = sssContributionTableStore.sssContributionHistory[0].data;
+    showTable.value = true; // Show the table after generating it
+  } else {
+    tableRows.value = ""; // Stay blank or assign an empty value
+    showTable.value = false; // Show the table after generating it
+  }
 }
 
 showExistingTable();
@@ -78,7 +86,15 @@ td {
         class="tw-text-3xl tw-font-extrabold tw-pb-3 tw-flex tw-justify-between"
       >
         <div>SSS Contribution Table</div>
-        <div>
+        <div
+          v-if="
+            sssContributionTableStore.sssContributionHistory[0] &&
+            sssContributionTableStore.sssContributionHistory[0].change_date !==
+              null &&
+            sssContributionTableStore.sssContributionHistory[0].change_date !==
+              undefined
+          "
+        >
           Last Updated:
           {{ sssContributionTableStore.sssContributionHistory[0].change_date }}
         </div>
