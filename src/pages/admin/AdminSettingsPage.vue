@@ -1,6 +1,7 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
 import SSSContributionButton from "components/admin/PageSettings/SSSContributionButton.vue";
+import PhilhealthContributionButton from "components/admin/PageSettings/PhilhealthContributionButton.vue";
 
 // import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
 
@@ -13,6 +14,7 @@ storePageHeader.currentPage = "Settings";
   >
     <div>
       <SSSContributionButton></SSSContributionButton>
+      <PhilhealthContributionButton></PhilhealthContributionButton>
       <!-- <AttendanceTable></AttendanceTable>
       &nbsp;
       <LoanTable></LoanTable>

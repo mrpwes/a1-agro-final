@@ -75,7 +75,7 @@ function totalDeductions() {
                 <div class="tw-text-gray-500">
                   {{
                     payrollTableFormatterStore.findRange(
-                      selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0
+                      selectedRow.rate_per_day * 30
                     )
                   }}
                 </div>
