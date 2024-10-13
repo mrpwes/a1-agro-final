@@ -8,6 +8,7 @@ export const usePayrollTableFormatterStore = defineStore(
       // Define your state properties here
       payrollData: [],
       sssContributionTableRanges: [],
+      philhealthContributionRate: null,
     }),
     getters: {
       // Define your getters here
@@ -128,13 +129,31 @@ export const usePayrollTableFormatterStore = defineStore(
           console.error(error);
         }
       },
-      findRange(value) {
+      findSSSRange(value) {
         for (const range of this.sssContributionTableRanges) {
           if (value >= range.min && value < range.max) {
             return range.sss_bracket;
           }
         }
         return "Value is out of range";
+      },
+
+      async fetchPhilhealthContributionTable() {
+        try {
+          const { data, error } = await supabase
+            .from("philhealth_contribution_table_audit")
+            .select("*")
+            .order("audit_id", { ascending: false })
+            .limit(1);
+          if (error) {
+            console.error(error);
+            throw error;
+          }
+          //   console.log(data);
+          this.philhealthContributionRate = data[0]["data"].value;
+        } catch (error) {
+          console.error(error);
+        }
       },
     },
   }

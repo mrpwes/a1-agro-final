@@ -74,7 +74,7 @@ function totalDeductions() {
               <td class="tw-border tw-flex tw-justify-between">
                 <div class="tw-text-gray-500">
                   {{
-                    payrollTableFormatterStore.findRange(
+                    payrollTableFormatterStore.findSSSRange(
                       selectedRow.rate_per_day * 30
                     )
                   }}
@@ -110,8 +110,21 @@ function totalDeductions() {
                 }}
               </td>
               <td class="tw-border">PhilHealth Contribution:</td>
-              <td class="tw-border">
+              <!-- <td class="tw-border">
                 {{ selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0 }}
+              </td> -->
+              <td class="tw-border tw-flex tw-justify-between">
+                <div class="tw-text-gray-500">
+                  {{
+                    (payrollTableFormatterStore.philhealthContributionRate /
+                      2 /
+                      100) *
+                    (selectedRow.rate_per_day * 30)
+                  }}
+                </div>
+                <div>
+                  {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
+                </div>
               </td>
             </tr>
             <tr>
