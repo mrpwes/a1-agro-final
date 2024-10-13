@@ -8,6 +8,7 @@ export const usePhilhealthContributionTable = defineStore(
   "philhealthContributionTable",
   {
     state: () => ({
+      philHealthRateModel: null,
       philhealthContributionHistory: [],
       philHealthContribution: null,
       currentUser: authenticationStore.getEmployeeId,
@@ -24,12 +25,13 @@ export const usePhilhealthContributionTable = defineStore(
             .from("philhealth_contribution_table")
             .insert({
               emp_id_modified_by: this.currentUser,
-              data: this.philHealthContribution,
+              data: { value: parseFloat(this.philHealthRateModel) },
             });
           if (error) {
             console.error(error);
             throw error;
           }
+          this.fetchPhilhealthContributionTable();
           console.log(data);
         } catch (error) {
           console.error(error);
