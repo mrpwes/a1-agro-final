@@ -2,6 +2,7 @@
 import { usePageHeader } from "stores/pageHeader";
 import SSSContributionButton from "components/admin/PageSettings/SSSContributionButton.vue";
 import PhilhealthContributionButton from "components/admin/PageSettings/PhilhealthContributionButton.vue";
+import PagibigContributionButton from "components/admin/PageSettings/PagibigContributionButton.vue";
 
 // import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
 
@@ -15,6 +16,7 @@ storePageHeader.currentPage = "Settings";
     <div class="tw-flex tw-justify-evenly">
       <SSSContributionButton></SSSContributionButton>
       <PhilhealthContributionButton></PhilhealthContributionButton>
+      <PagibigContributionButton></PagibigContributionButton>
       <!-- <AttendanceTable></AttendanceTable>
       &nbsp;
       <LoanTable></LoanTable>
