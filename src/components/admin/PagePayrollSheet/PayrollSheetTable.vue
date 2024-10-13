@@ -36,6 +36,8 @@ payrollTableStore.fetchAttendanceReports();
 //   }
 //   console.log(row);
 // }
+
+payrollTableFormatterStore.fetchSssContributionTable();
 </script>
 
 <template>

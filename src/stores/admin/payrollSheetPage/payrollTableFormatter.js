@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { supabase } from "../../../lib/supabaseClient.js";
 
 export const usePayrollTableFormatterStore = defineStore(
   "payrollTableFormatter",
@@ -6,6 +7,7 @@ export const usePayrollTableFormatterStore = defineStore(
     state: () => ({
       // Define your state properties here
       payrollData: [],
+      sssContributionTableRanges: [],
     }),
     getters: {
       // Define your getters here
@@ -87,6 +89,52 @@ export const usePayrollTableFormatterStore = defineStore(
       grossIncomeFormatter(ratePerDay, attendance) {
         const noDaysWorked = this.noDaysWorkedFormatter(attendance);
         return this.twoDecimalWithoutRounding(ratePerDay * noDaysWorked);
+      },
+
+      async fetchSssContributionTable() {
+        try {
+          const { data, error } = await supabase
+            .from("sss_contribution_table_audit")
+            .select("*")
+            .order("audit_id", { ascending: false })
+            .limit(1);
+          if (error) {
+            console.error(error);
+            throw error;
+          }
+          //   console.log(data);
+          this.sssContributionTableRanges = data[0].data.map((item) => {
+            const range = item.combinedValue;
+            let min, max, sss_bracket;
+
+            // Extract the sss_bracket value from the 4th index of values
+            sss_bracket = parseFloat(item.values[4].replace(",", ""));
+
+            if (range.startsWith("Below")) {
+              min = 0;
+              max = parseFloat(range.split(" ")[1].replace(",", ""));
+            } else if (range.includes("Over")) {
+              min = parseFloat(range.split(" ")[0].replace(",", ""));
+              max = null; // or you can set it to a very high number if needed
+            } else {
+              const [start, end] = range.split(" - ");
+              min = parseFloat(start.replace(",", ""));
+              max = parseFloat(end.replace(",", ""));
+            }
+
+            return { min, max, sss_bracket };
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      findRange(value) {
+        for (const range of this.sssContributionTableRanges) {
+          if (value >= range.min && value < range.max) {
+            return range.sss_bracket;
+          }
+        }
+        return "Value is out of range";
       },
     },
   }

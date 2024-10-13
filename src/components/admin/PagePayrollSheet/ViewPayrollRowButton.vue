@@ -71,8 +71,17 @@ function totalDeductions() {
               <td class="tw-border">{{ selectedRow.rate_per_day }}</td>
               <td class="tw-border"></td>
               <td class="tw-border">SSS Contribution:</td>
-              <td class="tw-border">
-                {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
+              <td class="tw-border tw-flex tw-justify-between">
+                <div class="tw-text-gray-500">
+                  {{
+                    payrollTableFormatterStore.findRange(
+                      selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0
+                    )
+                  }}
+                </div>
+                <div>
+                  {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
+                </div>
               </td>
             </tr>
             <tr>
