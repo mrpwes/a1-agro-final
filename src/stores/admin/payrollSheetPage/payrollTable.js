@@ -219,7 +219,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           .from("employee")
           .select(
             `*,
-            attendance(*),
+            attendance(*, attendance_type(*)),
             employee_audit!employee_audit_employee_id_fkey(*),
             emp_sss_contrib_audit!emp_sss_contrib_audit_employee_id_fkey(*),
             emp_philhealth_contrib_audit!emp_philhealth_contrib_audit_employee_id_fkey(*),

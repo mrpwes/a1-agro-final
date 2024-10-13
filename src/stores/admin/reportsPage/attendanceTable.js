@@ -20,6 +20,12 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
   },
 
   actions: {
+    capitalizeFirstLetterOfEachWord(str) {
+      return str
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    },
     formatDate(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -149,7 +155,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           .select(
             `*,
              is_archive,
-              attendance(*)`
+              attendance(*, attendance_type(*))`
           ) // Select all columns or specify the columns you need
           .gte("attendance.date", dateStart) // Greater than or equal to dateStart
           .lte("attendance.date", dateEnd) // Less than or equal to dateEnd
@@ -217,6 +223,15 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   row.attendance[currentCounter].time_in !== null
                 ) {
                   totalHours = "No Time Out";
+                } else if (
+                  row.attendance[currentCounter].attendance_type_id !== 1 &&
+                  row.attendance[currentCounter].attendance_type_id !==
+                    undefined
+                ) {
+                  totalHours = this.capitalizeFirstLetterOfEachWord(
+                    row.attendance[currentCounter].attendance_type
+                      .attendance_type_name
+                  );
                 } else {
                   const timeIn = new Date(
                     row.attendance[currentCounter].time_in
@@ -280,6 +295,12 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                 ) {
                   totalHours = "No Time Out";
                   classContent = "!tw-bg-[#e11d48]"; // Assuming absent if no time out    /RED
+                } else if (
+                  row.attendance[currentCounter].attendance_type_id !== 1 &&
+                  row.attendance[currentCounter].attendance_type_id !==
+                    undefined
+                ) {
+                  classContent = "!tw-bg-[#3b82f6]";
                 } else {
                   const timeIn = new Date(
                     row.attendance[currentCounter].time_in
@@ -380,10 +401,48 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             let totalHours = 0;
 
             row.attendance.forEach((entry) => {
-              if (entry.time_in && entry.time_out) {
+              if (entry.time_out === null && entry.time_in !== null) {
+                // Handle case where there is no time out
+                console.log("No Time Out for entry:", entry);
+                totalHours += 0; // or handle it differently if needed
+              } else if (
+                entry.attendance_type_id !== 1 &&
+                entry.attendance_type_id !== undefined
+              ) {
+                // Handle different attendance types
+                const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
+                  entry.attendance_type.attendance_type_name
+                );
+                console.log("Attendance Type:", attendanceTypeName);
+                totalHours += 8; // or handle it differently if needed
+              } else if (entry.time_in && entry.time_out) {
                 const timeIn = new Date(entry.time_in);
                 const timeOut = new Date(entry.time_out);
-                const hours = (timeOut - timeIn) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+                // Set timeIn to 8 AM if it's before 8 AM
+                const eightAM = new Date(timeIn);
+                eightAM.setHours(8, 0, 0, 0);
+                if (timeIn < eightAM) {
+                  timeIn.setHours(8, 0, 0, 0);
+                }
+
+                // Set timeOut to 5 PM if it's after 5 PM
+                const fivePM = new Date(timeOut);
+                fivePM.setHours(17, 0, 0, 0);
+                if (timeOut > fivePM) {
+                  timeOut.setHours(17, 0, 0, 0);
+                }
+
+                let hours = (timeOut - timeIn) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+                // Subtract 1 hour if timeOut is after 1 PM
+                const onePM = new Date(timeOut);
+                onePM.setHours(13, 0, 0, 0);
+                if (timeOut > onePM) {
+                  hours -= 1; // Subtract 1 hour
+                  console.log("Subtract 1 hour for entry:", entry);
+                }
+
                 totalHours += hours;
               }
             });
