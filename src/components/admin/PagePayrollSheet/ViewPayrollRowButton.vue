@@ -37,6 +37,20 @@ function totalDeductions() {
   );
 }
 
+function totalNetPay() {
+  try {
+    return (
+      payrollTableFormatterStore.grossIncomeFormatter(
+        selectedRow.value.rate_per_day,
+        selectedRow.value.attendance
+      ) - totalDeductions()
+    );
+  } catch (error) {
+    console.error("Error calculating payroll:", error);
+    return 0; // or any default value you prefer
+  }
+}
+
 //FIXME: CONTACT NUMBER ADD MORE
 </script>
 
@@ -130,8 +144,17 @@ function totalDeductions() {
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">Pag-IBIG Contribution:</td>
-              <td class="tw-border">
-                {{ selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0 }}
+              <td class="tw-border tw-flex tw-justify-between">
+                <div class="tw-text-gray-500">
+                  {{
+                    payrollTableFormatterStore.calculatePagibigContribution(
+                      selectedRow.rate_per_day
+                    )
+                  }}
+                </div>
+                <div>
+                  {{ selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0 }}
+                </div>
               </td>
             </tr>
             <tr>
@@ -170,25 +193,15 @@ function totalDeductions() {
                 }}
               </td>
               <td class="tw-border">Total Deductions:</td>
-              <td class="tw-border">
+              <td class="tw-border tw-justify-end tw-text-end">
                 {{ totalDeductions() }}
               </td>
             </tr>
             <tr>
               <td class="tw-border" colspan="3"></td>
               <td class="tw-border">Total Net Pay:</td>
-              <td class="tw-border">
-                {{
-                  (
-                    selectedRow.ratePerDay * selectedRow.noDaysWorked -
-                    (selectedRow.sss +
-                      selectedRow.philHealth +
-                      selectedRow.pagIbig +
-                      selectedRow.sssCalamityLoan +
-                      selectedRow.sssLoan +
-                      selectedRow.pagIbigLoan)
-                  ).toFixed(2)
-                }}
+              <td class="tw-border tw-text-end">
+                {{ totalNetPay() }}
               </td>
             </tr>
           </tbody>

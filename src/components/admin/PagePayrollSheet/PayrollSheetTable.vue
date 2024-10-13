@@ -39,6 +39,7 @@ payrollTableStore.fetchAttendanceReports();
 
 payrollTableFormatterStore.fetchSssContributionTable();
 payrollTableFormatterStore.fetchPhilhealthContributionTable();
+payrollTableFormatterStore.fetchPagibigContributionTable();
 </script>
 
 <template>

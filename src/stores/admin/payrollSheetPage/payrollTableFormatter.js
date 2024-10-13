@@ -9,6 +9,7 @@ export const usePayrollTableFormatterStore = defineStore(
       payrollData: [],
       sssContributionTableRanges: [],
       philhealthContributionRate: null,
+      pagibigContributionRate: null,
     }),
     getters: {
       // Define your getters here
@@ -40,7 +41,7 @@ export const usePayrollTableFormatterStore = defineStore(
         attendance.forEach((entry) => {
           if (entry.time_out === null && entry.time_in !== null) {
             // Handle case where there is no time out
-            console.log("No Time Out for entry:", entry);
+            // console.log("No Time Out for entry:", entry);
             totalHours += 0; // or handle it differently if needed
           } else if (
             entry.attendance_type_id !== 1 &&
@@ -50,7 +51,7 @@ export const usePayrollTableFormatterStore = defineStore(
             const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
               entry.attendance_type.attendance_type_name
             );
-            console.log("Attendance Type:", attendanceTypeName);
+            // console.log("Attendance Type:", attendanceTypeName);
             totalHours += 8; // or handle it differently if needed
           } else if (entry.time_in && entry.time_out) {
             const timeIn = new Date(entry.time_in);
@@ -77,7 +78,7 @@ export const usePayrollTableFormatterStore = defineStore(
             onePM.setHours(13, 0, 0, 0);
             if (timeOut > onePM) {
               hours -= 1; // Subtract 1 hour
-              console.log("Subtract 1 hour for entry:", entry);
+              // console.log("Subtract 1 hour for entry:", entry);
             }
 
             totalHours += hours;
@@ -90,6 +91,10 @@ export const usePayrollTableFormatterStore = defineStore(
       grossIncomeFormatter(ratePerDay, attendance) {
         const noDaysWorked = this.noDaysWorkedFormatter(attendance);
         return this.twoDecimalWithoutRounding(ratePerDay * noDaysWorked);
+      },
+
+      monthlyIncomeFormatter(ratePerDay, numberOfDaysInMonth = 30) {
+        return this.twoDecimalWithoutRounding(ratePerDay * numberOfDaysInMonth);
       },
 
       async fetchSssContributionTable() {
@@ -154,6 +159,44 @@ export const usePayrollTableFormatterStore = defineStore(
         } catch (error) {
           console.error(error);
         }
+      },
+
+      async fetchPagibigContributionTable() {
+        try {
+          const { data, error } = await supabase
+            .from("pagibig_contribution_table_audit")
+            .select("*")
+            .order("audit_id", { ascending: false })
+            .limit(1);
+          if (error) {
+            console.error(error);
+            throw error;
+          }
+          console.log(data);
+          this.pagibigContributionRate = data;
+        } catch (error) {
+          console.error(error);
+        }
+      },
+
+      calculatePagibigContribution(ratePerDay) {
+        const monthlyIncome = this.monthlyIncomeFormatter(ratePerDay);
+        let employeeRate, employeeContribution;
+        // employerRate
+        // console.log("Monthly Income:", monthlyIncome);
+        if (monthlyIncome <= 1500) {
+          employeeRate = 0.01; // 1.0%
+          // employerRate = 0.02; // 2.0%
+          const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+          employeeContribution = cappedMonthlyIncome * employeeRate;
+        } else {
+          employeeRate = 0.02; // 2.0%
+          // employerRate = 0.02; // 2.0%
+          const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+          employeeContribution = cappedMonthlyIncome * employeeRate;
+        }
+
+        return this.twoDecimalWithoutRounding(employeeContribution);
       },
     },
   }
