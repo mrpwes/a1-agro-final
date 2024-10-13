@@ -12,7 +12,7 @@ storePageHeader.currentPage = "Settings";
   <div
     class="tw-w-12/12 tw-max-w-full tw-mx-auto tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse tw-p-4 tw-mt-0"
   >
-    <div>
+    <div class="tw-flex tw-justify-evenly">
       <SSSContributionButton></SSSContributionButton>
       <PhilhealthContributionButton></PhilhealthContributionButton>
       <!-- <AttendanceTable></AttendanceTable>

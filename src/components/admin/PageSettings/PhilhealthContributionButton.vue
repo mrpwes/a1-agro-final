@@ -33,7 +33,7 @@ td {
 <template>
   <q-btn label="PhilHealth Contribution Table" @click="openmodel()" />
   <q-dialog v-model="viewPrompt" persistent>
-    <div class="!tw-h-min !tw-w-4/12 !tw-max-w-none tw-bg-white tw-p-6">
+    <div class="!tw-h-min !tw-w-5/12 !tw-max-w-none tw-bg-white tw-p-6">
       <div
         class="tw-text-3xl tw-font-extrabold tw-pb-3 tw-flex tw-justify-between"
       >
@@ -43,7 +43,7 @@ td {
             <q-btn
               v-if="philhealthContributionTable.isEditing == false"
               flat
-              class="tw-bg-green-400"
+              class="tw-bg-green-400 tw-mr-4"
               :icon="philhealthContributionTable.isEditing ? 'save' : 'edit'"
               label="Edit"
               @click="
