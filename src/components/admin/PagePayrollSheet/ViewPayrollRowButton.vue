@@ -28,18 +28,29 @@ function sendSMS() {
 
 function totalDeductions() {
   return (
-    (selectedRow.value.emp_sss_contrib_audit[0]?.amount ?? 0) +
-    (selectedRow.value.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
-    (selectedRow.value.emp_pagibig_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.value.emp_sss_contrib_audit[
+      selectedRow.value.emp_sss_contrib_audit.length - 1
+    ]?.amount ?? 0) +
+    (selectedRow.value.emp_philhealth_contrib_audit[
+      selectedRow.value.emp_philhealth_contrib_audit.length - 1
+    ]?.amount ?? 0) +
+    (selectedRow.value.emp_pagibig_contrib_audit[
+      selectedRow.value.emp_pagibig_contrib_audit.length - 1
+    ]?.amount ?? 0) +
     (selectedRow.value.sssCalamityLoan ?? 0) +
     (selectedRow.value.sssLoan ?? 0) +
     (selectedRow.value.pagIbigLoan ?? 0)
   );
 }
 
+function twoDecimalWithoutRounding(num) {
+  var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+  return parseFloat(with2Decimals);
+}
+
 function totalNetPay() {
   try {
-    return (
+    return twoDecimalWithoutRounding(
       payrollTableFormatterStore.grossIncomeFormatter(
         selectedRow.value.rate_per_day,
         selectedRow.value.attendance
@@ -94,7 +105,11 @@ function totalNetPay() {
                   }}
                 </div>
                 <div>
-                  {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
+                  {{
+                    selectedRow.emp_sss_contrib_audit[
+                      selectedRow.emp_sss_contrib_audit.length - 1
+                    ].amount ?? 0
+                  }}
                 </div>
               </td>
             </tr>
@@ -137,7 +152,11 @@ function totalNetPay() {
                   }}
                 </div>
                 <div>
-                  {{ selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0 }}
+                  {{
+                    selectedRow.emp_philhealth_contrib_audit[
+                      selectedRow.emp_philhealth_contrib_audit.length - 1
+                    ]?.amount ?? 0
+                  }}
                 </div>
               </td>
             </tr>
@@ -153,7 +172,11 @@ function totalNetPay() {
                   }}
                 </div>
                 <div>
-                  {{ selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0 }}
+                  {{
+                    selectedRow.emp_pagibig_contrib_audit[
+                      selectedRow.emp_pagibig_contrib_audit.length - 1
+                    ]?.amount ?? 0
+                  }}
                 </div>
               </td>
             </tr>

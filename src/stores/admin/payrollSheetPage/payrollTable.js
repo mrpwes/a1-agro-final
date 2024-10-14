@@ -94,7 +94,6 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           align: "center",
           label: "NetPay",
           sortable: true,
-
           classes: "!tw-bg-neutral-300",
         },
         {
