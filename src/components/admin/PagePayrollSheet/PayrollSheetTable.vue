@@ -1,10 +1,9 @@
 <script setup>
 import { ref } from "vue";
 // import { exportFile, useQuasar, date } from "quasar";
+// import { format } from "date-fns";
 import { usePayrollTableStore } from "stores/admin/payrollSheetPage/payrollTable";
 import { usePayrollTableFormatterStore } from "stores/admin/payrollSheetPage/payrollTableFormatter";
-
-// import { format } from "date-fns";
 
 import ViewPayrollRowButton from "components/admin/PagePayrollSheet/ViewPayrollRowButton.vue";
 // import { useContributionStore } from "stores/admin/payrollSheetPage/contribution";
@@ -23,27 +22,12 @@ const tableSearch = ref("");
 const popupEdit = ref(false);
 
 payrollTableStore.fetchAttendanceReports();
-// payrollTableStore.getEmployeeNoAttendance();
-// contributionStore.getContributions();
-
-// function getContributionTable(row) {
-//   return
-// }
-
-// function getContributionBasedOnSelectedDate(row) {
-//   if (row == 0) {
-//     return 0;
-//   }
-//   console.log(row);
-// }
 
 payrollTableFormatterStore.fetchSssContributionTable();
 payrollTableFormatterStore.fetchPhilhealthContributionTable();
 payrollTableFormatterStore.fetchPagibigContributionTable();
 
 function totalDeductions(selectedRow) {
-  // console.log("Deductions SelectedRow" + selectedRow);
-
   return (
     (selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0) +
     (selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
@@ -67,10 +51,58 @@ function totalNetPay(selectedRow) {
     return selectedRow; // or any default value you prefer
   }
 }
+
+function exportTableToCSV(tableId) {
+  const table = document.getElementById(tableId);
+  let csvContent = "";
+
+  // Get the table headers and remove "arrow_upward"
+  const headers = Array.from(table.querySelectorAll("th")).map((th) =>
+    th.innerText.replace(/arrow_upward/g, "")
+  );
+  csvContent += headers.join(",") + "\n";
+
+  // Get the table rows, excluding the last column
+  const rows = Array.from(table.querySelectorAll("tr")).slice(1); // Skip the header row
+  rows.forEach((row) => {
+    const cells = Array.from(row.querySelectorAll("td"))
+      .slice(0, -1)
+      .map((td) => td.innerText); // Exclude the last cell
+    csvContent += cells.join(",") + "\n";
+  });
+
+  // Get today's date in the desired format
+  const today = new Date();
+  const options = { month: "short", day: "2-digit", year: "numeric" };
+  const formattedDate = today
+    .toLocaleDateString("en-US", options)
+    .replace(",", "")
+    .replace(/\s+/g, "-");
+
+  // Create a link to download the CSV file
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary link element
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `Payroll-Sheet-Report-${formattedDate}.csv`);
+
+  // Append the link to the body (not visible)
+  document.body.appendChild(link);
+
+  // Automatically click the link to trigger the download
+  link.click();
+
+  // Clean up: remove the link and revoke the object URL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 </script>
 
 <template>
   <q-table
+    id="exportTable"
     class="tw-border tw-rounded-3xl tw-shadow-lg"
     flat
     bordered
@@ -84,14 +116,16 @@ function totalNetPay(selectedRow) {
     separator="cell"
     row-key="name"
   >
-    <!-- <template v-slot:top-right>
-      <q-toggle
-        v-model="popupEdit"
-        label="Edit"
+    <template v-slot:top-right>
+      <q-btn
         color="blue"
+        icon-right="archive"
+        label="Export to CSV"
+        no-caps
+        @click="exportTableToCSV('exportTable')"
         class="tw-mr-16"
       />
-    </template> -->
+    </template>
     <template v-slot:top-left>
       <q-select
         filled
