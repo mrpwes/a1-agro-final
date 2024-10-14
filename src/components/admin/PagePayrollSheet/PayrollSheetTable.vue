@@ -40,6 +40,33 @@ payrollTableStore.fetchAttendanceReports();
 payrollTableFormatterStore.fetchSssContributionTable();
 payrollTableFormatterStore.fetchPhilhealthContributionTable();
 payrollTableFormatterStore.fetchPagibigContributionTable();
+
+function totalDeductions(selectedRow) {
+  // console.log("Deductions SelectedRow" + selectedRow);
+
+  return (
+    (selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.sssCalamityLoan ?? 0) +
+    (selectedRow.sssLoan ?? 0) +
+    (selectedRow.pagIbigLoan ?? 0)
+  );
+}
+
+function totalNetPay(selectedRow) {
+  try {
+    return (
+      payrollTableFormatterStore.grossIncomeFormatter(
+        selectedRow.rate_per_day,
+        selectedRow.attendance
+      ) - totalDeductions(selectedRow)
+    );
+  } catch (error) {
+    console.error("Error calculating payroll:", error);
+    return selectedRow; // or any default value you prefer
+  }
+}
 </script>
 
 <template>
@@ -300,19 +327,7 @@ payrollTableFormatterStore.fetchPagibigContributionTable();
           </q-popup-edit>
         </q-td> -->
         <q-td key="NetPay" :props="props" auto-width>
-          {{
-            (
-              props.row.noDaysWorked * props.row.ratePerDay -
-              props.row.sss -
-              props.row.philHealth -
-              props.row.pagIbig -
-              props.row.sssCalamityLoan -
-              props.row.sssLoan -
-              props.row.pagIbigLoan -
-              props.row.VALE -
-              props.row.AR
-            ).toFixed(2)
-          }}
+          {{ totalNetPay(props.row) }}
         </q-td>
         <q-td key="overVale" :props="props" auto-width>
           {{ props.row.overVale }}
