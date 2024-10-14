@@ -2,6 +2,7 @@
 import { usePageHeader } from "stores/pageHeader";
 // import { useAttendanceTest } from "stores/attendance";
 import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
+import PhilhealthTable from "components/admin/PageReports/PhilhealthTable.vue";
 
 // const storeAttendance = useAttendanceTest();
 
@@ -14,6 +15,7 @@ storePageHeader.currentPage = "Reports";
   >
     <div>
       <AttendanceTable></AttendanceTable>
+      <PhilhealthTable></PhilhealthTable>
       &nbsp;
       <!-- <LoanTable></LoanTable> -->
       <!-- <q-btn

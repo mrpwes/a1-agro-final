@@ -167,7 +167,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
         this.rows = Object.values(
           this.fillMissingDates(data, dateStart, dateEnd)
         );
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error(error);
       }
@@ -262,7 +262,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   onePM.setHours(13, 0, 0, 0);
                   if (timeOut > onePM) {
                     totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
-                    console.log("Subtract 1 hour");
+                    // console.log("Subtract 1 hour");
                   }
                 }
                 return totalHours;
@@ -331,7 +331,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   onePM.setHours(13, 0, 0, 0);
                   if (timeOut > onePM) {
                     totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
-                    console.log("Subtract 1 hour");
+                    // console.log("Subtract 1 hour");
                   }
 
                   // Check for late arrival
@@ -341,10 +341,10 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                   // Determine classContent based on totalHours
                   if (parseFloat(totalHours) >= 8) {
                     classContent = "!tw-bg-[#4ade80]"; // IF PRESENT 8HRS / Green
-                    console.log("Present");
+                    // console.log("Present");
                   } else if (parseFloat(totalHours) == 0) {
                     classContent = "!tw-bg-[#f87171]"; // IF ABSENT / Red
-                    console.log("Absent");
+                    // console.log("Absent");
                   } else if (timeIn > eightTenAM) {
                     classContent = "!tw-bg-[#fb923c]";
                     if (parseFloat(totalHours) < 5) {
@@ -403,17 +403,17 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             row.attendance.forEach((entry) => {
               if (entry.time_out === null && entry.time_in !== null) {
                 // Handle case where there is no time out
-                console.log("No Time Out for entry:", entry);
+                // console.log("No Time Out for entry:", entry);
                 totalHours += 0; // or handle it differently if needed
               } else if (
                 entry.attendance_type_id !== 1 &&
                 entry.attendance_type_id !== undefined
               ) {
                 // Handle different attendance types
-                const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
-                  entry.attendance_type.attendance_type_name
-                );
-                console.log("Attendance Type:", attendanceTypeName);
+                // const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
+                //   entry.attendance_type.attendance_type_name
+                // );
+                // console.log("Attendance Type:", attendanceTypeName);
                 totalHours += 8; // or handle it differently if needed
               } else if (entry.time_in && entry.time_out) {
                 const timeIn = new Date(entry.time_in);
@@ -440,7 +440,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
                 onePM.setHours(13, 0, 0, 0);
                 if (timeOut > onePM) {
                   hours -= 1; // Subtract 1 hour
-                  console.log("Subtract 1 hour for entry:", entry);
+                  // console.log("Subtract 1 hour for entry:", entry);
                 }
 
                 totalHours += hours;
