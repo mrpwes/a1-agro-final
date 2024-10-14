@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { usePagibigContributionTable } from "stores/admin/settingsPage/pagibigContributionTable";
+import HistoryAuditButton from "components/admin/PageSettings/Pagibig/HistoryAuditButton.vue";
 
 const pagibigContributionTable = usePagibigContributionTable();
 
@@ -64,7 +65,7 @@ th {
               "
             /> -->
 
-            <!-- <HistoryAuditButton></HistoryAuditButton> -->
+            <HistoryAuditButton></HistoryAuditButton>
           </div>
         </div>
       </div>
