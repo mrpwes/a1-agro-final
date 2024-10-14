@@ -38,9 +38,14 @@ function totalDeductions(selectedRow) {
   );
 }
 
+function twoDecimalWithoutRounding(num) {
+  var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+  return parseFloat(with2Decimals);
+}
+
 function totalNetPay(selectedRow) {
   try {
-    return (
+    return twoDecimalWithoutRounding(
       payrollTableFormatterStore.grossIncomeFormatter(
         selectedRow.rate_per_day,
         selectedRow.attendance
