@@ -1,6 +1,35 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
 
+function twoDecimalWithoutRounding(num) {
+  var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+  return parseFloat(with2Decimals);
+}
+
+function monthlyIncomeFormatter(ratePerDay, numberOfDaysInMonth = 30) {
+  return twoDecimalWithoutRounding(ratePerDay * numberOfDaysInMonth);
+}
+
+function calculatePagibigContribution(ratePerDay) {
+  const monthlyIncome = monthlyIncomeFormatter(ratePerDay);
+  let employeeRate, employeeContribution;
+  // employerRate
+  // console.log("Monthly Income:", monthlyIncome);
+  if (monthlyIncome <= 1500) {
+    employeeRate = 0.01; // 1.0%
+    // employerRate = 0.02; // 2.0%
+    const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+    employeeContribution = cappedMonthlyIncome * employeeRate;
+  } else {
+    employeeRate = 0.02; // 2.0%
+    // employerRate = 0.02; // 2.0%
+    const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+    employeeContribution = cappedMonthlyIncome * employeeRate;
+  }
+
+  return twoDecimalWithoutRounding(employeeContribution);
+}
+
 export const usePagibigTableStore = defineStore("pagibigTable", {
   state: () => ({
     rows: [],
@@ -46,7 +75,7 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
         name: "employerShare",
         align: "center",
         label: "Employer Share",
-        field: (row) => row.amount,
+        field: (row) => calculatePagibigContribution(row.employee.rate_per_day),
         sortable: true,
         classes: "!tw-bg-neutral-300",
       },
@@ -65,6 +94,16 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
     getSelectedDate() {
       return this.selectedDate;
     },
+    getTotalEmployerShare() {
+      let totalAmount = 0;
+
+      this.pagibigAudit.forEach((item) => {
+        totalAmount += calculatePagibigContribution(item.amount);
+      });
+
+      return totalAmount;
+    },
+
     getTotalEmployeeShare() {
       let totalAmount = 0;
 
@@ -213,15 +252,15 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
       }
     },
 
-    async fetchPhilhealthContribAudit(
+    async fetchPagibigContribAudit(
       // dateStart = this.selectedDate.date_start,
       dateEnd = this.selectedDate.date_end
     ) {
       try {
         const { data, error } = await supabase
-          .from("emp_philhealth_contrib_audit") // Replace with your table name
+          .from("emp_pagibig_contrib_audit") // Replace with your table name
           .select(
-            `*, employee!emp_philhealth_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, phil_health_number)`
+            `*, employee!emp_pagibig_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, pag_ibig_number, rate_per_day)`
           ) // Select all columns or specify the columns you need
           // .gte("change_date", dateStart) // Greater than or equal to dateStart
           .lte("change_date", dateEnd) // Less than or equal to dateEnd
@@ -229,7 +268,7 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
         if (error) {
           console.error(error);
         }
-        this.philhealthAudit = this.filterHighestAuditId(data);
+        this.pagibigAudit = this.filterHighestAuditId(data);
         // console.log(data);
         // console.log(this.employeeIds);
       } catch (error) {
@@ -237,20 +276,20 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
       }
     },
 
-    async fetchPhilhealthContributionTableAudit(
+    async fetchPagibigContributionTableAudit(
       // dateStart = this.selectedDate.date_start,
       dateEnd = this.selectedDate.date_end
     ) {
       try {
         const { data, error } = await supabase
-          .from("philhealth_contribution_table_audit") // Replace with your table name
+          .from("pagibig_contribution_table_audit") // Replace with your table name
           .select(`*`) // Select all columns or specify the columns you need
           // .gte("change_date", dateStart) // Greater than or equal to dateStart
           .lte("change_date", dateEnd); // Less than or equal to dateEnd
         if (error) {
           console.error(error);
         }
-        this.philhealthContributionTableAudit = this.getHighestAuditId(data);
+        this.pagibigContributionTableAudit = this.getHighestAuditId(data);
         // console.log(data);
       } catch (error) {
         console.error(error);
@@ -296,8 +335,8 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
       await this.getSalaryHistory();
       await this.getNearestDateRange();
       await this.fetchEmployeeInRange();
-      await this.fetchPhilhealthContribAudit();
-      await this.fetchPhilhealthContributionTableAudit();
+      await this.fetchPagibigContribAudit();
+      await this.fetchPagibigContributionTableAudit();
     },
   },
 });
