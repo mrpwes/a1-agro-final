@@ -90,7 +90,7 @@ export const usePayrollTableFormatterStore = defineStore(
 
       grossIncomeFormatter(ratePerDay, attendance) {
         const noDaysWorked = this.noDaysWorkedFormatter(attendance);
-        return this.twoDecimalWithoutRounding(ratePerDay * noDaysWorked);
+        return ratePerDay * noDaysWorked;
       },
 
       monthlyIncomeFormatter(ratePerDay, numberOfDaysInMonth = 30) {
