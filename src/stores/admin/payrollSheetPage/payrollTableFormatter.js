@@ -48,9 +48,9 @@ export const usePayrollTableFormatterStore = defineStore(
             entry.attendance_type_id !== undefined
           ) {
             // Handle different attendance types
-            const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
-              entry.attendance_type.attendance_type_name
-            );
+            // const attendanceTypeName = this.capitalizeFirstLetterOfEachWord(
+            //   entry.attendance_type.attendance_type_name
+            // );
             // console.log("Attendance Type:", attendanceTypeName);
             totalHours += 8; // or handle it differently if needed
           } else if (entry.time_in && entry.time_out) {
