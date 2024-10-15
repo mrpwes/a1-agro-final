@@ -17,10 +17,13 @@ storePageHeader.currentPage = "Reports";
   >
     <div>
       <AttendanceTable></AttendanceTable>
+      <br />
       <PhilhealthTable></PhilhealthTable>
+      <br />
       <PagibigTable></PagibigTable>
+      <br />
       <SssTable></SssTable>
-      &nbsp;
+      <br />
       <!-- <LoanTable></LoanTable> -->
       <!-- <q-btn
         icon="mdi-plus"

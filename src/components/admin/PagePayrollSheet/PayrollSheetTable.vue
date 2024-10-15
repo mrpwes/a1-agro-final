@@ -133,7 +133,8 @@ function exportTableToCSV(tableId) {
     </template>
     <template v-slot:top-left>
       <q-select
-        filled
+        rounded
+        standout
         use-input
         v-model="payrollTableStore.selectedDate"
         @update:model-value="payrollTableStore.fetchAttendanceReports()"
