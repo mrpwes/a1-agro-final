@@ -107,8 +107,11 @@ pagibigTableStore.fetchEmployeeReports();
         class="tw-mr-16"
     /></template>
     <template v-slot:top-left>
+      <div class="tw-text-xl, tw-font-bold">Pag-IBIG Report</div>
+      <div class="tw-w-3"></div>
       <q-select
-        filled
+        rounded
+        standout
         v-model="pagibigTableStore.selectedDate"
         @update:model-value="pagibigTableStore.fetchEmployeeReports()"
         use-input

@@ -107,8 +107,11 @@ philhealthTableStore.fetchEmployeeReports();
         class="tw-mr-16"
     /></template>
     <template v-slot:top-left>
+      <div class="tw-text-xl, tw-font-bold">PhilHealth Report</div>
+      <div class="tw-w-3"></div>
       <q-select
-        filled
+        rounded
+        standout
         v-model="philhealthTableStore.selectedDate"
         @update:model-value="philhealthTableStore.fetchEmployeeReports()"
         use-input

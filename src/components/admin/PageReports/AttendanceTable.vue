@@ -109,8 +109,11 @@ attendanceListStore.fetchAttendanceReports();
         class="tw-mr-16"
     /></template>
     <template v-slot:top-left>
+      <div class="tw-text-xl, tw-font-bold">Attendance Report</div>
+      <div class="tw-w-3"></div>
       <q-select
-        filled
+        rounded
+        standout
         v-model="attendanceListStore.selectedDate"
         @update:model-value="attendanceListStore.fetchAttendanceReports()"
         use-input

@@ -87,7 +87,6 @@ sssTableStore.fetchEmployeeReports();
     bordered
     dense
     title="Attendance Report"
-    :title-class="['tw-text-xl', 'tw-font-bold']"
     :filter="tableSearch"
     :columns="sssTableStore.columns"
     :rows="sssTableStore.sssAudit"
@@ -105,8 +104,11 @@ sssTableStore.fetchEmployeeReports();
         class="tw-mr-16"
     /></template>
     <template v-slot:top-left>
+      <div class="tw-text-xl, tw-font-bold">SSS Report</div>
+      <div class="tw-w-3"></div>
       <q-select
-        filled
+        rounded
+        standout
         v-model="sssTableStore.selectedDate"
         @update:model-value="sssTableStore.fetchEmployeeReports()"
         use-input
