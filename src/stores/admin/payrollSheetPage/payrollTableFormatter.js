@@ -187,12 +187,12 @@ export const usePayrollTableFormatterStore = defineStore(
         if (monthlyIncome <= 1500) {
           employeeRate = 0.01; // 1.0%
           // employerRate = 0.02; // 2.0%
-          const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+          const cappedMonthlyIncome = Math.min(monthlyIncome, 10000);
           employeeContribution = cappedMonthlyIncome * employeeRate;
         } else {
           employeeRate = 0.02; // 2.0%
           // employerRate = 0.02; // 2.0%
-          const cappedMonthlyIncome = Math.min(monthlyIncome, 5000);
+          const cappedMonthlyIncome = Math.min(monthlyIncome, 10000);
           employeeContribution = cappedMonthlyIncome * employeeRate;
         }
 
