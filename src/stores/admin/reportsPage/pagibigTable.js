@@ -260,16 +260,20 @@ export const usePagibigTableStore = defineStore("pagibigTable", {
         const { data, error } = await supabase
           .from("emp_pagibig_contrib_audit") // Replace with your table name
           .select(
-            `*, employee!emp_pagibig_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, pag_ibig_number, rate_per_day)`
+            `*, employee!emp_pagibig_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, pag_ibig_number, rate_per_day, is_archive)`
           ) // Select all columns or specify the columns you need
           // .gte("change_date", dateStart) // Greater than or equal to dateStart
           .lte("change_date", dateEnd) // Less than or equal to dateEnd
-          .in("employee_id", this.employeeIds); // Equal to false
+          .eq("employee.is_archive", false) // Equal to false
+          .in("employee_id", this.employeeIds);
         if (error) {
           console.error(error);
         }
-        this.pagibigAudit = this.filterHighestAuditId(data);
-        // console.log(data);
+
+        this.pagibigAudit = this.filterHighestAuditId(
+          data.filter((item) => item.employee !== null)
+        );
+        console.log(data);
         // console.log(this.employeeIds);
       } catch (error) {
         console.error(error);

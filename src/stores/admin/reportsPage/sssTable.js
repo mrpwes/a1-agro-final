@@ -221,15 +221,18 @@ export const useSssTableStore = defineStore("sssTable", {
         const { data, error } = await supabase
           .from("emp_sss_contrib_audit") // Replace with your table name
           .select(
-            `*, employee!emp_sss_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, sss_number)`
+            `*, employee!emp_sss_contrib_audit_employee_id_fkey(last_name, first_name, middle_name, company_employee_id, sss_number, is_archive)`
           ) // Select all columns or specify the columns you need
           // .gte("change_date", dateStart) // Greater than or equal to dateStart
           .lte("change_date", dateEnd) // Less than or equal to dateEnd
+          .eq("employee.is_archive", false) // Equal to false
           .in("employee_id", this.employeeIds); // Equal to false
         if (error) {
           console.error(error);
         }
-        this.sssAudit = this.filterHighestAuditId(data);
+        this.sssAudit = this.filterHighestAuditId(
+          data.filter((item) => item.employee !== null)
+        );
         // console.log(data);
         // console.log(this.employeeIds);
       } catch (error) {
