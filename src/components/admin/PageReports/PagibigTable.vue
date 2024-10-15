@@ -118,11 +118,11 @@ pagibigTableStore.fetchEmployeeReports();
       <q-tr>
         <q-td colspan="3"></q-td>
         <q-td class="tw-text-center">
-          Total Employee Share:<br />
+          Total Employee Share:
           {{ pagibigTableStore.getTotalEmployeeShare }}
         </q-td>
         <q-td class="tw-text-center">
-          Total Employer Share:<br />
+          Total Employer Share:
           {{ pagibigTableStore.getTotalEmployerShare }}
         </q-td>
       </q-tr>

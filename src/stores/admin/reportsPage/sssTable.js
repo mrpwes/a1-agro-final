@@ -4,53 +4,7 @@ import { supabase } from "../../../lib/supabaseClient.js";
 export const useSssTableStore = defineStore("sssTable", {
   state: () => ({
     rows: [],
-    columns: [
-      {
-        name: "employeeId",
-        required: true,
-        label: "Emp. Id",
-        field: (row) => row.employee.company_employee_id,
-        align: "left",
-        sortable: true,
-      },
-      {
-        name: "employeeName",
-        align: "center",
-        label: "Name",
-        field: (row) =>
-          row.employee.last_name +
-          " " +
-          row.employee.first_name +
-          " " +
-          row.employee.middle_name,
-        sortable: true,
-        classes: "!tw-bg-neutral-300",
-      },
-      {
-        name: "sssNumber",
-        align: "center",
-        label: "SSS No.",
-        field: (row) => row.employee.sss_number,
-        sortable: true,
-        classes: "!tw-bg-neutral-300",
-      },
-      {
-        name: "employeeShare",
-        align: "center",
-        label: "Employee Share",
-        field: (row) => row.amount,
-        sortable: true,
-        classes: "!tw-bg-neutral-300",
-      },
-      {
-        name: "employerShare",
-        align: "center",
-        label: "Employer Share",
-        field: (row) => row.amount,
-        sortable: true,
-        classes: "!tw-bg-neutral-300",
-      },
-    ],
+    columns: [],
 
     selectedDate: null,
     selectedDateOptions: null,
@@ -74,9 +28,105 @@ export const useSssTableStore = defineStore("sssTable", {
 
       return totalAmount;
     },
+    getTotalEmployerShare() {
+      let totalAmount = 0;
+
+      this.sssAudit.forEach((item) => {
+        totalAmount += this.getEmployerShare(item.amount);
+      });
+
+      return totalAmount;
+    },
+
+    getTotalECEmployerShare() {
+      let totalAmount = 0;
+
+      this.sssAudit.forEach((item) => {
+        totalAmount += this.getECER(item.amount);
+      });
+
+      return totalAmount;
+    },
   },
 
   actions: {
+    setColumns() {
+      this.columns = [
+        {
+          name: "employeeId",
+          required: true,
+          label: "Emp. Id",
+          field: (row) => row.employee.company_employee_id,
+          align: "left",
+          sortable: true,
+        },
+        {
+          name: "employeeName",
+          align: "center",
+          label: "Name",
+          field: (row) =>
+            row.employee.last_name +
+            " " +
+            row.employee.first_name +
+            " " +
+            row.employee.middle_name,
+          sortable: true,
+          classes: "!tw-bg-neutral-300",
+        },
+        {
+          name: "sssNumber",
+          align: "center",
+          label: "SSS No.",
+          field: (row) => row.employee.sss_number,
+          sortable: true,
+          classes: "!tw-bg-neutral-300",
+        },
+        {
+          name: "employeeShare",
+          align: "center",
+          label: "Employee Share",
+          field: (row) => row.amount,
+          sortable: true,
+          classes: "!tw-bg-neutral-300",
+        },
+        {
+          name: "employerShare",
+          align: "center",
+          label: "Employer Share",
+          field: (row) => this.getEmployerShare(row.amount),
+          sortable: true,
+          classes: "!tw-bg-neutral-300",
+        },
+        {
+          name: "ecEmployerShare",
+          align: "center",
+          label: "EC Employer Share",
+          field: (row) => this.getECER(row.amount),
+          sortable: true,
+          classes: "!tw-bg-neutral-300",
+        },
+      ];
+    },
+
+    getEmployerShare(value) {
+      console.log(value, this.sssContributionTableAudit);
+      for (const range of this.sssContributionTableAudit) {
+        if (value == range.ee_share) {
+          return range.er_share;
+        }
+      }
+      return "Value is out of range";
+    },
+
+    getECER(value) {
+      for (const range of this.sssContributionTableAudit) {
+        if (value == range.ee_share) {
+          return range.ec_er_share;
+        }
+      }
+      return "Value is out of range";
+    },
+
     capitalizeFirstLetterOfEachWord(str) {
       return str
         .split(" ")
@@ -254,7 +304,31 @@ export const useSssTableStore = defineStore("sssTable", {
           console.error(error);
         }
         this.sssContributionTableAudit = this.getHighestAuditId(data);
-        // console.log(data);
+        this.sssContributionTableAudit =
+          this.sssContributionTableAudit.data.map((item) => {
+            const range = item.combinedValue;
+            let min, max, ee_share, er_share, ec_er_share;
+
+            // Extract the ee_share value from the 4th index of values
+            ee_share = parseFloat(item.values[4].replace(",", ""));
+            er_share = parseFloat(item.values[3].replace(",", ""));
+            ec_er_share = parseFloat(item.values[6].replace(",", ""));
+
+            if (range.startsWith("Below")) {
+              min = 0;
+              max = parseFloat(range.split(" ")[1].replace(",", ""));
+            } else if (range.includes("Over")) {
+              min = parseFloat(range.split(" ")[0].replace(",", ""));
+              max = null; // or you can set it to a very high number if needed
+            } else {
+              const [start, end] = range.split(" - ");
+              min = parseFloat(start.replace(",", ""));
+              max = parseFloat(end.replace(",", ""));
+            }
+
+            return { min, max, ee_share, er_share, ec_er_share };
+          });
+        this.setColumns();
       } catch (error) {
         console.error(error);
       }
@@ -298,9 +372,9 @@ export const useSssTableStore = defineStore("sssTable", {
       // console.log("Called fetchEmployeeReports");
       await this.getSalaryHistory();
       await this.getNearestDateRange();
+      await this.fetchSssContributionTableAudit();
       await this.fetchEmployeeInRange();
       await this.fetchSssContribAudit();
-      await this.fetchSssContributionTableAudit();
     },
   },
 });

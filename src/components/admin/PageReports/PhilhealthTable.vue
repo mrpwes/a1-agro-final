@@ -118,11 +118,11 @@ philhealthTableStore.fetchEmployeeReports();
       <q-tr>
         <q-td colspan="3"></q-td>
         <q-td class="tw-text-center">
-          Total Employee Share:<br />
+          Total Employee Share:
           {{ philhealthTableStore.getTotalEmployeeShare }}
         </q-td>
         <q-td class="tw-text-center">
-          Total Employer Share:<br />
+          Total Employer Share:
           {{ philhealthTableStore.getTotalEmployeeShare }}
         </q-td>
       </q-tr>

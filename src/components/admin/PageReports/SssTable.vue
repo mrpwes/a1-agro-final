@@ -122,7 +122,11 @@ sssTableStore.fetchEmployeeReports();
         </q-td>
         <q-td class="tw-text-center">
           Total ER Share:
-          {{ sssTableStore.getTotalEmployeeShare }}
+          {{ sssTableStore.getTotalEmployerShare }}
+        </q-td>
+        <q-td class="tw-text-center">
+          Total EC ER Share:
+          {{ sssTableStore.getTotalECEmployerShare }}
         </q-td>
       </q-tr>
     </template>
