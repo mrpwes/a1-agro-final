@@ -1,8 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { exportFile, useQuasar, date } from "quasar";
 import { usePagibigTableStore } from "stores/admin/reportsPage/pagibigTable";
-// import { format } from "date-fns";
 
 //FIXME: PROFILE IMAGE ATTENDANCE REPORT
 
@@ -12,69 +10,53 @@ import { usePagibigTableStore } from "stores/admin/reportsPage/pagibigTable";
 const pagibigTableStore = usePagibigTableStore();
 
 const tableSearch = ref("");
-// const popupEdit = ref(false);
-// CSV SAVE
 
-function wrapCsvValue(val, formatFn, row) {
-  let formatted = formatFn !== void 0 ? formatFn(val, row) : val;
+function exportTableToCSV(tableId) {
+  const table = document.getElementById(tableId);
+  let csvContent = "";
 
-  formatted =
-    formatted === void 0 || formatted === null ? "" : String(formatted);
-
-  formatted = formatted.split('"').join('""');
-  /**
-   * Excel accepts \n and \r in strings, but some other CSV parsers do not
-   * Uncomment the next two lines to escape new lines
-   */
-  // .split('\n').join('\\n')
-  // .split('\r').join('\\r')
-
-  return `"${formatted}"`;
-}
-
-function exportTable() {
-  const $q = useQuasar();
-  const today = Date.now();
-  const todayTimeStamp = date.formatDate(today, "MMM-D-YYYY");
-  // naive encoding to csv format
-  const content = [
-    pagibigTableStore.columns.map((col) => wrapCsvValue(col.label)),
-  ]
-    .concat(
-      pagibigTableStore.rows.map((row) =>
-        pagibigTableStore.columns
-          .map((col) =>
-            wrapCsvValue(
-              typeof col.field === "function"
-                ? col.field(row)
-                : row[col.field === void 0 ? col.name : col.field],
-              col.format,
-              row
-            )
-          )
-          .join(",")
-      )
-    )
-    .join("\r\n");
-
-  const status = exportFile(
-    `Attendance-Report-${todayTimeStamp}.csv`,
-    content,
-    "text/csv"
+  // Get the table headers and remove "arrow_upward"
+  const headers = Array.from(table.querySelectorAll("th")).map((th) =>
+    th.innerText.replace(/arrow_upward/g, "")
   );
+  csvContent += headers.join(",") + "\n";
 
-  if (status !== true) {
-    $q.notify({
-      message: "Browser denied file download...",
-      color: "negative",
-      icon: "warning",
-    });
-  }
+  // Get the table rows, excluding the last column
+  const rows = Array.from(table.querySelectorAll("tr")).slice(1); // Skip the header row
+  rows.forEach((row) => {
+    const cells = Array.from(row.querySelectorAll("td")).map(
+      (td) => td.innerText
+    );
+    csvContent += cells.join(",") + "\n";
+  });
+
+  // Get today's date in the desired format
+  const today = new Date();
+  const options = { month: "short", day: "2-digit", year: "numeric" };
+  const formattedDate = today
+    .toLocaleDateString("en-US", options)
+    .replace(",", "")
+    .replace(/\s+/g, "-");
+
+  // Create a link to download the CSV file
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary link element
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", `Pag-IBIG-Report-${formattedDate}.csv`);
+
+  // Append the link to the body (not visible)
+  document.body.appendChild(link);
+
+  // Automatically click the link to trigger the download
+  link.click();
+
+  // Clean up: remove the link and revoke the object URL
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
-
-// function getNumberOfColumns() {
-//   return columns.length;
-// }
 
 pagibigTableStore.fetchEmployeeReports();
 </script>
@@ -84,6 +66,7 @@ pagibigTableStore.fetchEmployeeReports();
 
 <template>
   <q-table
+    id="pagibig-table"
     class="tw-border tw-rounded-3xl tw-shadow-lg"
     flat
     bordered
@@ -103,7 +86,7 @@ pagibigTableStore.fetchEmployeeReports();
         icon-right="archive"
         label="Export to CSV"
         no-caps
-        @click="exportTable"
+        @click="exportTableToCSV('pagibig-table')"
         class="tw-mr-16"
     /></template>
     <template v-slot:top-left>
