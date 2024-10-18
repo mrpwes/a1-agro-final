@@ -17,6 +17,10 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function formatAmountBalance(row) {
+  return numberWithCommas(row[0].amount + "/" + row[0].balance);
+}
+
 const columns = [
   {
     name: "Loan ID",
@@ -31,12 +35,7 @@ const columns = [
     name: "Loan Type",
     align: "center",
     label: "Loan Type",
-    field: (row) =>
-      (row.request_type.request_type_name === "VALE"
-        ? row.vale[0].id
-        : row.partial_to_ar[0].id) +
-      " - " +
-      row.request_type.request_type_name,
+    field: (row) => row.request_type_id.request_type_name,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -44,14 +43,19 @@ const columns = [
     name: "Description",
     align: "center",
     label: "Description",
-    field: "description",
+    field: (row) => row.request_description,
     sortable: true,
   },
   {
     name: "Recipient",
     align: "center",
     label: "Recipient",
-    field: (row) => row.employee.first_name + " " + row.employee.last_name,
+    field: (row) =>
+      row.request_employee_id.company_employee_id +
+      " - " +
+      row.request_employee_id.first_name +
+      " " +
+      row.request_employee_id.last_name,
     sortable: true,
   },
   {
@@ -59,9 +63,11 @@ const columns = [
     align: "center",
     label: "Issuer",
     field: (row) =>
-      row.request_confirmation.employee.first_name +
+      row.admin_employee_id.company_employee_id +
+      " - " +
+      row.admin_employee_id.first_name +
       " " +
-      row.request_confirmation.employee.last_name,
+      row.admin_employee_id.last_name,
     sortable: true,
   },
   {
@@ -69,16 +75,9 @@ const columns = [
     align: "center",
     label: "Amount",
     field: (row) =>
-      "₱" +
-      (row.request_type.request_type_name === "VALE"
-        ? numberWithCommas(row.vale[0].balance) +
-          " /" +
-          " ₱" +
-          numberWithCommas(row.vale[0].amount)
-        : numberWithCommas(row.partial_to_ar[0].balance) +
-          " /" +
-          " ₱" +
-          numberWithCommas(row.partial_to_ar[0].amount)),
+      row.vale
+        ? formatAmountBalance(row.vale)
+        : formatAmountBalance(row.partial_to_ar),
     sortable: true,
   },
   {
