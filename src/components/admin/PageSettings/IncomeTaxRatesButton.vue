@@ -89,6 +89,7 @@ td {
               <q-input
                 dense
                 hide-bottom-space
+                borderless
                 input-class="tw-text-center"
                 :disable="!incomeTaxRatesStore.isEditing"
                 v-model="incomeTaxRatesStore.tableData[index].over"
@@ -98,6 +99,7 @@ td {
               <q-input
                 dense
                 hide-bottom-space
+                borderless
                 input-class="tw-text-center"
                 :disable="!incomeTaxRatesStore.isEditing"
                 v-model="incomeTaxRatesStore.tableData[index].notOver"
@@ -107,6 +109,7 @@ td {
               <q-input
                 dense
                 hide-bottom-space
+                borderless
                 input-class="tw-text-center"
                 :disable="!incomeTaxRatesStore.isEditing"
                 v-model="incomeTaxRatesStore.tableData[index].basicAmount"
@@ -116,6 +119,7 @@ td {
               <q-input
                 dense
                 hide-bottom-space
+                borderless
                 input-class="tw-text-center"
                 :disable="!incomeTaxRatesStore.isEditing"
                 v-model="incomeTaxRatesStore.tableData[index].additionalRate"
@@ -125,6 +129,7 @@ td {
               <q-input
                 dense
                 hide-bottom-space
+                borderless
                 input-class="tw-text-center"
                 :disable="!incomeTaxRatesStore.isEditing"
                 v-model="incomeTaxRatesStore.tableData[index].excessOver"

@@ -32,7 +32,10 @@ export const useSssTableStore = defineStore("sssTable", {
       let totalAmount = 0;
 
       this.sssAudit.forEach((item) => {
-        totalAmount += this.getEmployerShare(item.amount);
+        totalAmount +=
+          typeof this.getEmployerShare(item.amount) === "number"
+            ? this.getEmployerShare(item.amount)
+            : 0;
       });
 
       return totalAmount;
@@ -42,7 +45,10 @@ export const useSssTableStore = defineStore("sssTable", {
       let totalAmount = 0;
 
       this.sssAudit.forEach((item) => {
-        totalAmount += this.getECER(item.amount);
+        totalAmount +=
+          typeof this.getECER(item.amount) === "number"
+            ? this.getECER(item.amount)
+            : 0;
       });
 
       return totalAmount;
@@ -115,7 +121,7 @@ export const useSssTableStore = defineStore("sssTable", {
           return range.er_share;
         }
       }
-      return "Value is out of range";
+      return "Out of range";
     },
 
     getECER(value) {
@@ -124,7 +130,7 @@ export const useSssTableStore = defineStore("sssTable", {
           return range.ec_er_share;
         }
       }
-      return "Value is out of range";
+      return "Out of range";
     },
 
     capitalizeFirstLetterOfEachWord(str) {
