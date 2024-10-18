@@ -6,6 +6,7 @@ const addApprovalStore = useAddApprovalStore();
 const addVoucherDialog = ref(false);
 
 addApprovalStore.fetchEmployeeOptions();
+addApprovalStore.fetchRequestTypeOptions();
 
 function filterFn(val, update) {
   update(() => {
@@ -78,8 +79,10 @@ function filterFn(val, update) {
               hide-bottom-space
               input-debounce="0"
               :options="addApprovalStore.typeOptions"
+              option-label="request_type_name"
               class="!tw-pb-0; tw-capitalize;"
               popup-content-class="tw-capitalize"
+              emit-value
             >
               <template v-slot:no-option>
                 <q-item>

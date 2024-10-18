@@ -13,7 +13,7 @@ storePageHeader.currentPage = "Approval List";
 
 const storeViewApproval = useViewApprovalStore();
 
-storeViewApproval.getApprovalList();
+// storeViewApproval.getApprovalList();
 const columns = [
   {
     name: "Request ID",
