@@ -93,7 +93,7 @@ const columns = [
 <template>
   <!-- TODO: Add Voucher List Page and Connect to Database -->
   <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
-    <ArchivedLoanButton></ArchivedLoanButton>
+    <!-- <ArchivedLoanButton></ArchivedLoanButton> -->
     <AddLoanButton></AddLoanButton>
   </div>
   <q-table
@@ -106,11 +106,11 @@ const columns = [
     :rows-per-page-options="[10, 20, 0]"
     row-key="Loan ID"
   >
-    <template v-slot:body-cell-actions="props">
+    <!-- <template v-slot:body-cell-actions="props">
       <q-td key="actions" class="tw-w-2/12" :props="props"
         ><ViewLoanButton :rows="props.row"></ViewLoanButton
       ></q-td>
-    </template>
+    </template> -->
     <template v-slot:top-right>
       <q-input
         borderless

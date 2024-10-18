@@ -5,7 +5,9 @@ import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
 const storeAddLoan = useAddLoan();
 const addLoanDialog = ref(false);
 
-storeAddLoan.getDetails();
+// storeAddLoan.getDetails();
+storeAddLoan.fetchEmployeeOptions();
+storeAddLoan.fetchRequestTypeOptions();
 
 function filterFn(val, update) {
   update(() => {
@@ -27,7 +29,7 @@ function filterFn(val, update) {
   />
   <q-dialog v-model="addLoanDialog" persistent>
     <q-card class="min-width: 500px">
-      <q-form @submit.prevent="storeAddLoan.addLoan" autofocus>
+      <q-form @submit.prevent="storeAddLoan.insertRequestForm" autofocus>
         <div class="tw-m-4">
           <q-card-section class="tw-pt-0 tw-pl-0">
             <div class="tw-text-3xl tw-font-extrabold tw-pb-3">
@@ -55,7 +57,6 @@ function filterFn(val, update) {
               :option-value="id"
               class="!tw-pb-0; tw-capitalize"
               popup-content-class="tw-capitalize"
-              @update:model-value="storeAddLoan.checkValidity"
             >
               <!-- @filter="filterRecipient" -->
               <template v-slot:no-option>
@@ -78,9 +79,10 @@ function filterFn(val, update) {
               hide-bottom-space
               input-debounce="0"
               :options="storeAddLoan.typeOptions"
+              option-label="request_type_name"
               class="!tw-pb-0; tw-capitalize;"
               popup-content-class="tw-capitalize"
-              @update:model-value="storeAddLoan.checkValidity"
+              emit-value
             >
               <!-- @filter="filterRecipient" -->
               <template v-slot:no-option>
@@ -91,6 +93,18 @@ function filterFn(val, update) {
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <div class="tw-flex tw-mb-3">
+            <div class="tw-content-center tw-mr-3">Subject:</div>
+            <div class="tw-px-2">
+              <q-input
+                v-model="storeAddLoan.subject"
+                filled
+                autogrow
+                hide-bottom-space
+                class="tw-max-w-full"
+              />
+            </div>
           </div>
           <div>
             <div>Description:</div>
