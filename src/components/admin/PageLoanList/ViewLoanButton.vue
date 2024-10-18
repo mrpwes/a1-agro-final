@@ -14,8 +14,25 @@ function openmodel(row) {
   // console.table(selectedRow.value);
 }
 
+async function refresh() {
+  selectedRow.value = await storeViewLoan.getSelectedLoan(selectedRow.value.id);
+  storeViewLoan.getLoanList();
+}
+
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function formatAmountBalance(row) {
+  return numberWithCommas(row[0].amount + "/" + row[0].balance);
+}
+
+function formatAmount(row) {
+  return numberWithCommas(row[0].amount);
+}
+
+function formatBalance(row) {
+  return numberWithCommas(row[0].balance);
 }
 </script>
 
@@ -33,9 +50,9 @@ function numberWithCommas(x) {
           Loan ID - {{ selectedRow.id }}
           <br />
           <span class="tw-text-base tw-font-normal tw-text-gray-500">
-            {{ selectedRow.request_type.request_type_name }} -
+            {{ selectedRow.request_type_id.request_type_name }} ID -
             {{
-              selectedRow.vale && selectedRow.vale.length > 0
+              selectedRow.vale[0]
                 ? selectedRow.vale[0].id
                 : selectedRow.partial_to_ar[0].id
             }}
@@ -44,14 +61,16 @@ function numberWithCommas(x) {
         <table class="tw-w-full tw-table-auto tw-border-collapse">
           <tr>
             <td>
-              Recipient: {{ selectedRow.id }} -
-              {{ selectedRow.employee.last_name }},
-              {{ selectedRow.employee.first_name }}
+              Recipient:
+              {{ selectedRow.request_employee_id.company_employee_id }} -
+              {{ selectedRow.request_employee_id.last_name }},
+              {{ selectedRow.request_employee_id.first_name }}
             </td>
             <td>
               Issuer:
-              {{ selectedRow.request_confirmation.employee.last_name }},
-              {{ selectedRow.request_confirmation.employee.first_name }}
+              {{ selectedRow.admin_employee_id.company_employee_id }} -
+              {{ selectedRow.admin_employee_id.last_name }},
+              {{ selectedRow.admin_employee_id.first_name }}
             </td>
           </tr>
           <tr>
@@ -59,9 +78,9 @@ function numberWithCommas(x) {
             <td>
               Amount:
               {{
-                selectedRow.request_type.request_type_name === "VALE"
-                  ? numberWithCommas(selectedRow.vale[0].amount)
-                  : numberWithCommas(selectedRow.partial_to_ar[0].amount)
+                selectedRow.vale[0]
+                  ? formatAmount(selectedRow.vale)
+                  : formatAmount(selectedRow.partial_to_ar)
               }}
             </td>
           </tr>
@@ -70,9 +89,9 @@ function numberWithCommas(x) {
             <td>
               Balance:
               {{
-                selectedRow.request_type.request_type_name === "VALE"
-                  ? numberWithCommas(selectedRow.vale[0].balance)
-                  : numberWithCommas(selectedRow.partial_to_ar[0].balance)
+                selectedRow.vale[0]
+                  ? formatBalance(selectedRow.vale)
+                  : formatBalance(selectedRow.partial_to_ar)
               }}
             </td>
           </tr>
@@ -102,7 +121,9 @@ function numberWithCommas(x) {
           label="Save"
           @click="
             storeViewLoan.paymentButton = false;
-            storeViewLoan.insertPayment(selectedRow);
+            storeViewLoan.insertPayment(selectedRow).then(() => {
+              refresh();
+            });
           "
         />
         <q-btn

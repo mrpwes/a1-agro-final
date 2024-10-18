@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
 import { useAuthenticationStore } from "../../authentication.js";
+import { useViewLoan } from "./viewLoan.js";
 // import { useViewLoan } from "./viewLoan.js";
 
 const storeAuthentication = useAuthenticationStore();
-// const storeViewLoan = useViewLoan();
+const storeViewLoan = useViewLoan();
 
 export const useAddLoan = defineStore("addLoan", {
   state: () => ({
@@ -79,7 +80,7 @@ export const useAddLoan = defineStore("addLoan", {
             is_archive: false,
           })
           .select("id");
-        console.log(data);
+        // console.log(data);
         this.insertRequestID = data[0].id;
         this.insertCompanyLoan();
         if (error) {
@@ -125,6 +126,7 @@ export const useAddLoan = defineStore("addLoan", {
           }
         }
 
+        storeViewLoan.getLoanList();
         // TODO: COMPLETED HERE // SUCCESSFULLY ADDED LOAN
       } catch (error) {
         console.log(error);

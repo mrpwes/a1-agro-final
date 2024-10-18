@@ -75,7 +75,7 @@ const columns = [
     align: "center",
     label: "Amount",
     field: (row) =>
-      row.vale
+      row.vale[0]
         ? formatAmountBalance(row.vale)
         : formatAmountBalance(row.partial_to_ar),
     sortable: true,
@@ -105,11 +105,11 @@ const columns = [
     :rows-per-page-options="[10, 20, 0]"
     row-key="Loan ID"
   >
-    <!-- <template v-slot:body-cell-actions="props">
+    <template v-slot:body-cell-actions="props">
       <q-td key="actions" class="tw-w-2/12" :props="props"
         ><ViewLoanButton :rows="props.row"></ViewLoanButton
       ></q-td>
-    </template> -->
+    </template>
     <template v-slot:top-right>
       <q-input
         borderless

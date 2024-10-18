@@ -43,8 +43,38 @@ export const useViewLoan = defineStore("viewLoan", {
       if (error) {
         throw error;
       }
-      console.log(data);
+      // console.log(data);
       this.rows = data;
+    },
+
+    async getSelectedLoan(requestID) {
+      const { data, error } = await supabase
+        .from("request")
+        .select(
+          `
+          id,
+        partial_to_ar!partial_to_ar_request_id_fkey(id, amount, balance),
+        vale!vale_request_id_fkey(id, amount, balance),
+        request_employee_id (id, company_employee_id, first_name, last_name),
+        request_type_id (id, request_type_name),
+        request_subject,
+        request_description,
+        request_application_date,
+        admin_employee_id (id, company_employee_id, first_name, last_name),
+        admin_approval_status,
+        admin_comments,
+        admin_confirmation_date,
+        change_date,
+        is_archive
+      `
+        )
+        .eq("id", requestID);
+      if (error) {
+        throw error;
+      }
+      // console.log(data);
+      // this.rows = data;
+      return data[0];
     },
 
     //   async getLoanList() {
@@ -177,8 +207,8 @@ export const useViewLoan = defineStore("viewLoan", {
 
     async insertPayment(companyLoan) {
       if (companyLoan.vale.length > 0) {
-        console.log(companyLoan.vale[0].id);
-        console.log(companyLoan.vale[0].balance);
+        // console.log(companyLoan.vale[0].id);
+        // console.log(companyLoan.vale[0].balance);
         const { data } = await supabase
           .from("vale")
           .update({ balance: companyLoan.vale[0].balance - this.payment })
@@ -186,8 +216,20 @@ export const useViewLoan = defineStore("viewLoan", {
           .eq("id", companyLoan.vale[0].id);
         console.log(data);
       } else if (companyLoan.partial_to_ar.length > 0) {
-        console.log("The partial_to_ar array is empty.");
+        // console.log(companyLoan.partial_to_ar[0].id);
+        // console.log(companyLoan.partial_to_ar[0].balance);
+        const { data } = await supabase
+          .from("partial_to_ar")
+          .update({
+            balance: companyLoan.partial_to_ar[0].balance - this.payment,
+          })
+          .select()
+          .eq("id", companyLoan.partial_to_ar[0].id);
+        console.log(data);
       }
+
+      this.getLoanList();
+      // TODO: SUCCESSFULLY INSERT PAYMENT
     },
   },
 });
