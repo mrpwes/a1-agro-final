@@ -39,7 +39,7 @@ th {
 
 <template>
   <q-btn
-    label="PhilHealth Contribution Table"
+    label="Pag-IBIG Contribution Table"
     @click="
       openmodel();
       pagibigContributionTable.fetchPagibigContributionTable();

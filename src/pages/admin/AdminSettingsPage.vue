@@ -3,6 +3,7 @@ import { usePageHeader } from "stores/pageHeader";
 import SSSContributionButton from "components/admin/PageSettings/SSSContributionButton.vue";
 import PhilhealthContributionButton from "components/admin/PageSettings/PhilhealthContributionButton.vue";
 import PagibigContributionButton from "components/admin/PageSettings/PagibigContributionButton.vue";
+import IncomeTaxRatesButton from "components/admin/PageSettings/IncomeTaxRatesButton.vue";
 
 // import AttendanceTable from "components/admin/PageReports/AttendanceTable.vue";
 
@@ -17,6 +18,7 @@ storePageHeader.currentPage = "Settings";
       <SSSContributionButton></SSSContributionButton>
       <PhilhealthContributionButton></PhilhealthContributionButton>
       <PagibigContributionButton></PagibigContributionButton>
+      <IncomeTaxRatesButton></IncomeTaxRatesButton>
       <!-- <AttendanceTable></AttendanceTable>
       &nbsp;
       <LoanTable></LoanTable>

@@ -1,34 +1,3 @@
-Questions For Tom: 
-        Audit Logs Employee 
-        Settings Contribution
-
-        Govt Loans
-
-Employee Biometrics 
-        EMAIL SETUP SMTP UPDATES
-
-
-
-
-TODO: IMPORTANT LAST: 
-        New Database Table Per Employee Payment for Contribution
-        Restructure SSS Contribution Bracketing For Table
-        Rate Per Day Audit Logs
-
-RatePerDay audit logs //Finished Reflected in Payroll
-HalfMonthIndicator then the value is 0 and 1 //Finished Reflected in Payroll using custom logic
-
-
-//ADD AND VIEW EMPLOYEE BUTTON FINISHED JUST COPY FOR OTHER AND CONNECT TO PAYROLL SHEET
-enchance employee list history logs add naming of table logs
-
-
-!IMPORTANT: PAYROLL TABLE GTE LTE USING DATE FILTERING
-govt loans audit logs + connect to payroll 
-employee contribution on employee profile and modified by   
-
-!PRIORITY: fix contribution add employee and view employee 
-
 TODO: 
         Images of Users Add Employee and PageHeader
         Employee List View Null Values
