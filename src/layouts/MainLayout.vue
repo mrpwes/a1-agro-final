@@ -17,7 +17,7 @@ const employeeMenuList = [
     icon: "account_circle",
     label: "Profile",
     separator: false,
-    link: "/profile",
+    link: "/employee/profile",
   },
   {
     icon: "assignment_ind",
@@ -59,7 +59,7 @@ const employeeMenuList = [
     icon: "support",
     label: "Support",
     separator: false,
-    link: "/support",
+    link: "/employee/support",
   },
 ];
 

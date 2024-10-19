@@ -68,7 +68,7 @@ export const useAuthenticationStore = defineStore("authentication", {
           this.isAuthenticated = true;
 
           if (this.loginOption === "employee") {
-            this.router.push("/employee/dashboard");
+            this.router.push("/employee/profile");
           } else if (this.loginOption === "admin") {
             this.router.push("/admin/dashboard");
           }

@@ -58,6 +58,20 @@ const routes = [
       }
     },
   },
+  {
+    path: "/employee",
+    component: () => import("layouts/MainLayout.vue"),
+    children: [
+      {
+        path: "profile",
+        component: () => import("pages/employee/EmployeeProfilePage.vue"),
+      },
+      {
+        path: "support",
+        component: () => import("pages/SupportPage.vue"),
+      },
+    ],
+  },
 
   // Always leave this as last one,
   // but you can also remove it
