@@ -106,9 +106,12 @@ function totalNetPay() {
                 </div>
                 <div>
                   {{
-                    selectedRow.emp_sss_contrib_audit[
-                      selectedRow.emp_sss_contrib_audit.length - 1
-                    ].amount ?? 0
+                    selectedRow.emp_sss_contrib_audit &&
+                    selectedRow.emp_sss_contrib_audit.length > 0
+                      ? selectedRow.emp_sss_contrib_audit[
+                          selectedRow.emp_sss_contrib_audit.length - 1
+                        ].amount ?? 0
+                      : 0
                   }}
                 </div>
               </td>
