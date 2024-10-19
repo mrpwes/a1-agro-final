@@ -2,7 +2,7 @@
 import { usePageHeader } from "stores/pageHeader";
 
 const storePageHeader = usePageHeader();
-storePageHeader.currentPage = "Profile";
+storePageHeader.currentPage = "Payslip";
 </script>
 
 <template>
