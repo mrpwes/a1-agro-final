@@ -4,7 +4,7 @@ import { date } from "quasar";
 import { usePageHeader } from "stores/pageHeader";
 import { useDashboardStore } from "src/stores/admin/dashboard";
 import ViewApprovalButton from "components/admin/PageApprovalList/ViewApprovalButton.vue";
-import { useViewApprovalStore } from "stores/admin/approvalListPage/viewApproval";
+// import { useViewApprovalStore } from "stores/admin/approvalListPage/viewApproval";
 
 const storeDashboard = useDashboardStore();
 storeDashboard.fetchTotalEmployees();
@@ -14,9 +14,9 @@ storePageHeader.currentPage = "Dashboard";
 
 const tableSearch = ref("");
 
-const storeViewApproval = useViewApprovalStore();
+// const storeViewApproval = useViewApprovalStore();
 
-storeViewApproval.getApprovalList();
+// storeViewApproval.getApprovalList();
 
 storeDashboard.fetchEmployeesBornInCurrentMonth();
 const columns = [
@@ -103,16 +103,16 @@ const columns = [
     </div>
   </div>
   <div class="tw-w-8/12 tw-mx-auto">
-    <q-table
+    <!-- <q-table
       class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
       flat
       bordered
       :filter="tableSearch"
       :columns="columns"
-      :rows="storeViewApproval.getUnarchivedApprovalList"
       :rows-per-page-options="[10, 20, 0]"
       row-key="name"
     >
+      :rows="storeViewApproval.getUnarchivedApprovalList"
       <template v-slot:body-cell-actions="props">
         <q-td key="actions" class="tw-w-2/12" :props="props"
           ><ViewApprovalButton :rows="props.row"></ViewApprovalButton
@@ -130,6 +130,6 @@ const columns = [
             <q-icon name="search" />
           </template>
         </q-input> </template
-    ></q-table>
+    ></q-table> -->
   </div>
 </template>
