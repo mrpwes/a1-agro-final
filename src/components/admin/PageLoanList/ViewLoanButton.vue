@@ -148,21 +148,21 @@ function formatBalance(row) {
               : 'Archive'
           "
           @click="
-            storeViewLoan.archivedLoan(
-              selectedRow.vale && selectedRow.vale.length > 0
-                ? selectedRow.vale[0].id
-                : selectedRow.partial_to_ar[0].id,
-              selectedRow.vale && selectedRow.vale.length > 0
-                ? 'vale'
-                : 'partial_to_ar',
-              selectedRow.vale && selectedRow.vale.length > 0
-                ? selectedRow.vale[0].is_archive
-                : selectedRow.partial_to_ar[0].is_archive,
-              selectedRow.id,
-              selectedRow.is_archive,
-              selectedRow.request_confirmation.id,
-              selectedRow.request_confirmation.is_archive
-            )
+            selectedRow.is_archive
+              ? storeViewLoan.unarchivedLoan(
+                  selectedRow.id,
+                  selectedRow.request_type_id.id,
+                  selectedRow.vale[0]
+                    ? selectedRow.vale[0].id
+                    : selectedRow.partial_to_ar[0].id
+                )
+              : storeViewLoan.archivedLoan(
+                  selectedRow.id,
+                  selectedRow.request_type_id.id,
+                  selectedRow.vale[0]
+                    ? selectedRow.vale[0].id
+                    : selectedRow.partial_to_ar[0].id
+                )
           "
           v-close-popup
         />

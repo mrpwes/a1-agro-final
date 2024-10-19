@@ -92,7 +92,7 @@ const columns = [
 <template>
   <!-- TODO: Add Voucher List Page and Connect to Database -->
   <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
-    <!-- <ArchivedLoanButton></ArchivedLoanButton> -->
+    <ArchivedLoanButton></ArchivedLoanButton>
     <AddLoanButton></AddLoanButton>
   </div>
   <q-table

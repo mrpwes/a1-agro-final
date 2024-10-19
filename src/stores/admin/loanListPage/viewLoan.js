@@ -23,8 +23,8 @@ export const useViewLoan = defineStore("viewLoan", {
         .select(
           `
           id,
-        partial_to_ar!partial_to_ar_request_id_fkey(id, amount, balance),
-        vale!vale_request_id_fkey(id, amount, balance),
+        partial_to_ar!partial_to_ar_request_id_fkey(id, amount, balance, is_archive),
+        vale!vale_request_id_fkey(id, amount, balance, is_archive),
         request_employee_id (id, company_employee_id, first_name, last_name),
         request_type_id (id, request_type_name),
         request_subject,
@@ -38,8 +38,8 @@ export const useViewLoan = defineStore("viewLoan", {
         is_archive
       `
         )
-        .in("request_type_id.id", ["1", "2"])
-        .eq("is_archive", false);
+        .in("request_type_id.id", ["1", "2"]);
+      // .eq("is_archive", false);
       if (error) {
         throw error;
       }
@@ -75,6 +75,76 @@ export const useViewLoan = defineStore("viewLoan", {
       // console.log(data);
       // this.rows = data;
       return data[0];
+    },
+
+    async archivedLoan(requestID, requestTypeID, companyLoanID) {
+      try {
+        const { error } = await supabase
+          .from("request")
+          .update({
+            is_archive: true,
+          })
+          .eq("id", requestID);
+        if (error) {
+          throw error;
+        }
+        if (requestTypeID == 1) {
+          const { error2 } = await supabase
+            .from("vale")
+            .update({
+              is_archive: true,
+            })
+            .eq("id", companyLoanID);
+          console.log(error2);
+        } else if (requestTypeID == 2) {
+          const { error2 } = await supabase
+            .from("partial_to_ar")
+            .update({
+              is_archive: true,
+            })
+            .eq("id", companyLoanID);
+
+          console.log(error2);
+        }
+        this.getLoanList();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async unarchivedLoan(requestID, requestTypeID, companyLoanID) {
+      try {
+        const { error } = await supabase
+          .from("request")
+          .update({
+            is_archive: false,
+          })
+          .eq("id", requestID);
+        if (error) {
+          throw error;
+        }
+        if (requestTypeID == 1) {
+          const { error2 } = await supabase
+            .from("vale")
+            .update({
+              is_archive: false,
+            })
+            .eq("id", companyLoanID);
+          console.log(error2);
+        } else if (requestTypeID == 2) {
+          const { error2 } = await supabase
+            .from("partial_to_ar")
+            .update({
+              is_archive: false,
+            })
+            .eq("id", companyLoanID);
+
+          console.log(error2);
+        }
+        this.getLoanList();
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     //   async getLoanList() {
