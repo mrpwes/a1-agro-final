@@ -33,7 +33,7 @@ export const useAuthenticationStore = defineStore("authentication", {
       try {
         this.logoutLoading = true;
         let { error } = await supabase.auth.signOut();
-        this.router.push("/login");
+        this.router.push("/");
         getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
         if (error) {
           throw error;
