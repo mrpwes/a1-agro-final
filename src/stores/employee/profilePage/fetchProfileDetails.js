@@ -10,12 +10,13 @@ export const useProfileStore = defineStore("profile", {
     profileDetails: null,
     profilePicture: null,
   }),
+  getters: {},
   actions: {
     async getProfileDetails() {
       this.getCurrentProfilePicture();
       const { data, error } = await supabase
         .from("employee")
-        .select("*")
+        .select("*, address(*)")
         .eq("id", this.currentUser)
         .single();
       if (error) {

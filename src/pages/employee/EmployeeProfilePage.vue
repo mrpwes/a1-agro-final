@@ -73,8 +73,23 @@ storeProfile.getProfileDetails();
       <tr class="">
         <td colspan="4" class="tw-border-none">
           <span class="tw-font-semibold">Address:</span>
-          TODO:
-          {{ storeProfile.profileDetails.address }}
+          <span v-if="storeProfile.profileDetails.address[0].region">
+            Region {{ storeProfile.profileDetails.address[0].region }}</span
+          >
+          {{ storeProfile.profileDetails.address[0].province }}
+          {{ storeProfile.profileDetails.address[0].city }}
+          {{ storeProfile.profileDetails.address[0].barangay }}
+          {{ storeProfile.profileDetails.address[0].postal_code }}
+          {{ storeProfile.profileDetails.address[0].street }}
+          {{ storeProfile.profileDetails.address[0].house_number }}
+          <span
+            v-if="storeProfile.profileDetails.address[0].additional_information"
+          >
+            -
+            <span class="tw-text-gray-700">{{
+              storeProfile.profileDetails.address[0].additional_information
+            }}</span></span
+          >
         </td>
       </tr>
     </table>
