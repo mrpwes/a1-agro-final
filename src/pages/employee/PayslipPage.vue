@@ -1,18 +1,49 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
 import { usePayslipStore } from "stores/employee/payslipPage/fetchPayslipContents";
+import { usePayslipFormatterStore } from "stores/employee/payslipPage/payslipFormatter";
 
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Payslip";
 
 const payslipStore = usePayslipStore();
+const payslipFormatterStore = usePayslipFormatterStore();
 
 payslipStore.fetchAttendanceReports();
+
+function twoDecimalWithoutRounding(num) {
+  var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
+  return parseFloat(with2Decimals);
+}
+
+function totalDeductions(selectedRow) {
+  return (
+    (selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0) +
+    (selectedRow.sssCalamityLoan ?? 0) +
+    (selectedRow.sssLoan ?? 0) +
+    (selectedRow.pagIbigLoan ?? 0)
+  );
+}
+
+function totalNetPay(selectedRow) {
+  try {
+    return twoDecimalWithoutRounding(
+      payslipFormatterStore.grossIncomeFormatter(
+        selectedRow.rate_per_day,
+        selectedRow.attendance
+      ) - totalDeductions(selectedRow)
+    );
+  } catch (error) {
+    console.error("Error calculating payroll:", error);
+    return selectedRow; // or any default value you prefer
+  }
+}
 </script>
 
 <template>
   <div>
-    <h1>TESTING</h1>
     <div class="noScreen">
       <div class="tw-flex tw-flex-row tw-justify-between tw-mb-10">
         <div class="tw-flex tw-flex-row">
@@ -103,26 +134,68 @@ payslipStore.fetchAttendanceReports();
         <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
           <div>SSS Contribution:</div>
         </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>₱FORMATTER</div></td>
+        <td class="tw-p-3 tw-border-gray-400">
+          <div>
+            ₱
+            {{
+              payslipStore.rows[0]?.emp_sss_contrib_audit?.[
+                payslipStore.rows[0].emp_sss_contrib_audit.length - 1
+              ]?.amount ?? 0
+            }}
+          </div>
+        </td>
       </tr>
       <tr>
         <td colspan="1" class="tw-p-3"><div>Days Worked:</div></td>
-        <td colspan="1" class="tw-p-3"><div>TODO:</div></td>
-        <td class="tw-border-r tw-border-gray-400">TODO:</td>
+        <td colspan="1" class="tw-p-3">
+          <div>
+            {{
+              payslipFormatterStore.noDaysWorkedFormatter(
+                payslipStore.rows[0].attendance
+              )
+            }}
+          </div>
+        </td>
+        <td class="tw-border-r tw-border-gray-400">
+          ₱{{
+            payslipFormatterStore.grossIncomeFormatter(
+              payslipStore.rows[0].rate_per_day,
+              payslipStore.rows[0].attendance
+            )
+          }}
+        </td>
         <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
           <div>PhilHealth Contribution:</div>
         </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>₱FORMATTER</div></td>
+        <td class="tw-p-3 tw-border-gray-400">
+          <div>
+            ₱
+            {{
+              payslipStore.rows[0]?.emp_philhealth_contrib_audit?.[
+                payslipStore.rows[0].emp_philhealth_contrib_audit.length - 1
+              ]?.amount ?? 0
+            }}
+          </div>
+        </td>
       </tr>
       <tr>
-        <td class="tw-p-3"><div>Absences:</div></td>
+        <td class="tw-p-3"><div></div></td>
         <td colspan="2" class="tw-p-3 tw-border-r tw-border-gray-400">
-          <div>x3</div>
+          <div></div>
         </td>
         <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
           <div>Pag-IBIG Contribution:</div>
         </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>₱FORMATTER</div></td>
+        <td class="tw-p-3 tw-border-gray-400">
+          <div>
+            ₱
+            {{
+              payslipStore.rows[0]?.emp_pagibig_contrib_audit?.[
+                payslipStore.rows[0].emp_pagibig_contrib_audit.length - 1
+              ]?.amount ?? 0
+            }}
+          </div>
+        </td>
       </tr>
       <tr>
         <td colspan="3"><br /></td>
@@ -160,21 +233,37 @@ payslipStore.fetchAttendanceReports();
         >
           Total Gross Income:
         </td>
-        <td class="tw-p-3 tw-border-b tw-border-gray-400">₱5,112.00</td>
+        <td class="tw-p-3 tw-border-b tw-border-gray-400">
+          ₱{{
+            payslipFormatterStore.grossIncomeFormatter(
+              payslipStore.rows[0].rate_per_day,
+              payslipStore.rows[0].attendance
+            )
+          }}
+        </td>
+
+        <!-- payslipFormatterStore.noDaysWorkedFormatter(
+                payslipStore.rows[0].attendance !== null
+                  ? payslipStore.rows[0].attendance
+                  : []
+              ) -->
         <td
           colspan="2"
           class="tw-p-3 tw-border-b tw-border-l tw-border-gray-400"
         >
           Total Deductions:
         </td>
-        <td class="tw-p-3 tw-border-b tw-border-gray-400">₱4780</td>
+        <td class="tw-p-3 tw-border-b tw-border-gray-400">
+          ₱
+          {{ totalDeductions(payslipStore.rows[0]) }}
+        </td>
       </tr>
       <tr>
         <td colspan="3"></td>
         <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
           Total Net Pay:
         </td>
-        <td class="tw-p-3">₱332.00</td>
+        <td class="tw-p-3">₱{{ totalNetPay(payslipStore.rows[0]) }}</td>
       </tr>
     </table>
   </div>

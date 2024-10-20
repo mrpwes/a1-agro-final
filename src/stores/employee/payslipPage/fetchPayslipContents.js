@@ -116,10 +116,10 @@ export const usePayslipStore = defineStore("payslip", {
         is_archive: null,
         emp_id_modified_by: null,
         change_date: null,
-        attendance: null,
-        emp_sss_contrib_audit: null,
-        emp_philhealth_contrib_audit: null,
-        emp_pagibig_contrib_audit: null,
+        attendance: [],
+        emp_sss_contrib_audit: [],
+        emp_philhealth_contrib_audit: [],
+        emp_pagibig_contrib_audit: [],
         vale_audit: null,
         employee_audit: [
           {
