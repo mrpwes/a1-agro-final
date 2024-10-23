@@ -5,6 +5,8 @@ import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButton.vue";
 import ArchivedLoanButton from "components/admin/PageLoanList/ArchivedLoanButton.vue";
 import AddLoanButton from "components/admin/PageLoanList/AddLoanButton.vue";
 
+import GovernmentLoanTable from "components/admin/PageLoanList/GovernmentLoan/GovernmentLoanTable.vue";
+
 import { useViewLoan } from "stores/admin/loanListPage/viewLoan";
 
 const storePageHeader = usePageHeader();
@@ -81,6 +83,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "status",
+    align: "center",
+    label: "Status",
+    field: (row) => row.request_approval_status_id.request_approval_status_name,
+    sortable: true,
+  },
+  {
     name: "actions",
     align: "center",
     label: "",
@@ -99,6 +108,8 @@ const columns = [
     class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
     flat
     bordered
+    title="Company Loan"
+    :title-class="['tw-text-xl', 'tw-font-bold']"
     :filter="tableSearch"
     :columns="columns"
     :rows="storeViewLoan.getUnarchivedLoanList"
@@ -110,7 +121,7 @@ const columns = [
         ><ViewLoanButton :rows="props.row"></ViewLoanButton
       ></q-td>
     </template>
-    <template v-slot:top-right>
+    <!-- <template v-slot:top-right>
       <q-input
         borderless
         dense
@@ -122,7 +133,9 @@ const columns = [
           <q-icon name="search" />
         </template>
       </q-input> </template
-  ></q-table>
+  > -->
+  </q-table>
+  <GovernmentLoanTable></GovernmentLoanTable>
 </template>
 
 <style scoped></style>
