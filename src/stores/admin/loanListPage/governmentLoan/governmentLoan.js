@@ -29,14 +29,6 @@ export const useGovernmentLoan = defineStore("governmentLoan", {
         sortable: true,
       },
       {
-        name: "date_start",
-        align: "center",
-        label: "Date Start",
-        field: (row) => row.date_start,
-        format: (val) => `${val}`,
-        sortable: true,
-      },
-      {
         name: "employee",
         align: "center",
         label: "Employee",
@@ -49,6 +41,15 @@ export const useGovernmentLoan = defineStore("governmentLoan", {
         format: (val) => `${val}`,
         sortable: true,
       },
+      {
+        name: "date_start",
+        align: "center",
+        label: "Date Start",
+        field: (row) => row.date_start,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+
       {
         name: "date_end",
         align: "center",
@@ -85,11 +86,11 @@ export const useGovernmentLoan = defineStore("governmentLoan", {
   }),
 
   getters: {
-    async getArchivedLoans() {
-      return this.rows.filter((row) => row.archived === true);
+    getArchivedLoans() {
+      return this.rows.filter((row) => row.is_archived === true);
     },
-    async getUnarchivedLoans() {
-      return this.rows.filter((row) => row.archived === false);
+    getUnarchivedLoans() {
+      return this.rows.filter((row) => row.is_archived === false);
     },
   },
   actions: {

@@ -1,9 +1,7 @@
 <script setup>
-import { ref } from "vue";
 import { useAddGovernmentLoanStore } from "src/stores/admin/loanListPage/governmentLoan/addLoan";
 
 const addGovernmentLoanStore = useAddGovernmentLoanStore();
-const addLoanDialog = ref(false);
 
 // storeAddLoan.getDetails();
 addGovernmentLoanStore.fetchEmployeeOptions();
@@ -25,11 +23,13 @@ function filterFn(val, update) {
   <q-btn
     icon="mdi-plus"
     label="Add Loan"
-    @click="addLoanDialog = true"
+    @click="addGovernmentLoanStore.addLoanDialog = true"
     class="tw-bg-white"
   />
-  <q-dialog v-model="addLoanDialog" persistent>
-    <div class="!tw-h-min !tw-w-5/12 !tw-max-w-full tw-bg-white tw-p-6">
+  <q-dialog v-model="addGovernmentLoanStore.addLoanDialog" persistent>
+    <div
+      class="!tw-h-min !tw-w-5/12 !tw-max-w-full tw-bg-white tw-px-6 tw-pb-3"
+    >
       <q-form @submit.prevent="addGovernmentLoanStore.addLoan" autofocus>
         <div class="tw-grid tw-gap-3">
           <div id="section-to-print"></div>
@@ -43,6 +43,8 @@ function filterFn(val, update) {
                 v-model="addGovernmentLoanStore.application_no"
                 input-class="tw-text-1xl "
                 autogrow
+                type="text"
+                required
               >
                 <template v-slot:label
                   ><span class="tw-font-bold">Application No.</span></template
@@ -73,6 +75,7 @@ function filterFn(val, update) {
                         : ''
                   "
                   @filter="filterFn"
+                  required
                   :option-value="id"
                   class="!tw-pb-0; tw-capitalize"
                   popup-content-class="tw-capitalize"
@@ -123,33 +126,11 @@ function filterFn(val, update) {
                   rounded
                   standout="bg-teal text-white"
                   v-model="addGovernmentLoanStore.date_start"
-                  label="Date Start: YYYY-MM-DD"
+                  required
+                  label="Date Start"
+                  type="date"
                   hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="addGovernmentLoanStore.date_start"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                />
               </div>
             </div>
             <div>
@@ -158,33 +139,11 @@ function filterFn(val, update) {
                   rounded
                   standout="bg-teal text-white"
                   v-model="addGovernmentLoanStore.date_end"
-                  label="Date End: YYYY-MM-DD"
+                  required
+                  label="Date Start"
+                  type="date"
                   hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="addGovernmentLoanStore.date_end"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                />
               </div>
             </div>
 
@@ -193,16 +152,17 @@ function filterFn(val, update) {
                 rounded
                 standout="bg-teal text-white"
                 v-model="addGovernmentLoanStore.half_month_indicator"
+                required
                 label="Monthly Schedule"
                 :options="['1st Half', '2nd Half']"
                 :dense="dense"
-                :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
               />
             </div>
           </div>
           <div>
             Additional Information:
+            <span class="tw-text-gray-500">(Optional)</span>
             <div>
               <q-input
                 rounded
@@ -212,211 +172,43 @@ function filterFn(val, update) {
               />
             </div>
           </div>
-          <div class="tw-flex tw-align-middle">
-            <div class="tw-my-auto">Amortization:</div>
-            <div class="tw-w-2"></div>
-            <div class="tw-w-32">
-              <q-input
-                rounded
-                standout="bg-teal text-white"
-                v-model="addGovernmentLoanStore.amortization"
-              />
-            </div>
-          </div>
-          <div></div>
-          <!-- <div>{{ selectedRow }}</div> -->
-        </div>
-        <!-- storeAddLoan.insertRequestForm -->
-        <!-- <div class="tw-m-4">
-          <div class="tw-flex tw-mb-3">
-            <div class="tw-content-center tw-mr-3">Employee Name:</div>
-            <q-select
-              filled
-              v-model="addGovernmentLoanStore.employeeOption"
-              use-input
-              hide-selected
-              fill-input
-              hide-bottom-space
-              input-debounce="0"
-              :options="addGovernmentLoanStore.selectorEmployeeOptions"
-              :option-label="
-                (opt) =>
-                  'first_name' in opt
-                    ? opt.company_employee_id + ' - ' + opt.last_name
-                    : ''
-              "
-              @filter="filterFn"
-              :option-value="id"
-              class="!tw-pb-0; tw-capitalize"
-              popup-content-class="tw-capitalize"
-            >
-              @filter="filterRecipient"
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No results
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <div class="tw-flex tw-mb-3">
-            <div class="tw-content-center tw-mr-3">Type:</div>
-            <q-select
-              filled
-              v-model="addGovernmentLoanStore.type"
-              use-input
-              hide-selected
-              fill-input
-              hide-bottom-space
-              input-debounce="0"
-              :options="addGovernmentLoanStore.typeOptions"
-              option-label="government_loan_type_name"
-              class="!tw-pb-0; tw-capitalize;"
-              popup-content-class="tw-capitalize"
-              emit-value
-            >
-               @filter="filterRecipient"
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    No results
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-          </div>
-          <div class="tw-flex tw-mb-3">
-            <div class="tw-content-center tw-mr-3">Application No.:</div>
-            <div class="tw-px-2">
-              <q-input
-                v-model="addGovernmentLoanStore.application_no"
-                filled
-                autogrow
-                hide-bottom-space
-                class="tw-max-w-full"
-              />
-            </div>
-          </div>
-          <div>
-            <div>Additional Info (Optional):</div>
-            <div class="tw-pb-3 tw-px-2">
-              <q-input
-                v-model="addGovernmentLoanStore.additional_info"
-                type="textarea"
-                filled
-                hide-bottom-space
-              />
-            </div>
-          </div>
-          <div>
-            <div>
-              <span class="tw-font-semibold tw-text-nowrap">Date Start:</span>
-              <div class="tw-max-w-52">
+          <div class="tw-flex tw-justify-around">
+            <div class="tw-flex tw-align-middle">
+              <div class="tw-my-auto">Amortization:</div>
+              <div class="tw-w-2"></div>
+              <div class="tw-w-32">
                 <q-input
-                  filled
-                  v-model="addGovernmentLoanStore.date_start"
-                  label="YYYY-MM-DD"
-                  hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="addGovernmentLoanStore.date_start"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-            </div>
-            <div>
-              <span class="tw-font-semibold tw-text-nowrap">Date End:</span>
-              <div class="tw-max-w-52">
-                <q-input
-                  filled
-                  v-model="addGovernmentLoanStore.date_end"
-                  label="YYYY-MM-DD"
-                  hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="addGovernmentLoanStore.date_end"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-            </div>
-            <div class="tw-flex tw-mb-3">
-              <div class="tw-content-center tw-mr-3">Amortization:</div>
-              <div class="tw-px-2">
-                <q-input
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="addGovernmentLoanStore.amortization"
-                  filled
-                  autogrow
-                  hide-bottom-space
-                  class="tw-max-w-full"
+                  type="number"
+                  required
                 />
               </div>
             </div>
-            <div>
-              <span class="tw-font-semibold">Monthly Schedule:</span>
-              <div class="tw-min-w-32">
-                <q-select
-                  filled
-                  v-model="addGovernmentLoanStore.half_month_indicator"
-                  :options="['1st Half', '2nd Half']"
-                  :dense="dense"
-                  :rules="[(val) => val.length >= 3]"
-                  hide-bottom-space
+            <div class="tw-flex tw-align-middle">
+              <div class="tw-my-auto">Total Amount:</div>
+              <div class="tw-w-2"></div>
+              <div class="tw-w-32">
+                <q-input
+                  rounded
+                  standout="bg-teal text-white"
+                  v-model="addGovernmentLoanStore.total_amount"
+                  type="number"
+                  required
                 />
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
         <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Cancel" @click="resetForm" v-close-popup />
           <q-btn
             flat
-            class="tw-bg-green-400"
-            label="Add Loan"
-            type="submit"
+            label="Cancel"
+            @click="addGovernmentLoanStore.resetForm"
             v-close-popup
-            :disable="addGovernmentLoanStore.disableButtonExisting"
           />
+          <q-btn flat class="tw-bg-green-400" label="Add Loan" type="submit" />
         </q-card-actions>
       </q-form>
     </div>

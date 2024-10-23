@@ -12,6 +12,7 @@ const viewPrompt = ref(false);
 
 function openmodel(rows) {
   govtViewLoanStore.selected_row = JSON.parse(JSON.stringify(rows));
+  govtViewLoanStore.id = (rows && rows.id) || null;
   govtViewLoanStore.application_no = (rows && rows.application_no) || null;
   govtViewLoanStore.employeeOption = (rows && rows.employee) || null;
   govtViewLoanStore.type = (rows && rows.government_loan_type) || null;
@@ -25,6 +26,8 @@ function openmodel(rows) {
   govtViewLoanStore.additional_info = (rows && rows.additional_info) || null;
 
   govtViewLoanStore.amortization = (rows && rows.amortization) || null;
+
+  govtViewLoanStore.total_amount = (rows && rows.total_amount) || null;
 
   viewPrompt.value = true;
 }
@@ -42,22 +45,24 @@ govtViewLoanStore.fetchGovernmentLoanType();
   />
   <q-dialog v-model="viewPrompt" persistent>
     <div class="!tw-h-min !tw-w-5/12 !tw-max-w-full tw-bg-white tw-p-6">
-      <q-form>
+      <q-form @submit.prevent="govtViewLoanStore.updateLoan()">
         <div class="tw-grid tw-gap-3">
           <div id="section-to-print"></div>
           <div class="tw-text-3xl tw-font-extrabold">
-            Loan ID: {{ govtViewLoanStore.selected_row.id }}
+            View Loan ID: {{ govtViewLoanStore.id }}
           </div>
           <div class="tw-text-2xl tw-flex tw-justify-between tw">
             <div>
               <q-input
                 rounded
                 standout="bg-teal text-white"
-                :readonly="!govtViewLoanStore.buttonEdit"
                 label="Application No."
                 v-model="govtViewLoanStore.application_no"
+                disable
                 input-class="tw-text-1xl "
                 autogrow
+                type="text"
+                required
               >
                 <template v-slot:label
                   ><span class="tw-font-bold">Application No.</span></template
@@ -69,8 +74,9 @@ govtViewLoanStore.fetchGovernmentLoanType();
                 <q-select
                   rounded
                   standout="bg-teal text-white"
-                  :readonly="!govtViewLoanStore.buttonEdit"
                   v-model="govtViewLoanStore.employeeOption"
+                  disable
+                  label="Employee"
                   use-input
                   hide-selected
                   fill-input
@@ -88,6 +94,7 @@ govtViewLoanStore.fetchGovernmentLoanType();
                         : ''
                   "
                   @filter="filterFn"
+                  required
                   :option-value="id"
                   class="!tw-pb-0; tw-capitalize"
                   popup-content-class="tw-capitalize"
@@ -108,8 +115,9 @@ govtViewLoanStore.fetchGovernmentLoanType();
             <q-select
               rounded
               standout="bg-teal text-white"
-              :readonly="!govtViewLoanStore.buttonEdit"
               v-model="govtViewLoanStore.type"
+              :readonly="!govtViewLoanStore.is_editing"
+              label="Loan Type"
               use-input
               hide-selected
               fill-input
@@ -137,35 +145,13 @@ govtViewLoanStore.fetchGovernmentLoanType();
                 <q-input
                   rounded
                   standout="bg-teal text-white"
-                  :readonly="!govtViewLoanStore.buttonEdit"
                   v-model="govtViewLoanStore.date_start"
-                  label="Date Start: YYYY-MM-DD"
+                  :readonly="!govtViewLoanStore.is_editing"
+                  required
+                  label="Date Start"
+                  type="date"
                   hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="govtViewLoanStore.date_start"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                />
               </div>
             </div>
             <div>
@@ -173,35 +159,13 @@ govtViewLoanStore.fetchGovernmentLoanType();
                 <q-input
                   rounded
                   standout="bg-teal text-white"
-                  :readonly="!govtViewLoanStore.buttonEdit"
                   v-model="govtViewLoanStore.date_end"
-                  label="Date End: YYYY-MM-DD"
+                  :readonly="!govtViewLoanStore.is_editing"
+                  required
+                  label="Date Start"
+                  type="date"
                   hide-bottom-space
-                >
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy
-                        cover
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        <q-date
-                          v-model="govtViewLoanStore.date_end"
-                          mask="YYYY-MM-DD"
-                        >
-                          <div class="row items-center justify-end">
-                            <q-btn
-                              v-close-popup
-                              label="Close"
-                              color="primary"
-                              flat
-                            />
-                          </div>
-                        </q-date>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+                />
               </div>
             </div>
 
@@ -209,54 +173,80 @@ govtViewLoanStore.fetchGovernmentLoanType();
               <q-select
                 rounded
                 standout="bg-teal text-white"
-                :readonly="!govtViewLoanStore.buttonEdit"
                 v-model="govtViewLoanStore.half_month_indicator"
+                :readonly="!govtViewLoanStore.is_editing"
+                required
                 label="Monthly Schedule"
                 :options="['1st Half', '2nd Half']"
                 :dense="dense"
-                :rules="[(val) => val.length >= 3]"
                 hide-bottom-space
               />
             </div>
           </div>
           <div>
             Additional Information:
+            <span class="tw-text-gray-500">(Optional)</span>
             <div>
               <q-input
                 rounded
                 standout="bg-teal text-white"
-                :readonly="!govtViewLoanStore.buttonEdit"
-                v-model="govtViewLoanStore.selected_row.additional_info"
+                v-model="govtViewLoanStore.additional_info"
+                :readonly="!govtViewLoanStore.is_editing"
                 type="textarea"
               />
             </div>
           </div>
-          <div class="tw-flex tw-align-middle">
-            <div class="tw-my-auto">Amortization:</div>
-            <div class="tw-w-2"></div>
-            <div class="tw-w-32">
-              <q-input
-                rounded
-                standout="bg-teal text-white"
-                :readonly="!govtViewLoanStore.buttonEdit"
-                v-model="govtViewLoanStore.selected_row.amortization"
-              />
+          <div class="tw-flex tw-justify-around">
+            <div class="tw-flex tw-align-middle">
+              <div class="tw-my-auto">Amortization:</div>
+              <div class="tw-w-2"></div>
+              <div class="tw-w-32">
+                <q-input
+                  rounded
+                  standout="bg-teal text-white"
+                  v-model="govtViewLoanStore.amortization"
+                  :readonly="!govtViewLoanStore.is_editing"
+                  type="number"
+                  required
+                />
+              </div>
+            </div>
+            <div class="tw-flex tw-align-middle">
+              <div class="tw-my-auto">Total Amount:</div>
+              <div class="tw-w-2"></div>
+              <div class="tw-w-32">
+                <q-input
+                  rounded
+                  standout="bg-teal text-white"
+                  v-model="govtViewLoanStore.total_amount"
+                  :readonly="!govtViewLoanStore.is_editing"
+                  type="number"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div></div>
-          <!-- <div>{{ selectedRow }}</div> -->
         </div>
         <q-card-actions align="right" class="text-primary noPrint">
           <q-btn
+            v-if="govtViewLoanStore.is_editing == false"
             flat
             class="tw-bg-green-400"
-            :icon="govtViewLoanStore.buttonEdit ? 'save' : 'edit'"
-            :label="govtViewLoanStore.buttonEdit ? 'Save' : 'Edit'"
+            :icon="govtViewLoanStore.is_editing ? 'save' : 'edit'"
+            :label="govtViewLoanStore.is_editing ? 'Save' : 'Edit'"
             @click="
-              govtViewLoanStore.buttonEdit = !govtViewLoanStore.buttonEdit
+              govtViewLoanStore.is_editing = !govtViewLoanStore.is_editing
             "
           />
-          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn
+            v-else
+            flat
+            type="submit"
+            class="tw-bg-green-400"
+            :icon="govtViewLoanStore.is_editing ? 'save' : 'edit'"
+            :label="govtViewLoanStore.is_editing ? 'Save' : 'Edit'"
+          />
+          <q-btn flat label="CLOSE" v-close-popup />
         </q-card-actions>
       </q-form>
     </div>
