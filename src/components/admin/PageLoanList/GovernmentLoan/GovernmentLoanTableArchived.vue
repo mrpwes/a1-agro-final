@@ -23,7 +23,7 @@ const governmentLoanStore = useGovernmentLoan();
         class="my-sticky-header-table tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
         flat
         bordered
-        title="Government Loan"
+        title="Archived Government Loan"
         :title-class="['tw-text-xl', 'tw-font-bold']"
         :columns="governmentLoanStore.columns"
         :rows="governmentLoanStore.getArchivedLoans"
@@ -51,7 +51,7 @@ const governmentLoanStore = useGovernmentLoan();
         </template>
       </q-table>
       <div class="tw-flex tw-justify-end tw-pt-6">
-        <q-btn flat label="OKAY" class="tw-bg-green-400" v-close-popup />
+        <q-btn flat label="CLOSE" class="tw-bg-green-400" v-close-popup />
       </div>
     </div>
   </q-dialog>

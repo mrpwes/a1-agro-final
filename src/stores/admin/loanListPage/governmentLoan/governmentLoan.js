@@ -35,9 +35,9 @@ export const useGovernmentLoan = defineStore("governmentLoan", {
         field: (row) =>
           row.employee.company_employee_id +
           " - " +
-          row.employee.first_name +
-          " " +
-          row.employee.last_name,
+          row.employee.last_name +
+          ", " +
+          row.employee.first_name,
         format: (val) => `${val}`,
         sortable: true,
       },
@@ -87,10 +87,10 @@ export const useGovernmentLoan = defineStore("governmentLoan", {
 
   getters: {
     getArchivedLoans() {
-      return this.rows.filter((row) => row.is_archived === true);
+      return this.rows.filter((row) => row.is_archive === true);
     },
     getUnarchivedLoans() {
-      return this.rows.filter((row) => row.is_archived === false);
+      return this.rows.filter((row) => row.is_archive === false);
     },
   },
   actions: {

@@ -24,10 +24,9 @@ function openmodel(rows) {
       : "1st Half") || null;
 
   govtViewLoanStore.additional_info = (rows && rows.additional_info) || null;
-
   govtViewLoanStore.amortization = (rows && rows.amortization) || null;
-
   govtViewLoanStore.total_amount = (rows && rows.total_amount) || null;
+  govtViewLoanStore.is_archive = (rows && rows.is_archive) || null;
 
   viewPrompt.value = true;
 }
@@ -228,6 +227,15 @@ govtViewLoanStore.fetchGovernmentLoanType();
           </div>
         </div>
         <q-card-actions align="right" class="text-primary noPrint">
+          <q-btn
+            flat
+            :class="
+              govtViewLoanStore.is_archive ? 'tw-bg-green-400' : 'tw-bg-red-400'
+            "
+            icon="mdi-archive"
+            :label="govtViewLoanStore.is_archive ? 'Unarchive' : 'Archive'"
+            @click="govtViewLoanStore.archiveLoan"
+          />
           <q-btn
             v-if="govtViewLoanStore.is_editing == false"
             flat

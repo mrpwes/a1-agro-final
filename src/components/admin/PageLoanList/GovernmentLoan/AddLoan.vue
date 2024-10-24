@@ -22,7 +22,7 @@ function filterFn(val, update) {
 <template>
   <q-btn
     icon="mdi-plus"
-    label="Add Loan"
+    label="Add Gov't Loan"
     @click="addGovernmentLoanStore.addLoanDialog = true"
     class="tw-bg-white"
   />

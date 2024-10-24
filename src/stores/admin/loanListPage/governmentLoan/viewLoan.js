@@ -28,11 +28,10 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
     amortization: null,
     total_amount: null,
 
-    is_uploading: false,
-    is_editing: false,
-    viewPrompt: false,
-
     emp_id_modified_by: authenticationStore.getEmployeeId,
+    is_archive: null,
+
+    viewPrompt: false,
   }),
 
   getters: {},
@@ -69,9 +68,7 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
     },
 
     async updateLoan() {
-      console.log("INSIDE");
       try {
-        this.is_uploading = true;
         const { error } = await supabase
           .from("government_loan")
           .update({
@@ -91,9 +88,30 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
         globalNotificationStore.showSuccessNotification(
           "Successfully updated loan"
         );
-        this.is_uploading = false;
-        this.is_editing = false;
         this.viewPrompt = false;
+        governmentLoanStore.fetchGovernmentLoanList();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async archiveLoan() {
+      try {
+        const { error } = await supabase
+          .from("government_loan")
+          .update({
+            is_archive: !this.is_archive,
+            emp_id_modified_by: this.emp_id_modified_by,
+          })
+          .eq("id", this.id);
+        if (error) {
+          throw error;
+        }
+        globalNotificationStore.showSuccessNotification(
+          `Successfully ${this.is_archive ? "Unarchived" : "Archived"} loan`
+        );
+        this.viewPrompt = false;
+        this.is_archive = !this.is_archive;
         governmentLoanStore.fetchGovernmentLoanList();
       } catch (error) {
         console.log(error);
