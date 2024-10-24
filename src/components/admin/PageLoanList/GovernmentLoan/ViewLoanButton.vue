@@ -234,6 +234,7 @@ govtViewLoanStore.fetchGovernmentLoanType();
             "
             icon="mdi-archive"
             :label="govtViewLoanStore.is_archive ? 'Unarchive' : 'Archive'"
+            v-close-popup
             @click="govtViewLoanStore.archiveLoan"
           />
           <q-btn
@@ -242,9 +243,7 @@ govtViewLoanStore.fetchGovernmentLoanType();
             class="tw-bg-green-400"
             :icon="govtViewLoanStore.is_editing ? 'save' : 'edit'"
             :label="govtViewLoanStore.is_editing ? 'Save' : 'Edit'"
-            @click="
-              govtViewLoanStore.is_editing = !govtViewLoanStore.is_editing
-            "
+            @click="govtViewLoanStore.is_editing = true"
           />
           <q-btn
             v-else

@@ -31,7 +31,8 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
     emp_id_modified_by: authenticationStore.getEmployeeId,
     is_archive: null,
 
-    viewPrompt: false,
+    is_editing: false,
+    // viewPrompt: false,
   }),
 
   getters: {},
@@ -88,14 +89,16 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
         globalNotificationStore.showSuccessNotification(
           "Successfully updated loan"
         );
-        this.viewPrompt = false;
+        // this.viewPrompt = false;
         governmentLoanStore.fetchGovernmentLoanList();
+        this.is_editing = false;
       } catch (error) {
-        console.log(error);
+        globalNotificationStore.showErrorNotification(error.message);
       }
     },
 
     async archiveLoan() {
+      // this.viewPrompt = false;
       try {
         const { error } = await supabase
           .from("government_loan")
@@ -110,7 +113,6 @@ export const useGovtViewLoanStore = defineStore("govtViewLoan", {
         globalNotificationStore.showSuccessNotification(
           `Successfully ${this.is_archive ? "Unarchived" : "Archived"} loan`
         );
-        this.viewPrompt = false;
         this.is_archive = !this.is_archive;
         governmentLoanStore.fetchGovernmentLoanList();
       } catch (error) {

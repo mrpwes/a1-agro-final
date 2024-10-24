@@ -49,10 +49,10 @@ function openmodel(row) {
   <q-dialog v-model="viewPrompt" persistent>
     <q-card class="min-width: 500px">
       <q-form @submit.prevent="storeViewLoan.insertPayment()" autofocus>
-        <div class="tw-m-4">
+        <div class="tw-m-4 tw-p-6">
           <q-card-section class="tw-pt-0 tw-pl-0">
             <div class="tw-text-3xl tw-font-extrabold tw-pb-3">
-              V2 View Loan Form
+              View Loan Form
             </div>
           </q-card-section>
           <div class="tw-flex tw-mb-3">
