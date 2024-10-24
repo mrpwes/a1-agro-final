@@ -31,6 +31,8 @@ function openmodel(row) {
   storeViewLoan.request_id = (row && row.id) || null;
   storeViewLoan.request_is_archive =
     row && row.is_archive !== undefined ? row.is_archive : null;
+
+  storeViewLoan.is_paying = false;
 }
 </script>
 
