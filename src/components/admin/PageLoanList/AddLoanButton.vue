@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from "vue";
 import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
 
 const storeAddLoan = useAddLoan();
@@ -137,17 +136,17 @@ function filterFn(val, update) {
               />
             </div>
           </div>
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" @click="resetForm" v-close-popup />
-            <q-btn
-              flat
-              class="tw-bg-green-400"
-              label="Add Loan"
-              type="submit"
-              :disable="storeAddLoan.disableButtonExisting"
-            />
-          </q-card-actions>
         </div>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" @click="resetForm" v-close-popup />
+          <q-btn
+            flat
+            class="tw-bg-green-400"
+            label="Add Loan"
+            type="submit"
+            :disable="storeAddLoan.disableButtonExisting"
+          />
+        </q-card-actions>
       </q-form>
     </q-card>
   </q-dialog>

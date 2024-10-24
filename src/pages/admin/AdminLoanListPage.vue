@@ -1,7 +1,7 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
 
-import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButton.vue";
+import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButtonV2.vue";
 import ArchivedLoanButton from "components/admin/PageLoanList/ArchivedLoanButton.vue";
 import AddLoanButton from "components/admin/PageLoanList/AddLoanButton.vue";
 
@@ -20,7 +20,7 @@ function numberWithCommas(x) {
 }
 
 function formatAmountBalance(row) {
-  return numberWithCommas(row[0].amount + "/" + row[0].balance);
+  return numberWithCommas(row[0].balance + "/" + row[0].amount);
 }
 
 const columns = [
@@ -38,6 +38,14 @@ const columns = [
     align: "center",
     label: "Loan Type",
     field: (row) => row.request_type_id.request_type_name,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "request_subject",
+    align: "center",
+    label: "Subject",
+    field: (row) => row.request_subject,
     format: (val) => `${val}`,
     sortable: true,
   },
@@ -68,7 +76,7 @@ const columns = [
   {
     name: "Amount",
     align: "center",
-    label: "Amount",
+    label: "Balance / Total Amount",
     field: (row) =>
       row.vale[0]
         ? formatAmountBalance(row.vale)

@@ -1,11 +1,27 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
+import { useGlobalNotificationStore } from "stores/globalNotification";
+const globalNotificationStore = useGlobalNotificationStore();
 
 export const useViewLoan = defineStore("viewLoan", {
   state: () => ({
     rows: [],
-    paymentButton: false,
+
+    is_paying: false,
+
+    employeeOption: null,
+    employeeOptions: null,
+
+    type: null,
+    subject: null,
+    description: null,
+    amount: null,
+    balance: null,
     payment: null,
+    expectedNewBalance: null,
+
+    vale: null,
+    partial_to_ar: null,
   }),
 
   getters: {
@@ -14,6 +30,20 @@ export const useViewLoan = defineStore("viewLoan", {
     },
     getUnarchivedLoanList(state) {
       return state.rows.filter((row) => !row.is_archive);
+    },
+    expectedNewBalance(state) {
+      // Check if balance and payment are not null
+      if (state.balance === null || state.payment === null) {
+        return null; // Return null if either value is null
+      }
+
+      // Check if payment is greater than balance
+      if (state.payment > state.balance) {
+        return "Negative"; // Return 'Too Much' if payment exceeds balance
+      }
+
+      // Calculate expected new balance
+      return state.balance - state.payment;
     },
   },
   actions: {
@@ -42,8 +72,26 @@ export const useViewLoan = defineStore("viewLoan", {
       if (error) {
         throw error;
       }
+      this.fetchEmployeeOptions();
       // console.log(data);
       this.rows = data;
+    },
+
+    async fetchEmployeeOptions() {
+      try {
+        const { data, error } = await supabase
+          .from("employee")
+          .select(
+            "id, company_employee_id, first_name, middle_name, last_name"
+          );
+        if (error) {
+          throw error;
+        } else {
+          this.employeeOptions = data;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async getSelectedLoan(requestID) {
@@ -146,31 +194,61 @@ export const useViewLoan = defineStore("viewLoan", {
       }
     },
 
-    async insertPayment(companyLoan) {
-      if (companyLoan.vale.length > 0) {
-        // console.log(companyLoan.vale[0].id);
-        // console.log(companyLoan.vale[0].balance);
-        const { data } = await supabase
-          .from("vale")
-          .update({ balance: companyLoan.vale[0].balance - this.payment })
-          .select()
-          .eq("id", companyLoan.vale[0].id);
-        console.log(data);
-      } else if (companyLoan.partial_to_ar.length > 0) {
-        // console.log(companyLoan.partial_to_ar[0].id);
-        // console.log(companyLoan.partial_to_ar[0].balance);
-        const { data } = await supabase
-          .from("partial_to_ar")
-          .update({
-            balance: companyLoan.partial_to_ar[0].balance - this.payment,
-          })
-          .select()
-          .eq("id", companyLoan.partial_to_ar[0].id);
-        console.log(data);
+    async insertPayment() {
+      if (this.type.id == 1) {
+        try {
+          const { error } = await supabase
+            .from("vale")
+            .update({ balance: this.vale[0].balance - this.payment })
+            .select()
+            .eq("id", this.vale[0].id);
+          if (error) {
+            throw error;
+          }
+          this.is_paying = false;
+          this.getLoanList();
+          this.resetForm();
+          globalNotificationStore.showSuccessNotification(
+            "Payment successfully deducted."
+          );
+        } catch (error) {
+          globalNotificationStore.showErrorNotification(error.message);
+        }
+      } else if (this.type.id == 2) {
+        try {
+          const { error } = await supabase
+            .from("partial_to_ar")
+            .update({
+              balance: this.partial_to_ar[0].balance - this.payment,
+            })
+            .select()
+            .eq("id", this.partial_to_ar[0].id);
+          if (error) {
+            throw error;
+          }
+          this.is_paying = false;
+          this.getLoanList();
+          this.resetForm();
+          globalNotificationStore.showSuccessNotification(
+            "Payment successfully deducted."
+          );
+        } catch (error) {
+          globalNotificationStore.showErrorNotification(error.message);
+        }
       }
+    },
 
-      this.getLoanList();
-      // TODO: SUCCESSFULLY INSERT PAYMENT
+    resetForm() {
+      this.employeeOption = null;
+      this.type = null;
+      this.subject = null;
+      this.description = null;
+      this.amount = null;
+      this.balance = null;
+      this.payment = null;
+      // this.expectedNewBalance = null
+      this.vale = null;
+      this.partial_to_ar = null;
     },
   },
 });
