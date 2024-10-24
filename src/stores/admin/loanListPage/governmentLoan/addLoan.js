@@ -79,7 +79,7 @@ export const useAddGovernmentLoanStore = defineStore("addGovernmentLoan", {
             half_month_indicator:
               this.half_month_indicator === "2nd Half" ? true : false,
             emp_id_modified_by: this.emp_id_modified_by,
-            is_archived: false,
+            is_archive: false,
           },
         ]);
         if (error) {
