@@ -42,13 +42,6 @@ const columns = [
     sortable: true,
   },
   {
-    name: "Description",
-    align: "center",
-    label: "Description",
-    field: (row) => row.request_description,
-    sortable: true,
-  },
-  {
     name: "Recipient",
     align: "center",
     label: "Recipient",
@@ -80,13 +73,6 @@ const columns = [
       row.vale[0]
         ? formatAmountBalance(row.vale)
         : formatAmountBalance(row.partial_to_ar),
-    sortable: true,
-  },
-  {
-    name: "status",
-    align: "center",
-    label: "Status",
-    field: (row) => row.request_approval_status_id.request_approval_status_name,
     sortable: true,
   },
   {

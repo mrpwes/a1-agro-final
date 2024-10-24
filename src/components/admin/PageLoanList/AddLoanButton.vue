@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { useAddLoan } from "src/stores/admin/loanListPage/addLoan";
 
 const storeAddLoan = useAddLoan();
-const addLoanDialog = ref(false);
 
 // storeAddLoan.getDetails();
 storeAddLoan.fetchEmployeeOptions();
@@ -24,10 +23,10 @@ function filterFn(val, update) {
   <q-btn
     icon="mdi-plus"
     label="Add Loan"
-    @click="addLoanDialog = true"
+    @click="storeAddLoan.addLoanDialog = true"
     class="tw-bg-white"
   />
-  <q-dialog v-model="addLoanDialog" persistent>
+  <q-dialog v-model="storeAddLoan.addLoanDialog" persistent>
     <q-card class="min-width: 500px">
       <q-form @submit.prevent="storeAddLoan.insertRequestForm" autofocus>
         <div class="tw-m-4">
@@ -39,9 +38,11 @@ function filterFn(val, update) {
           <div class="tw-flex tw-mb-3">
             <div class="tw-content-center tw-mr-3">Employee Name:</div>
             <q-select
-              filled
+              rounded
+              standout="bg-teal text-white"
               v-model="storeAddLoan.employeeOption"
               use-input
+              required
               hide-selected
               fill-input
               hide-bottom-space
@@ -71,8 +72,10 @@ function filterFn(val, update) {
           <div class="tw-flex tw-mb-3">
             <div class="tw-content-center tw-mr-3">Type:</div>
             <q-select
-              filled
+              rounded
+              standout="bg-teal text-white"
               v-model="storeAddLoan.type"
+              required
               use-input
               hide-selected
               fill-input
@@ -98,8 +101,10 @@ function filterFn(val, update) {
             <div class="tw-content-center tw-mr-3">Subject:</div>
             <div class="tw-px-2">
               <q-input
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddLoan.subject"
-                filled
+                required
                 autogrow
                 hide-bottom-space
                 class="tw-max-w-full"
@@ -110,9 +115,11 @@ function filterFn(val, update) {
             <div>Description:</div>
             <div class="tw-pb-3 tw-px-2">
               <q-input
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddLoan.description"
+                required
                 type="textarea"
-                filled
                 hide-bottom-space
               />
             </div>
@@ -121,10 +128,11 @@ function filterFn(val, update) {
             <div class="tw-content-center tw-mr-3">Amount:</div>
             <div class="tw-px-2">
               <q-input
+                rounded
+                standout="bg-teal text-white"
+                type="number"
                 v-model="storeAddLoan.amount"
-                filled
-                autogrow
-                hide-bottom-space
+                required
                 class="tw-max-w-full"
               />
             </div>
@@ -136,7 +144,6 @@ function filterFn(val, update) {
               class="tw-bg-green-400"
               label="Add Loan"
               type="submit"
-              v-close-popup
               :disable="storeAddLoan.disableButtonExisting"
             />
           </q-card-actions>

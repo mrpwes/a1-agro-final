@@ -31,7 +31,6 @@ export const useViewLoan = defineStore("viewLoan", {
         request_description,
         request_application_date,
         admin_employee_id (id, company_employee_id, first_name, last_name),
-        request_approval_status_id (id, request_approval_status_name),
         admin_comments,
         admin_confirmation_date,
         change_date,

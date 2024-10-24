@@ -2,7 +2,9 @@ import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
 import { useAuthenticationStore } from "../../authentication.js";
 import { useViewLoan } from "./viewLoan.js";
-// import { useViewLoan } from "./viewLoan.js";
+import { useGlobalNotificationStore } from "stores/globalNotification";
+
+const globalNotificationStore = useGlobalNotificationStore();
 
 const storeAuthentication = useAuthenticationStore();
 const storeViewLoan = useViewLoan();
@@ -25,6 +27,7 @@ export const useAddLoan = defineStore("addLoan", {
     insertRequestID: null,
 
     disableButtonExisting: false,
+    addLoanDialog: false,
   }),
 
   getters: {},
@@ -72,20 +75,20 @@ export const useAddLoan = defineStore("addLoan", {
             request_application_date: new Date().toLocaleDateString("en-US"),
 
             admin_employee_id: this.admin_employee_id,
-            admin_approval_status: "Pending",
+            request_approval_status_id: 2,
 
-            admin_comments: "Pending",
+            admin_comments: "Approved",
             admin_confirmation_date: new Date().toLocaleDateString("en-US"),
             change_date: new Date().toLocaleDateString("en-US"),
             is_archive: false,
           })
           .select("id");
-        // console.log(data);
-        this.insertRequestID = data[0].id;
-        this.insertCompanyLoan();
         if (error) {
           throw error;
         }
+        // console.log(data);
+        this.insertRequestID = data[0].id;
+        this.insertCompanyLoan();
       } catch (error) {
         console.log(error);
       }
@@ -125,11 +128,16 @@ export const useAddLoan = defineStore("addLoan", {
             throw error;
           }
         }
-
+        this.addLoanDialog = false;
         storeViewLoan.getLoanList();
-        // TODO: COMPLETED HERE // SUCCESSFULLY ADDED LOAN
+        console.log("SUCCESSFULLY ADDED LOAN");
+        globalNotificationStore.showSuccessNotification(
+          "Successfully added loan"
+        );
       } catch (error) {
-        console.log(error);
+        globalNotificationStore.showErrorNotification(
+          "Failed to add loan. Please try again."
+        );
       }
     },
   },
