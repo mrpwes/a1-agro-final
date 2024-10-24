@@ -27,6 +27,10 @@ function openmodel(row) {
   storeViewLoan.vale = row && row.vale && row.vale[0] ? row.vale : null;
   storeViewLoan.partial_to_ar =
     row && row.partial_to_ar && row.partial_to_ar[0] ? row.partial_to_ar : null;
+
+  storeViewLoan.request_id = (row && row.id) || null;
+  storeViewLoan.request_is_archive =
+    row && row.is_archive !== undefined ? row.is_archive : null;
 }
 </script>
 
@@ -128,6 +132,7 @@ function openmodel(row) {
                 rounded
                 standout="bg-teal text-white"
                 v-model="storeViewLoan.subject"
+                disable
                 required
                 autogrow
                 hide-bottom-space
@@ -208,6 +213,19 @@ function openmodel(row) {
           </div>
         </div>
         <q-card-actions align="right" class="text-primary noPrint">
+          <q-btn
+            flat
+            :class="
+              storeViewLoan.request_is_archive
+                ? 'tw-bg-green-400'
+                : 'tw-bg-red-400'
+            "
+            icon="mdi-archive"
+            :label="storeViewLoan.request_is_archive ? 'Unarchive' : 'Archive'"
+            v-close-popup
+            @click="storeViewLoan.archiveLoan"
+          />
+
           <q-btn
             v-if="storeViewLoan.is_paying === false"
             label="Payment"

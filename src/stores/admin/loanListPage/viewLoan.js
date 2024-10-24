@@ -20,16 +20,21 @@ export const useViewLoan = defineStore("viewLoan", {
     payment: null,
     expectedNewBalance: null,
 
+    request_id: null,
+    request_is_archive: null,
+
     vale: null,
     partial_to_ar: null,
+
+    is_archive: null,
   }),
 
   getters: {
     getArchivedLoanList(state) {
-      return state.rows.filter((row) => row.is_archive);
+      return state.rows.filter((row) => row.is_archive === true);
     },
     getUnarchivedLoanList(state) {
-      return state.rows.filter((row) => !row.is_archive);
+      return state.rows.filter((row) => row.is_archive === false);
     },
     expectedNewBalance(state) {
       // Check if balance and payment are not null
@@ -124,76 +129,6 @@ export const useViewLoan = defineStore("viewLoan", {
       return data[0];
     },
 
-    async archivedLoan(requestID, requestTypeID, companyLoanID) {
-      try {
-        const { error } = await supabase
-          .from("request")
-          .update({
-            is_archive: true,
-          })
-          .eq("id", requestID);
-        if (error) {
-          throw error;
-        }
-        if (requestTypeID == 1) {
-          const { error2 } = await supabase
-            .from("vale")
-            .update({
-              is_archive: true,
-            })
-            .eq("id", companyLoanID);
-          console.log(error2);
-        } else if (requestTypeID == 2) {
-          const { error2 } = await supabase
-            .from("partial_to_ar")
-            .update({
-              is_archive: true,
-            })
-            .eq("id", companyLoanID);
-
-          console.log(error2);
-        }
-        this.getLoanList();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
-    async unarchivedLoan(requestID, requestTypeID, companyLoanID) {
-      try {
-        const { error } = await supabase
-          .from("request")
-          .update({
-            is_archive: false,
-          })
-          .eq("id", requestID);
-        if (error) {
-          throw error;
-        }
-        if (requestTypeID == 1) {
-          const { error2 } = await supabase
-            .from("vale")
-            .update({
-              is_archive: false,
-            })
-            .eq("id", companyLoanID);
-          console.log(error2);
-        } else if (requestTypeID == 2) {
-          const { error2 } = await supabase
-            .from("partial_to_ar")
-            .update({
-              is_archive: false,
-            })
-            .eq("id", companyLoanID);
-
-          console.log(error2);
-        }
-        this.getLoanList();
-      } catch (error) {
-        console.log(error);
-      }
-    },
-
     async insertPayment() {
       if (this.type.id == 1) {
         try {
@@ -238,6 +173,62 @@ export const useViewLoan = defineStore("viewLoan", {
       }
     },
 
+    async archiveLoan() {
+      try {
+        const { error } = await supabase
+          .from("request")
+          .update({
+            is_archive: !this.request_is_archive,
+          })
+          .eq("id", this.request_id);
+
+        if (error) {
+          throw error;
+        }
+        if (this.type.id == 1) {
+          try {
+            const { error } = await supabase
+              .from("vale")
+              .update({
+                is_archive: !this.vale[0].id.is_archive,
+              })
+              .eq("id", this.vale[0].id);
+
+            if (error) {
+              throw error;
+            }
+            this.getLoanList();
+            globalNotificationStore.showSuccessNotification(
+              "Vale Loan successfully archived."
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        } else if (this.type.id == 2) {
+          try {
+            const { error } = await supabase
+              .from("partial_to_ar")
+              .update({
+                is_archive: !this.partial_to_ar[0].is_archive,
+              })
+              .eq("id", this.partial_to_ar[0].id);
+
+            if (error) {
+              throw error;
+            }
+            this.getLoanList();
+            globalNotificationStore.showSuccessNotification(
+              "Partial to A/R Loan successfully archived."
+            );
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     resetForm() {
       this.employeeOption = null;
       this.type = null;
@@ -249,6 +240,7 @@ export const useViewLoan = defineStore("viewLoan", {
       // this.expectedNewBalance = null
       this.vale = null;
       this.partial_to_ar = null;
+      this.is_archive = null;
     },
   },
 });

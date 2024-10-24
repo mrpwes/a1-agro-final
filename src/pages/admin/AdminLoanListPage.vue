@@ -115,19 +115,6 @@ const columns = [
         ><ViewLoanButton :rows="props.row"></ViewLoanButton
       ></q-td>
     </template>
-    <!-- <template v-slot:top-right>
-      <q-input
-        borderless
-        dense
-        debounce="300"
-        v-model="tableSearch"
-        placeholder="Search"
-      >
-        <template v-slot:append>
-          <q-icon name="search" />
-        </template>
-      </q-input> </template
-  > -->
   </q-table>
   <GovernmentLoanTable></GovernmentLoanTable>
 </template>

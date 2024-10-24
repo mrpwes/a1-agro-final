@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButton.vue";
+import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButtonV2.vue";
 import { useViewLoan } from "stores/admin/loanListPage/viewLoan";
 
 const storeViewLoan = useViewLoan();
@@ -102,31 +102,18 @@ const columns = [
         class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
         flat
         bordered
+        title="Company Loan"
+        :title-class="['tw-text-xl', 'tw-font-bold']"
         :filter="tableSearch"
         :columns="columns"
         :rows="storeViewLoan.getArchivedLoanList"
         :rows-per-page-options="[10, 20, 0]"
-        row-key="name"
+        row-key="Loan ID"
       >
         <template v-slot:body-cell-actions="props">
-          <q-td :props="props">
-            <div>
-              <ViewLoanButton :rows="props.row"></ViewLoanButton>
-            </div>
-          </q-td>
-        </template>
-        <template v-slot:top-right>
-          <q-input
-            borderless
-            dense
-            debounce="300"
-            v-model="tableSearch"
-            placeholder="Search"
-          >
-            <template v-slot:append>
-              <q-icon name="search" />
-            </template>
-          </q-input>
+          <q-td key="actions" class="tw-w-2/12" :props="props"
+            ><ViewLoanButton :rows="props.row"></ViewLoanButton
+          ></q-td>
         </template>
       </q-table>
       <q-card-actions align="right" class="text-primary">
