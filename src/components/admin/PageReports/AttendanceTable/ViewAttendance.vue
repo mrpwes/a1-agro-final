@@ -106,12 +106,6 @@ function capitalizeFirstLetterOfEachWord(string) {
   />
   <q-dialog v-model="viewPrompt" persistent>
     <div class="!tw-h-min !tw-w-8/12 !tw-max-w-full tw-bg-white tw-p-6">
-      {{ columns }}
-      <br /><br />
-      {{ column }}
-      {{}}
-      <br />
-      <br />
       {{ selectedRow }}
       <q-card-actions align="right" class="text-primary noPrint">
         <q-btn flat label="Cancel" v-close-popup />
