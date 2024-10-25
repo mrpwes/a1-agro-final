@@ -100,6 +100,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
     },
 
     fillMissingDates(data, dateStart, dateEnd) {
+      console.log("FILLING MISSING DATES" + dateStart + " " + dateEnd);
       // Helper function to format a date object as 'YYYY-MM-DD'
       const formatDate = (date) => {
         const year = date.getFullYear();
@@ -111,6 +112,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
       // Convert start and end dates to Date objects
       const startDate = new Date(dateStart);
       const endDate = new Date(dateEnd);
+      endDate.setDate(endDate.getDate() + 1);
 
       // Create a set of existing attendance dates for quick lookup
       data.forEach((employee) => {
@@ -459,8 +461,6 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             let absentCounter = 0;
             const currentDate = new Date();
 
-            console.log(row.attendance);
-
             for (let i = 0; i < row.attendance.length; i++) {
               const rowDate = new Date(row.attendance[i].date);
 
@@ -480,8 +480,6 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           label: "LVE",
           field: (row) => {
             let leaveCounter = 0;
-            console.log(row.attendance);
-
             for (let i = 0; i < row.attendance.length; i++) {
               if (row.attendance[i].attendance_type_id == 2) {
                 leaveCounter++;
