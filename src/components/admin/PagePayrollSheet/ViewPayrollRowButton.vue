@@ -26,6 +26,21 @@ function sendSMS() {
   });
 }
 
+function totalAmortization(data, governmentLoanID) {
+  // Filter the data for entries with government_loan_type_id = 1
+  const filteredData = data.filter(
+    (item) => item.government_loan_type_id === governmentLoanID
+  );
+
+  // Sum the amortization values of the filtered entries
+  const totalAmortization = filteredData.reduce(
+    (total, item) => total + item.amortization,
+    0
+  );
+
+  return totalAmortization;
+}
+
 function totalDeductions() {
   return (
     (selectedRow.value.emp_sss_contrib_audit[
@@ -37,9 +52,9 @@ function totalDeductions() {
     (selectedRow.value.emp_pagibig_contrib_audit[
       selectedRow.value.emp_pagibig_contrib_audit.length - 1
     ]?.amount ?? 0) +
-    (selectedRow.value.sssCalamityLoan ?? 0) +
-    (selectedRow.value.sssLoan ?? 0) +
-    (selectedRow.value.pagIbigLoan ?? 0)
+    totalAmortization(selectedRow.value.government_loan_audit, 1) +
+    totalAmortization(selectedRow.value.government_loan_audit, 2) +
+    totalAmortization(selectedRow.value.government_loan_audit, 3)
   );
 }
 
@@ -191,17 +206,23 @@ function totalNetPay() {
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Calamity Loan:</td>
-              <td class="tw-border">{{ selectedRow.sssCalamityLoan }}</td>
+              <td class="tw-border">
+                {{ totalAmortization(selectedRow.government_loan_audit, 2) }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
-              <td class="tw-border">SSS Loan:</td>
-              <td class="tw-border">{{ selectedRow.sssLoan }}</td>
+              <td class="tw-border">SSS Salary Loan:</td>
+              <td class="tw-border">
+                {{ totalAmortization(selectedRow.government_loan_audit, 1) }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">Pag-IBIG Loan:</td>
-              <td class="tw-border">{{ selectedRow.pagIbigLoan }}</td>
+              <td class="tw-border">
+                {{ totalAmortization(selectedRow.government_loan_audit, 3) }}
+              </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border">&nbsp;</td>

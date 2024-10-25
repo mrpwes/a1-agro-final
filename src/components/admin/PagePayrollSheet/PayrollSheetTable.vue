@@ -27,14 +27,29 @@ payrollTableFormatterStore.fetchSssContributionTable();
 payrollTableFormatterStore.fetchPhilhealthContributionTable();
 payrollTableFormatterStore.fetchPagibigContributionTable();
 
+function totalAmortization(data, governmentLoanID) {
+  // Filter the data for entries with government_loan_type_id = 1
+  const filteredData = data.filter(
+    (item) => item.government_loan_type_id === governmentLoanID
+  );
+
+  // Sum the amortization values of the filtered entries
+  const totalAmortization = filteredData.reduce(
+    (total, item) => total + item.amortization,
+    0
+  );
+
+  return totalAmortization;
+}
+
 function totalDeductions(selectedRow) {
   return (
     (selectedRow.emp_sss_contrib_audit[0]?.amount ?? 0) +
     (selectedRow.emp_philhealth_contrib_audit[0]?.amount ?? 0) +
     (selectedRow.emp_pagibig_contrib_audit[0]?.amount ?? 0) +
-    (selectedRow.sssCalamityLoan ?? 0) +
-    (selectedRow.sssLoan ?? 0) +
-    (selectedRow.pagIbigLoan ?? 0)
+    totalAmortization(selectedRow.government_loan_audit, 1) +
+    totalAmortization(selectedRow.government_loan_audit, 2) +
+    totalAmortization(selectedRow.government_loan_audit, 3)
   );
 }
 
@@ -282,7 +297,7 @@ function exportTableToCSV(tableId) {
           </q-popup-edit>
         </q-td>
         <q-td key="sssCalamityLoan" :props="props" auto-width>
-          {{ props.row.sssCalamityLoan }}
+          {{ totalAmortization(props.row.government_loan_audit, 2) }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.sssCalamityLoan"
@@ -299,7 +314,7 @@ function exportTableToCSV(tableId) {
           </q-popup-edit>
         </q-td>
         <q-td key="sssLoan" :props="props" auto-width>
-          {{ props.row.sssLoan }}
+          {{ totalAmortization(props.row.government_loan_audit, 1) }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.sssLoan"
@@ -316,7 +331,7 @@ function exportTableToCSV(tableId) {
           </q-popup-edit>
         </q-td>
         <q-td key="pagIbigLoan" :props="props" auto-width>
-          {{ props.row.pagIbigLoan }}
+          {{ totalAmortization(props.row.government_loan_audit, 3) }}
           <q-popup-edit
             :disable="!popupEdit"
             v-model.number="props.row.pagIbigLoan"

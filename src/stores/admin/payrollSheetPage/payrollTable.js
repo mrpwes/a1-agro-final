@@ -65,7 +65,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
         {
           name: "sssLoan",
           align: "center",
-          label: "SSS  Loan",
+          label: "SSS Salary Loan",
           sortable: true,
           classes: "!tw-bg-neutral-300",
         },
@@ -76,19 +76,6 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           sortable: true,
           headerStyle: "width: 0px",
         },
-        // {
-        //   name: "VALE",
-        //   align: "center",
-        //   label: "VALE",
-        //   sortable: true,
-        //   classes: "!tw-bg-neutral-300",
-        // },
-        // {
-        //   name: "AR",
-        //   align: "center",
-        //   label: "AR",
-        //   sortable: true,
-        // },
         {
           name: "NetPay",
           align: "center",
@@ -103,27 +90,6 @@ export const usePayrollTableStore = defineStore("payrollTable", {
         },
       ],
     },
-    // rows: [
-    //   {
-    //     employeeId: "001",
-    //     employeeName: "John Doe",
-    //     noDaysWorked: 15.0,
-    //     ratePerDay: 383.33,
-
-    //     sss: 517.5,
-    //     philHealth: 230.0,
-    //     pagIbig: 0,
-    //     sssCalamityLoan: 507.59,
-    //     sssLoan: 969.04,
-    //     pagIbigLoan: 0,
-    //     VALE: 0,
-    //     AR: 1500,
-    //     productLoan: 0,
-
-    //     overVale: 900,
-    //     isPrinted: false,
-    //   },
-    // ],
     rows: [],
 
     selectedDate: null,
@@ -223,8 +189,7 @@ export const usePayrollTableStore = defineStore("payrollTable", {
             emp_sss_contrib_audit!emp_sss_contrib_audit_employee_id_fkey(*),
             emp_philhealth_contrib_audit!emp_philhealth_contrib_audit_employee_id_fkey(*),
             emp_pagibig_contrib_audit!emp_pagibig_contrib_audit_employee_id_fkey(*),
-            vale_audit!vale_audit_employee_id_fkey(*),
-            partial_to_ar_audit!partial_to_ar_audit_employee_id_fkey(*)
+            government_loan_audit!government_loan_audit_employee_id_fkey(*)
             `
           )
           .eq("is_archive", false)
@@ -233,8 +198,8 @@ export const usePayrollTableStore = defineStore("payrollTable", {
           .lte("emp_sss_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
           .lte("emp_philhealth_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
           .lte("emp_pagibig_contrib_audit.change_date", dateEnd) // Less than or equal to dateEnd
-          .lte("vale_audit.change_date", dateEnd); // Less than or equal to dateEnd
-
+          .gte("government_loan_audit.date_end", dateEnd) // Greater than or equal to dateEnd
+          .lte("government_loan_audit.change_date", dateEnd); // Less than or equal to dateEnd
         // Use forEach to iterate over the data
         data.forEach((employee) => {
           const empSssContribAudit = employee.emp_sss_contrib_audit;
@@ -311,6 +276,33 @@ export const usePayrollTableStore = defineStore("payrollTable", {
             }
           } else {
             console.log("emp_pagibig_contrib_audit array is empty.");
+          }
+        });
+
+        // Process Government Loan Audit
+        data.forEach((employee) => {
+          const governmentLoanAudit = employee.government_loan_audit;
+
+          if (governmentLoanAudit.length > 0) {
+            // Create a map to hold the latest entries
+            const latestLoans = {};
+
+            governmentLoanAudit.forEach((loan) => {
+              const loanId = loan.government_loan_id;
+
+              // Check if this loanId is already in the map
+              if (
+                !latestLoans[loanId] ||
+                loan.audit_id > latestLoans[loanId].audit_id
+              ) {
+                latestLoans[loanId] = loan; // Update to the latest loan based on audit_id
+              }
+            });
+
+            // Convert the map back to an array
+            employee.government_loan_audit = Object.values(latestLoans);
+          } else {
+            console.log("government_loan_audit array is empty.");
           }
         });
 
