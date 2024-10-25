@@ -59,7 +59,8 @@ storeAddEmployee.getReferencedData();
               <div class="tw-flex tw-gap-3">
                 <div class="tw-max-w-64 tw-min-w-32">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.employment_type_id_selected"
                     @update:model-value="storeAddEmployee.setPermission"
                     :options="storeAddEmployee.employment_type"
@@ -75,14 +76,16 @@ storeAddEmployee.getReferencedData();
                   />
                 </div>
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.email"
                   label="Email"
                   :rules="[(val) => !!val || 'Field is required']"
                   :disable="storeAddEmployee.loading"
                 />
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.password"
                   type="password"
                   :rules="[(val) => !!val || 'Field is required']"
@@ -94,7 +97,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-2 tw-content-center tw-p-3">
               <div class="tw-flex tw-gap-3">
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.last_name"
                   label="Last Name"
                   :rules="[(val) => !!val || 'Field is required']"
@@ -102,7 +106,8 @@ storeAddEmployee.getReferencedData();
                   :disable="storeAddEmployee.loading"
                 />
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.first_name"
                   label="Fist Name"
                   :rules="[(val) => !!val || 'Field is required']"
@@ -110,7 +115,8 @@ storeAddEmployee.getReferencedData();
                   :disable="storeAddEmployee.loading"
                 />
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.middle_name"
                   label="Middle Name"
                   class="tw-capitalize"
@@ -122,7 +128,8 @@ storeAddEmployee.getReferencedData();
               <span class="tw-font-semibold tw-text-nowrap">Date Hired:</span>
               <div class="tw-max-w-52">
                 <q-input
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.hired_date"
                   label="YYYY-MM-DD"
                   :rules="[(val) => date.isValid(val)]"
@@ -159,7 +166,8 @@ storeAddEmployee.getReferencedData();
               <span class="tw-font-semibold">Contact Type:</span>
               <div class="tw-max-w-64">
                 <q-select
-                  filled
+                  rounded
+                  standout="bg-teal text-white"
                   v-model="storeAddEmployee.phone_type_selected"
                   :options="storeAddEmployee.phone_type"
                   option-label="phone_type_name"
@@ -179,7 +187,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Contact Number:</span>
                 <div class="tw-max-w-64">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.phone_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -195,7 +204,8 @@ storeAddEmployee.getReferencedData();
 
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.date_of_birth"
                     label="YYYY-MM-DD"
                     :rules="[(val) => date.isValid(val)]"
@@ -234,7 +244,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Gender:</span>
                 <div class="tw-max-w-64">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.gender"
                     :options="['Male', 'Female']"
                     :rules="[(val) => !!val || 'Field is required']"
@@ -250,7 +261,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Martial Status:</span>
                 <div class="tw-max-w-64">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.martial_status"
                     :options="[
                       'Single',
@@ -272,7 +284,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Department:</span>
                 <div class="tw-max-w-64">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.department"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -287,7 +300,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Position:</span>
                 <div class="tw-max-w-64">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.position"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -302,7 +316,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">Address:</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.region"
                 :dense="dense"
                 label="Region"
@@ -313,7 +328,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.province"
                 :dense="dense"
                 label="Province"
@@ -324,7 +340,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.city"
                 label="City"
                 :dense="dense"
@@ -335,7 +352,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.barangay"
                 label="Barangay"
                 :dense="dense"
@@ -346,7 +364,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.postal_code"
                 label="Postal Code"
                 :dense="dense"
@@ -357,7 +376,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.street"
                 label="Street"
                 :dense="dense"
@@ -368,7 +388,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.house_number"
                 label="House Number"
                 :dense="dense"
@@ -379,7 +400,8 @@ storeAddEmployee.getReferencedData();
             <div class="tw-col-span-1">
               <span class="tw-font-semibold">&nbsp;</span>
               <q-input
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddEmployee.additional_information"
                 label="Additional Information"
                 :dense="dense"
@@ -399,7 +421,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">PhilHealth Number:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.phil_health_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -414,7 +437,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">PhilHealth Contribution:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.philhealth_contrib_amount"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -431,7 +455,8 @@ storeAddEmployee.getReferencedData();
                 >
                 <div class="tw-min-w-32">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="
                       storeAddEmployee.philhealth_contrib_half_month_indicator
                     "
@@ -449,7 +474,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Pag-IBIG Number:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.pag_ibig_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -464,7 +490,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Pag-IBIG Contribution:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.pagibig_contrib_amount"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -479,7 +506,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Pag-IBIG Monthly Schedule:</span>
                 <div class="tw-min-w-32">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="
                       storeAddEmployee.pagibig_contrib_half_month_indicator
                     "
@@ -497,7 +525,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">SSS Number:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.sss_number"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -512,7 +541,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">SSS Contribution:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.sss_contrib_amount"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -527,7 +557,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">SSS Monthly Schedule:</span>
                 <div class="tw-min-w-32">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.sss_contrib_half_month_indicator"
                     :options="['1st Half', '2nd Half']"
                     :dense="dense"
@@ -543,7 +574,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">BIR Tin:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.bir_tin"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -558,7 +590,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Income Tax:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.incometax_contrib_amount"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
@@ -575,7 +608,8 @@ storeAddEmployee.getReferencedData();
                 >
                 <div class="tw-min-w-32">
                   <q-select
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="
                       storeAddEmployee.incometax_contrib_half_month_indicator
                     "
@@ -593,7 +627,8 @@ storeAddEmployee.getReferencedData();
                 <span class="tw-font-semibold">Rate per day:</span>
                 <div class="tw-max-w-52">
                   <q-input
-                    filled
+                    rounded
+                    standout="bg-teal text-white"
                     v-model="storeAddEmployee.rate_per_day"
                     :dense="dense"
                     :rules="[(val) => val.length >= 3]"
