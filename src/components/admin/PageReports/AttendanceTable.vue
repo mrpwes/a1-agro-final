@@ -1,7 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { useAttendanceTableStore } from "stores/admin/reportsPage/attendanceTable";
+import { useReportsViewAttendanceTable } from "stores/admin/reportsPage/viewAttendanceTable/viewAttendanceTable";
 import ViewAttendance from "./AttendanceTable/ViewAttendance.vue";
+
+const viewReportsAttendanceTableStore = useReportsViewAttendanceTable();
+
+viewReportsAttendanceTableStore.fetchAttendanceType();
 
 //FIXME: PROFILE IMAGE ATTENDANCE REPORT
 

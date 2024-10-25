@@ -133,6 +133,10 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
             employee.attendance.push({
               id: null, // You can generate a unique ID if needed
               date: formattedDate,
+              employee: {
+                first_name: employee.first_name,
+                last_name: employee.first_name,
+              },
               remarks: null,
               time_in: null,
               time_out: null,
@@ -157,7 +161,7 @@ export const useAttendanceTableStore = defineStore("attendanceTable", {
           .select(
             `*,
              is_archive,
-              attendance(*, attendance_type(*))`
+              attendance(*, attendance_type(*), employee(first_name, last_name, company_employee_id))`
           ) // Select all columns or specify the columns you need
           .gte("attendance.date", dateStart) // Greater than or equal to dateStart
           .lte("attendance.date", dateEnd) // Less than or equal to dateEnd
