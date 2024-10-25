@@ -94,7 +94,7 @@ function totalNetPay() {
             selectedRow.last_name
           }}
         </div>
-        <table class="tw-w-full tw-table-auto tw-border-collapse">
+        <q-markup-table separator="cell" flat bordered dense>
           <thead>
             <tr>
               <th class="tw-text-center tw-font-bold tw-border" colspan="3">
@@ -206,21 +206,21 @@ function totalNetPay() {
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Calamity Loan:</td>
-              <td class="tw-border">
+              <td class="tw-border tw-text-end">
                 {{ totalAmortization(selectedRow.government_loan_audit, 2) }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">SSS Salary Loan:</td>
-              <td class="tw-border">
+              <td class="tw-border tw-text-end">
                 {{ totalAmortization(selectedRow.government_loan_audit, 1) }}
               </td>
             </tr>
             <tr>
               <td colspan="3" class="tw-border"></td>
               <td class="tw-border">Pag-IBIG Loan:</td>
-              <td class="tw-border">
+              <td class="tw-border tw-text-end">
                 {{ totalAmortization(selectedRow.government_loan_audit, 3) }}
               </td>
             </tr>
@@ -252,7 +252,7 @@ function totalNetPay() {
               </td>
             </tr>
           </tbody>
-        </table>
+        </q-markup-table>
       </div>
       <q-card-actions align="right" class="text-primary noPrint">
         <q-btn flat label="Cancel" v-close-popup />
@@ -276,9 +276,6 @@ function totalNetPay() {
 </template>
 
 <style>
-td {
-  padding: 5px;
-}
 /* https://stackoverflow.com/questions/468881/print-div-id-printarea-div-only */
 .noScreen {
   display: none;
