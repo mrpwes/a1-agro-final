@@ -125,10 +125,13 @@ function capitalizeFirstLetterOfEachWord(string) {
       v-if="selectedRow.id != null && selectedRow.attendance_type_id == 1"
       class="!tw-h-min !tw-w-4/12 !tw-max-w-full tw-bg-white tw-p-6"
     >
-      <q-form @submit.prevent="govtViewLoanStore.updateAttendance()">
+      <q-form
+        @submit.prevent="viewReportsAttendanceTableStore.updateAttendance()"
+      >
         <div class="tw-grid tw-gap-7">
-          <div class="tw-text-3xl tw-font-extrabold">
-            Attendance ID: {{ selectedRow.id }}
+          <div class="tw-text-3xl tw-font-extrabold tw-flex tw-justify-between">
+            <div>Attendance ID: {{ selectedRow.id }}</div>
+            <div>{{ column.label }}</div>
           </div>
           <div>
             Employee: {{ selectedRow.employee.company_employee_id }} -
@@ -171,7 +174,7 @@ function capitalizeFirstLetterOfEachWord(string) {
                       viewReportsAttendanceTableStore.attendanceTimeInProxy
                     "
                     mask="YYYY-MM-DDTHH:mm:ss"
-                    hour-options="[8, 9, 10, 11, 12, 13, 14, 15]"
+                    :hour-options="viewReportsAttendanceTableStore.hourOptions"
                   >
                     <div class="row items-center justify-end q-gutter-sm">
                       <q-btn
@@ -247,15 +250,35 @@ function capitalizeFirstLetterOfEachWord(string) {
               </q-btn>
             </div>
           </div>
-          <q-card-actions align="right" class="text-primary noPrint">
-            <q-btn
-              flat
-              label="Cancel"
-              @click="viewReportsAttendanceTableStore.resetForm"
-              v-close-popup
-            />
-          </q-card-actions>
         </div>
+        <q-card-actions align="right" class="text-primary noPrint">
+          <q-btn
+            v-if="viewReportsAttendanceTableStore.is_editing == false"
+            flat
+            class="tw-bg-green-400"
+            :icon="viewReportsAttendanceTableStore.is_editing ? 'save' : 'edit'"
+            :label="
+              viewReportsAttendanceTableStore.is_editing ? 'Save' : 'Edit'
+            "
+            @click="viewReportsAttendanceTableStore.is_editing = true"
+          />
+          <q-btn
+            v-else
+            flat
+            type="submit"
+            class="tw-bg-green-400"
+            :icon="viewReportsAttendanceTableStore.is_editing ? 'save' : 'edit'"
+            :label="
+              viewReportsAttendanceTableStore.is_editing ? 'Save' : 'Edit'
+            "
+          />
+          <q-btn
+            flat
+            label="CLOSE"
+            @click="viewReportsAttendanceTableStore.resetForm"
+            v-close-popup
+          />
+        </q-card-actions>
       </q-form>
     </div>
     <div v-else>

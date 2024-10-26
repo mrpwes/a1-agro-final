@@ -1,5 +1,11 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../../lib/supabaseClient.js";
+import { useAttendanceTableStore } from "stores/admin/reportsPage/attendanceTable.js";
+
+import { useGlobalNotificationStore } from "stores/globalNotification";
+const globalNotificationStore = useGlobalNotificationStore();
+
+const attendanceTableStore = useAttendanceTableStore();
 
 export const useReportsViewAttendanceTable = defineStore(
   "reportsViewAttendanceTable",
@@ -28,6 +34,10 @@ export const useReportsViewAttendanceTable = defineStore(
       },
 
       getFormattedTimeIn(state) {
+        if (state.attendanceTimeOut === null) {
+          return null;
+        }
+
         // Create a Date object from the date string
         const date = new Date(state.attendanceTimeIn);
 
@@ -51,6 +61,11 @@ export const useReportsViewAttendanceTable = defineStore(
 
       getFormattedTimeOut(state) {
         // Create a Date object from the date string
+
+        if (state.attendanceTimeOut === null) {
+          return null;
+        }
+
         const date = new Date(state.attendanceTimeOut);
 
         // Get hours and minutes
@@ -123,7 +138,7 @@ export const useReportsViewAttendanceTable = defineStore(
       },
 
       async updateAttendance() {
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from("attendance")
           .update({
             date: this.attendanceDate,
@@ -131,14 +146,20 @@ export const useReportsViewAttendanceTable = defineStore(
             time_in: this.attendanceTimeIn,
             time_out: this.attendanceTimeOut,
             employee_id: this.attendanceEmployeeID,
-            type: this.attendanceType,
+            attendance_type_id: this.attendanceType,
             adjustment_salary_id: this.attendanceAdjustmentSalaryID,
           })
           .eq("id", this.attendanceID);
         if (error) {
-          console.log(error);
+          globalNotificationStore.showErrorNotification(
+            "Failed to update attendance"
+          );
         } else {
-          return data;
+          attendanceTableStore.fetchAttendanceReports();
+          globalNotificationStore.showSuccessNotification(
+            "Attendance updated successfully"
+          );
+          this.is_editing = false;
         }
       },
 
