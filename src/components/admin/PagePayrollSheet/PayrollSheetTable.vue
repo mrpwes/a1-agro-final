@@ -129,10 +129,11 @@ function exportTableToCSV(tableId) {
     dense
     title="Attendance Report"
     :title-class="['tw-text-xl', 'tw-font-bold']"
-    :filter="tableSearch"
     :columns="payrollTableStore.payrollColumns['columns']"
     :rows="payrollTableStore.rows"
     :rows-per-page-options="[0]"
+    :filter="tableSearch"
+    :filter-method="payrollTableStore.customFilter"
     separator="cell"
     row-key="name"
   >
@@ -145,6 +146,17 @@ function exportTableToCSV(tableId) {
         @click="exportTableToCSV('exportTable')"
         class="tw-mr-16"
       />
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="tableSearch"
+        placeholder="Search Name"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
     </template>
     <template v-slot:top-left>
       <q-select
@@ -173,6 +185,7 @@ function exportTableToCSV(tableId) {
         ><ViewPayrollRowButton :rows="props.row"></ViewPayrollRowButton
       ></q-td>
     </template>
+
     <template v-slot:body="props">
       <q-tr :props="props">
         <q-td key="employeeId" :props="props" auto-width

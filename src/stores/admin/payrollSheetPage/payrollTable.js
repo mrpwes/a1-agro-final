@@ -98,6 +98,18 @@ export const usePayrollTableStore = defineStore("payrollTable", {
 
   getters: {},
   actions: {
+    customFilter(rows, terms) {
+      console.log("customFilter", rows, terms);
+      return rows.filter((row) => {
+        const searchTerm = terms.toLowerCase();
+        return (
+          row.last_name.toLowerCase().includes(searchTerm) ||
+          row.first_name.toLowerCase().includes(searchTerm) ||
+          row.middle_name.toLowerCase().includes(searchTerm)
+        );
+      });
+    },
+
     formatDate(date) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");

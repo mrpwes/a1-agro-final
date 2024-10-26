@@ -1,5 +1,6 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
+import { ref } from "vue";
 
 import ViewLoanButton from "components/admin/PageLoanList/ViewLoanButtonV2.vue";
 import ArchivedLoanButton from "components/admin/PageLoanList/ArchivedLoanButton.vue";
@@ -18,6 +19,8 @@ storeViewLoan.getLoanList();
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+const tableSearch = ref("");
 
 function formatAmountBalance(row) {
   return numberWithCommas(row[0].balance + "/" + row[0].amount);
@@ -110,6 +113,20 @@ const columns = [
     :rows-per-page-options="[10, 20, 0]"
     row-key="Loan ID"
   >
+    >
+    <template v-slot:top-right>
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="tableSearch"
+        placeholder="Search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </template>
     <template v-slot:body-cell-actions="props">
       <q-td key="actions" class="tw-w-2/12" :props="props"
         ><ViewLoanButton :rows="props.row"></ViewLoanButton
