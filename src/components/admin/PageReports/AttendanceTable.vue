@@ -74,6 +74,12 @@ function getTotalHours(array, targetObject, row) {
   return calculateTotalHours(targetRow);
 }
 
+function getBtnClass(array, targetObject, row) {
+  const targetColumnIndex = findIndexInArray(array, targetObject);
+  const targetRow = row.row.attendance[targetColumnIndex - 1];
+  return calculateClass(targetRow);
+}
+
 function capitalizeFirstLetterOfEachWord(str) {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
@@ -138,6 +144,88 @@ function calculateTotalHours(row) {
   }
   return totalHours;
 }
+
+function calculateClass(row) {
+  // const currentDate = new Date();
+  // const rowDate = new Date(row.attendance[currentCounter].date);
+
+  // if (rowDate >= currentDate) {
+  //   return "!tw-bg-gray-300 !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+  // }
+
+  // return row.attendance[currentCounter] &&
+  // row.attendance[currentCounter].time_in &&
+  // row.attendance[currentCounter].time_out
+  // ? "!tw-bg-[#82ff72ad] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg"
+  // : "!tw-bg-[#ff8787b0] !tw-w-[50px] !tw-h-[50px] tw-rounded-lg";
+
+  const currentDate = new Date();
+  const rowDate = new Date(row.date);
+
+  if (rowDate >= currentDate) {
+    return "N/A";
+  }
+
+  var totalHours;
+  var classContent;
+
+  if (row.time_out === null && row.time_in !== null) {
+    totalHours = "No Time Out";
+    classContent = "!tw-bg-[#e11d48]"; // Assuming absent if no time out    /RED
+  } else if (
+    row.attendance_type_id !== 1 &&
+    row.attendance_type_id !== undefined
+  ) {
+    classContent = "!tw-bg-[#3b82f6]";
+  } else {
+    const timeIn = new Date(row.time_in);
+    const timeOut = new Date(row.time_out);
+
+    // Set timeIn to 8 AM if it's before 8 AM
+    const eightAM = new Date(timeIn);
+    eightAM.setHours(8, 0, 0, 0);
+    if (timeIn < eightAM) {
+      timeIn.setHours(8, 0, 0, 0);
+    }
+
+    // Set timeOut to 5 PM if it's after 5 PM
+    const fivePM = new Date(timeOut);
+    fivePM.setHours(17, 0, 0, 0);
+    if (timeOut > fivePM) {
+      timeOut.setHours(17, 0, 0, 0);
+    }
+
+    totalHours = ((timeOut - timeIn) / (1000 * 60 * 60)).toFixed(2);
+
+    const onePM = new Date(timeOut);
+    onePM.setHours(13, 0, 0, 0);
+    if (timeOut > onePM) {
+      totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
+      // console.log("Subtract 1 hour");
+    }
+
+    // Check for late arrival
+    const eightTenAM = new Date(timeIn);
+    eightTenAM.setHours(8, 10, 0, 0);
+
+    // Determine classContent based on totalHours
+    if (parseFloat(totalHours) >= 8) {
+      classContent = "!tw-bg-[#4ade80]"; // IF PRESENT 8HRS / Green
+      // console.log("Present");
+    } else if (parseFloat(totalHours) == 0) {
+      classContent = "!tw-bg-[#f87171]"; // IF ABSENT / Red
+      // console.log("Absent");
+    } else if (timeIn > eightTenAM) {
+      classContent = "!tw-bg-[#fb923c]";
+      if (parseFloat(totalHours) < 5) {
+        classContent = "!tw-bg-[#ec4899]"; // IF LATE AND UNDERTIME / Pink
+      }
+    }
+  }
+
+  console.log(classContent + " !tw-w-[50px] !tw-h-[50px] tw-rounded");
+  return classContent + " !tw-w-[50px] !tw-h-auto tw-rounded";
+}
 </script>
 
 <!-- 
@@ -174,6 +262,7 @@ function calculateTotalHours(row) {
           :rows="props"
           :columns="props.cols"
           :qBtnLabel="getTotalHours(props.cols, props.col, props)"
+          :qBtnClass="getBtnClass(props.cols, props.col, props)"
           :column="props.col"
         ></ViewAttendance>
       </q-td>

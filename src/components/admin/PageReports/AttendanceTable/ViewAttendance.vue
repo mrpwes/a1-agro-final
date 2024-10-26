@@ -4,7 +4,7 @@ import { useReportsViewAttendanceTable } from "stores/admin/reportsPage/viewAtte
 
 const viewReportsAttendanceTableStore = useReportsViewAttendanceTable();
 
-defineProps(["rows", "column", "columns", "qBtnLabel"]);
+defineProps(["rows", "column", "columns", "qBtnLabel", "qBtnClass"]);
 
 const viewPrompt = ref(false);
 const selectedRow = ref(null);
@@ -118,7 +118,7 @@ function capitalizeFirstLetterOfEachWord(string) {
     padding="none"
     :label="qBtnLabel"
     @click="openmodel(rows, column, columns)"
-    class="!tw-font-normal !tw-capitalize"
+    :class="qBtnClass"
   />
   <q-dialog v-model="viewPrompt" persistent>
     <div
