@@ -85,7 +85,19 @@ sssTableStore.fetchEmployeeReports();
         no-caps
         @click="exportTableToCSV('sss-table')"
         class="tw-mr-16"
-    /></template>
+      />
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="tableSearch"
+        placeholder="Search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </template>
     <template v-slot:top-left>
       <div class="tw-text-xl, tw-font-bold">SSS Report</div>
       <div class="tw-w-3"></div>

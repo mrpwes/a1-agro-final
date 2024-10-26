@@ -255,7 +255,19 @@ function calculateClass(row) {
         no-caps
         @click="exportTableToCSV('attendance-table')"
         class="tw-mr-16"
-    /></template>
+      />
+      <q-input
+        borderless
+        dense
+        debounce="300"
+        v-model="tableSearch"
+        placeholder="Search"
+      >
+        <template v-slot:append>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+    </template>
     <template v-slot:body-cell-actions="props">
       <q-td key="actions" class="tw-w-2/12 !tw-p-0" :props="props">
         <ViewAttendance
