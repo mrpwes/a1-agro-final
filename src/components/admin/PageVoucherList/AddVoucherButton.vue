@@ -1,9 +1,7 @@
 <script setup>
-import { ref } from "vue";
 import { useAddVoucherStore } from "src/stores/admin/voucherListPage/addVoucher";
 
 const storeAddVoucher = useAddVoucherStore();
-const addVoucherDialog = ref(false);
 
 storeAddVoucher.fetchReferenceData();
 function filterFn(val, update) {
@@ -32,28 +30,26 @@ function filterIssuer(val, update) {
   <q-btn
     icon="mdi-plus"
     label="Add Voucher"
-    @click="addVoucherDialog = true"
+    @click="storeAddVoucher.addVoucherDialog = true"
     class="tw-bg-white"
   />
-  <q-dialog v-model="addVoucherDialog" persistent>
-    <q-card class="!tw-h-min !tw-w-5/12 !tw-max-w-full tw-bg-white tw-p-6">
-      <q-form autofocus>
-        <!-- @submit.prevent="storeAddVoucher.addVoucher()" -->
-        <div>
-          <div class="tw-grid tw-grid-cols-3 tw-gap-3 tw-mb-5">
-            <div class="tw-col-span-3 tw-text-3xl tw-font-extrabold tw-pb-3">
-              Add Voucher
-            </div>
-            <div class="tw-col-span-1">
-              Recipient
+  <q-dialog v-model="storeAddVoucher.addVoucherDialog" persistent>
+    <div class="!tw-h-min !tw-w-4/12 !tw-max-w-full tw-bg-white tw-p-6 tw-pb-3">
+      <q-form @submit.prevent="storeAddVoucher.addVoucherData" autofocus>
+        <div class="tw-grid tw-gap-3">
+          <div class="tw-text-3xl tw-font-extrabold">Add Voucher</div>
+          <div class="tw-flex tw-justify-between">
+            <div>
               <q-select
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddVoucher.recipient"
                 use-input
                 hide-selected
                 fill-input
                 hide-bottom-space
                 input-debounce="0"
+                label="Recipient"
                 :options="storeAddVoucher.selectorRecipientOptions"
                 :option-label="
                   (opt) =>
@@ -63,11 +59,9 @@ function filterIssuer(val, update) {
                 "
                 :option-value="id"
                 @filter="filterFn"
-                class="!tw-pb-0; tw-capitalize"
-                popup-content-class="tw-capitalize"
                 :disable="storeAddVoucher.loading"
+                required
               >
-                <!-- @filter="filterRecipient" -->
                 <template v-slot:no-option>
                   <q-item>
                     <q-item-section class="text-grey">
@@ -77,17 +71,17 @@ function filterIssuer(val, update) {
                 </template>
               </q-select>
             </div>
-            <div class="tw-col-span-1"></div>
-            <div class="tw-col-span-1">
-              Issuer
+            <div>
               <q-select
-                filled
+                rounded
+                standout="bg-teal text-white"
                 v-model="storeAddVoucher.issuer"
                 use-input
                 hide-selected
                 fill-input
                 hide-bottom-space
                 input-debounce="0"
+                label="Issuer"
                 :options="storeAddVoucher.selectorIssuerOptions"
                 :option-label="
                   (opt) =>
@@ -97,9 +91,7 @@ function filterIssuer(val, update) {
                 "
                 :option-value="id"
                 @filter="filterIssuer"
-                class="!tw-pb-0; tw-capitalize"
-                popup-content-class="tw-capitalize"
-                :disable="storeAddVoucher.loading"
+                required
               >
                 <template v-slot:no-option>
                   <q-item>
@@ -110,93 +102,77 @@ function filterIssuer(val, update) {
                 </template>
               </q-select>
             </div>
-            <div class="tw-col-span-3">Description</div>
-            <div class="tw-col-span-3">
+          </div>
+          <div class="tw-flex">
+            <div class="tw-my-auto">Subject:</div>
+            <div class="tw-w-2"></div>
+            <div class="tw-w-36">
               <q-input
-                v-model="storeAddVoucher.description"
-                type="textarea"
-                filled
-                hide-bottom-space
-                :rules="[(val) => val.length >= 1]"
-                :disable="storeAddVoucher.loading"
-              />
-            </div>
-            <!-- <div class="tw-col-span-1">
-              Purpose:
-              <q-input
-                v-model="storeAddVoucher.des"
-                type="textarea"
-                filled
+                rounded
+                standout="bg-teal text-white"
+                v-model="storeAddVoucher.subject"
                 autogrow
+                type="text"
+                required
               />
-            </div> -->
-            <div class="tw-col-span-1">
-              Date:
-              <q-input
-                filled
-                v-model="storeAddVoucher.date_issued"
-                label="YYYY-MM-DD"
-                :rules="[(val) => date.isValid(val)]"
-                hide-bottom-space
-                :disable="storeAddVoucher.loading"
-              >
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy
-                      cover
-                      transition-show="scale"
-                      transition-hide="scale"
-                    >
-                      <q-date
-                        v-model="storeAddVoucher.date_issued"
-                        mask="YYYY-MM-DD"
-                      >
-                        <div class="row items-center justify-end">
-                          <q-btn
-                            v-close-popup
-                            label="Close"
-                            color="primary"
-                            flat
-                          />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="tw-col-span-1"></div>
-            <div class="tw-col-span-1">
-              Amount
-              <q-input
-                filled
-                v-model="storeAddVoucher.amount"
-                :dense="dense"
-                :rules="[(val) => val.length >= 1]"
-                hide-bottom-space
-                :disable="storeAddVoucher.loading"
-              >
-                <template v-slot:prepend>
-                  <q-icon style="font-size: x-large" name="mdi-currency-php" />
-                </template>
-              </q-input>
             </div>
           </div>
-          <q-card-actions align="right" class="text-primary">
-            <q-btn flat label="Cancel" v-close-popup />
-            <q-btn
-              flat
-              class="tw-bg-green-400"
-              label="Add Invoice"
-              type="submit"
-              :onclick="storeAddVoucher.addVoucher"
-              :disable="storeAddVoucher.loading"
-              v-close-popup
+          <div>
+            Description:
+            <span class="tw-text-gray-500">(Optional)</span>
+            <q-input
+              rounded
+              standout="bg-teal text-white"
+              v-model="storeAddVoucher.description"
+              autogrow
+              type="text"
             />
-          </q-card-actions>
+          </div>
+
+          <div class="tw-flex tw-justify-between">
+            <div class="tw-flex">
+              <div class="tw-my-auto">Date Issued:</div>
+              <div class="tw-w-2"></div>
+              <q-input
+                rounded
+                standout="bg-teal text-white"
+                v-model="storeAddVoucher.date_issued"
+                aria-required=""
+                type="date"
+                hide-bottom-space
+              />
+            </div>
+            <div class="tw-flex">
+              <div class="tw-my-auto">Amount:</div>
+              <div class="tw-w-2"></div>
+              <q-input
+                rounded
+                standout="bg-teal text-white"
+                v-model="storeAddVoucher.amount"
+                :dense="dense"
+                hide-bottom-space
+                type="number"
+                required
+              />
+            </div>
+          </div>
         </div>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancel"
+            @click="storeAddVoucher.resetForm"
+            v-close-popup
+          />
+          <q-btn
+            flat
+            class="tw-bg-green-400"
+            label="Add Invoice"
+            type="submit"
+          />
+        </q-card-actions>
       </q-form>
-    </q-card>
+    </div>
   </q-dialog>
 </template>
 

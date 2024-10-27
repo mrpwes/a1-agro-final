@@ -1,13 +1,17 @@
 import { defineStore } from "pinia";
 import { supabase } from "../../../lib/supabaseClient.js";
 import { useViewVoucherStore } from "./viewVoucher.js";
-import { Notify } from "quasar";
+import { useAuthenticationStore } from "stores/authentication.js";
+import { useGlobalNotificationStore } from "stores/globalNotification";
+const globalNotificationStore = useGlobalNotificationStore();
+
+const authenticationStore = useAuthenticationStore();
 
 const storeViewVoucher = useViewVoucherStore();
 
 export const useAddVoucherStore = defineStore("addVoucher", {
   state: () => ({
-    employee_id: null,
+    currentEmployeeID: authenticationStore.getEmployeeId,
     type: null,
     date_issued: null,
     recipient: null,
@@ -16,31 +20,22 @@ export const useAddVoucherStore = defineStore("addVoucher", {
     issuerOptions: [],
     description: null,
     amount: null,
-    is_archive: null,
-    loading: false,
+    addVoucherDialog: false,
   }),
 
   getters: {},
 
   actions: {
-    addVoucher() {
-      Promise.all([this.getCurrentUser()]).then(() => {
-        this.addVoucherData();
-        this.reset();
-      });
-    },
-
     async addVoucherData() {
-      this.loading = true;
       try {
         const { data, error } = await supabase.from("voucher").insert([
           {
-            employee_id: this.employee_id,
-            type: this.type,
+            admin_employee_id: this.currentEmployeeID,
+            subject: this.subject,
+            description: this.description,
             date_issued: this.date_issued,
             recipient: this.recipient.id,
             issuer: this.issuer.id,
-            description: this.description,
             amount: this.amount,
             is_archive: false,
           },
@@ -49,14 +44,28 @@ export const useAddVoucherStore = defineStore("addVoucher", {
           throw error;
         } else {
           console.log(data);
-          this.loading = false;
-          this.success();
+          this.addVoucherDialog = false;
+          globalNotificationStore.showSuccessNotification(
+            "Voucher added successfully"
+          );
           storeViewVoucher.fetchListOfVouchers();
+          this.resetForm();
         }
       } catch (error) {
-        console.log(error);
-        this.loading = false;
+        globalNotificationStore.showErrorNotification(
+          "Error: " + error.message
+        );
+        this.resetForm();
       }
+    },
+
+    resetForm() {
+      this.subject = null;
+      this.description = null;
+      this.date_issued = null;
+      this.recipient = null;
+      this.issuer = null;
+      this.amount = null;
     },
 
     async getCurrentUser() {
@@ -83,23 +92,6 @@ export const useAddVoucherStore = defineStore("addVoucher", {
       } catch (error) {
         console.log(error);
       }
-    },
-    success() {
-      Notify.create({
-        icon: "done",
-        color: "positive",
-        message: "Added Voucher Successfully!",
-      });
-    },
-    reset() {
-      this.employee_id = null;
-      this.type = null;
-      this.date_issued = null;
-      this.recipient = null;
-      this.issuer = null;
-      this.description = null;
-      this.amount = null;
-      this.is_archive = null;
     },
   },
 });
