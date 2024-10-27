@@ -21,7 +21,9 @@ export const useAuthenticationStore = defineStore("authentication", {
       return state.userType;
     },
     getEmployeeId(state) {
-      return state.data.user.id;
+      return state.data.user.id !== undefined && state.data.user.id !== null
+        ? state.data.user.id
+        : null;
     },
     getPassword(state) {
       return state.password;

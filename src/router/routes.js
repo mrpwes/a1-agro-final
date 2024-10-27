@@ -75,6 +75,10 @@ const routes = [
         component: () => import("pages/employee/PayslipPage.vue"),
       },
       {
+        path: "loan",
+        component: () => import("pages/employee/LoanPage.vue"),
+      },
+      {
         path: "support",
         component: () => import("pages/SupportPage.vue"),
       },

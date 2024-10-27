@@ -16,7 +16,7 @@ storePageHeader.getCurrentUserName();
 <template>
   <q-header elevated class="tw-text-black">
     <div
-      class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-100"
+      class=" tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-500"
     >
       <div class="tw-col-span-2 tw-inline-flex">
         <q-btn
