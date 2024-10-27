@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useViewLoan } from "stores/admin/loanListPage/viewLoan";
+import { useViewLoan } from "stores/employee/loanPage/companyLoan/viewLoan";
 
 const storeViewLoan = useViewLoan();
 
@@ -182,35 +182,6 @@ function openmodel(row) {
                 required
                 class="tw-max-w-full"
               />
-            </div>
-          </div>
-          <div class="tw-flex tw-mb-3">
-            <div class="tw-content-center tw-mr-3">Payment:</div>
-            <div class="tw-px-2">
-              <q-input
-                rounded
-                standout="bg-teal text-white"
-                type="number"
-                v-model="storeViewLoan.payment"
-                :readonly="!storeViewLoan.is_paying"
-                :rules="[
-                  (val) =>
-                    val <= storeViewLoan.balance ||
-                    'Payment cannot be greater than balance',
-                ]"
-                required
-                class="tw-max-w-full"
-              />
-            </div>
-          </div>
-          <div v-if="storeViewLoan.expectedNewBalance" class="tw-flex tw-mb-3">
-            <div class="tw-content-center tw-mr-3 tw-text-gray-500">
-              Expected New Balance:
-            </div>
-            <div class="tw-px-2">
-              <p class="tw-max-w-full bg-teal tw-text-white tw-rounded tw-p-2">
-                {{ storeViewLoan.expectedNewBalance }}
-              </p>
             </div>
           </div>
         </div>

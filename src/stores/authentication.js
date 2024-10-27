@@ -21,7 +21,7 @@ export const useAuthenticationStore = defineStore("authentication", {
       return state.userType;
     },
     getEmployeeId(state) {
-      return state.data.user.id;
+      return state.data.user.id ?? "";
     },
     getPassword(state) {
       return state.password;
@@ -34,7 +34,6 @@ export const useAuthenticationStore = defineStore("authentication", {
         this.logoutLoading = true;
         let { error } = await supabase.auth.signOut();
         this.router.push("/");
-        getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
         if (error) {
           throw error;
         } else {
@@ -42,6 +41,7 @@ export const useAuthenticationStore = defineStore("authentication", {
           this.router.push("/");
           this.isAuthenticated = false;
           this.logoutLoading = false;
+          // getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
         }
       } catch (error) {
         alert("Error logging out:", error);
