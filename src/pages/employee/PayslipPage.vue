@@ -108,164 +108,160 @@ function totalNetPay(selectedRow) {
         </td>
       </tr>
     </table>
-    <table
-      class="tw-rounded-3xl tw-text-nowrap tw-w-6/12 tw-mx-auto tw-mb-3 tw-bg-white tw-border-collapse tw-shadow-lg"
+    <q-markup-table
+      separator="cell"
+      class="tw-rounded-3xl tw-w-6/12 tw-mx-auto tw-mb-3 tw-bg-white tw-shadow-lg"
     >
-      <tr>
-        <td
-          colspan="3"
-          class="tw-p-3 tw-font-extrabold tw-text-center tw-border-b tw-border-gray-400"
-        >
-          Gross Income
-        </td>
-        <td
-          colspan="3"
-          class="tw-p-3 tw-font-extrabold tw-text-center tw-border-b tw-border-l tw-border-gray-400"
-        >
-          Deductions
-        </td>
-      </tr>
-      <tr>
-        <td colspan="1" class="tw-p-3"><div>Rate Per Day:</div></td>
-        <td colspan="1" class="tw-p-3">
-          <div>₱{{ payslipStore.rows[0].rate_per_day }}</div>
-        </td>
-        <td colspan="1" class="tw-border-r tw-border-gray-400"></td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>SSS Contribution:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400">
-          <div>
-            ₱
-            {{
-              payslipStore.rows[0]?.emp_sss_contrib_audit?.[
-                payslipStore.rows[0].emp_sss_contrib_audit.length - 1
-              ]?.amount ?? 0
-            }}
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="1" class="tw-p-3"><div>Days Worked:</div></td>
-        <td colspan="1" class="tw-p-3">
-          <div>
-            {{
-              payslipFormatterStore.noDaysWorkedFormatter(
+      <thead>
+        <tr>
+          <th colspan="3">
+            <div>Gross Income</div>
+          </th>
+          <th colspan="3">
+            <div>Deductions</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td colspan="1">
+            <div>Rate Per Day:</div>
+          </td>
+          <td colspan="1">
+            <div>₱{{ payslipStore.rows[0].rate_per_day }}</div>
+          </td>
+          <td colspan="1"></td>
+          <td colspan="2">
+            <div>SSS Contribution:</div>
+          </td>
+          <td>
+            <div>
+              ₱
+              {{
+                payslipStore.rows[0]?.emp_sss_contrib_audit?.[
+                  payslipStore.rows[0].emp_sss_contrib_audit.length - 1
+                ]?.amount ?? 0
+              }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="1">
+            <div>Days Worked:</div>
+          </td>
+          <td colspan="1">
+            <div>
+              {{
+                payslipFormatterStore.noDaysWorkedFormatter(
+                  payslipStore.rows[0].attendance
+                )
+              }}
+            </div>
+          </td>
+          <td>
+            ₱{{
+              payslipFormatterStore.grossIncomeFormatter(
+                payslipStore.rows[0].rate_per_day,
                 payslipStore.rows[0].attendance
               )
             }}
-          </div>
-        </td>
-        <td class="tw-border-r tw-border-gray-400">
-          ₱{{
-            payslipFormatterStore.grossIncomeFormatter(
-              payslipStore.rows[0].rate_per_day,
-              payslipStore.rows[0].attendance
-            )
-          }}
-        </td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>PhilHealth Contribution:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400">
-          <div>
-            ₱
-            {{
-              payslipStore.rows[0]?.emp_philhealth_contrib_audit?.[
-                payslipStore.rows[0].emp_philhealth_contrib_audit.length - 1
-              ]?.amount ?? 0
+          </td>
+          <td colspan="2">
+            <div>PhilHealth Contribution:</div>
+          </td>
+          <td>
+            <div>
+              ₱
+              {{
+                payslipStore.rows[0]?.emp_philhealth_contrib_audit?.[
+                  payslipStore.rows[0].emp_philhealth_contrib_audit.length - 1
+                ]?.amount ?? 0
+              }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div></div>
+          </td>
+          <td colspan="2">
+            <div></div>
+          </td>
+          <td colspan="2">
+            <div>Pag-IBIG Contribution:</div>
+          </td>
+          <td>
+            <div>
+              ₱
+              {{
+                payslipStore.rows[0]?.emp_pagibig_contrib_audit?.[
+                  payslipStore.rows[0].emp_pagibig_contrib_audit.length - 1
+                ]?.amount ?? 0
+              }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3"><br /></td>
+          <td colspan="3"><br /></td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div></div>
+          </td>
+          <td colspan="2">
+            <div>SSS Calamity Loan:</div>
+          </td>
+          <td>
+            <div>---</div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div></div>
+          </td>
+          <td colspan="2">
+            <div>SSS Loan:</div>
+          </td>
+          <td>
+            <div>---</div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div></div>
+          </td>
+          <td colspan="2">
+            <div>Pag-IBIG Loan:</div>
+          </td>
+          <td>
+            <div>---</div>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3"><br /></td>
+          <td colspan="3"><br /></td>
+        </tr>
+        <tr>
+          <td colspan="2">Total Gross Income:</td>
+          <td>
+            ₱{{
+              payslipFormatterStore.grossIncomeFormatter(
+                payslipStore.rows[0].rate_per_day,
+                payslipStore.rows[0].attendance
+              )
             }}
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="tw-p-3"><div></div></td>
-        <td colspan="2" class="tw-p-3 tw-border-r tw-border-gray-400">
-          <div></div>
-        </td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>Pag-IBIG Contribution:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400">
-          <div>
-            ₱
-            {{
-              payslipStore.rows[0]?.emp_pagibig_contrib_audit?.[
-                payslipStore.rows[0].emp_pagibig_contrib_audit.length - 1
-              ]?.amount ?? 0
-            }}
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3"><br /></td>
-        <td colspan="3" class="tw-border-l tw-border-gray-400"><br /></td>
-      </tr>
-      <tr>
-        <td colspan="3" class="tw-p-3 tw-border-gray-400"><div></div></td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>SSS Calamity Loan:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>---</div></td>
-      </tr>
-      <tr>
-        <td colspan="3" class="tw-p-3 tw-border-gray-400"><div></div></td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>SSS Loan:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>---</div></td>
-      </tr>
-      <tr>
-        <td colspan="3" class="tw-p-3 tw-border-gray-400"><div></div></td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          <div>Pag-IBIG Loan:</div>
-        </td>
-        <td class="tw-p-3 tw-border-gray-400"><div>---</div></td>
-      </tr>
-      <tr>
-        <td colspan="3"><br /></td>
-        <td colspan="3" class="tw-border-l tw-border-gray-400"><br /></td>
-      </tr>
-      <tr>
-        <td
-          colspan="2"
-          class="tw-border-spacing-x-3 tw-p-3 tw-border-b tw-border-gray-400"
-        >
-          Total Gross Income:
-        </td>
-        <td class="tw-p-3 tw-border-b tw-border-gray-400">
-          ₱{{
-            payslipFormatterStore.grossIncomeFormatter(
-              payslipStore.rows[0].rate_per_day,
-              payslipStore.rows[0].attendance
-            )
-          }}
-        </td>
-
-        <!-- payslipFormatterStore.noDaysWorkedFormatter(
-                payslipStore.rows[0].attendance !== null
-                  ? payslipStore.rows[0].attendance
-                  : []
-              ) -->
-        <td
-          colspan="2"
-          class="tw-p-3 tw-border-b tw-border-l tw-border-gray-400"
-        >
-          Total Deductions:
-        </td>
-        <td class="tw-p-3 tw-border-b tw-border-gray-400">
-          ₱
-          {{ totalDeductions(payslipStore.rows[0]) }}
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3"></td>
-        <td colspan="2" class="tw-p-3 tw-border-l tw-border-gray-400">
-          Total Net Pay:
-        </td>
-        <td class="tw-p-3">₱{{ totalNetPay(payslipStore.rows[0]) }}</td>
-      </tr>
-    </table>
+          </td>
+          <td colspan="2">Total Deductions:</td>
+          <td>₱{{ totalDeductions(payslipStore.rows[0]) }}</td>
+        </tr>
+        <tr>
+          <td colspan="3"></td>
+          <td colspan="2">Total Net Pay:</td>
+          <td>₱{{ totalNetPay(payslipStore.rows[0]) }}</td>
+        </tr>
+      </tbody>
+    </q-markup-table>
   </div>
 </template>
 
