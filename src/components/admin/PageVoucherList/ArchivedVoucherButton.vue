@@ -12,12 +12,19 @@ const tableSearch = ref("");
 
 const columns = [
   {
-    name: "Voucher Id",
+    name: "id",
     required: true,
     label: "Voucher Id",
     align: "left",
     field: (row) => row.id,
     format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "subject",
+    align: "center",
+    label: "Subject",
+    field: "subject",
     sortable: true,
   },
   {
@@ -28,13 +35,7 @@ const columns = [
     format: (val) => date.formatDate(val, "MMM D, YYYY"),
     sortable: true,
   },
-  {
-    name: "Description",
-    align: "center",
-    label: "Description",
-    field: "description",
-    sortable: true,
-  },
+
   {
     name: "Recipient",
     align: "center",

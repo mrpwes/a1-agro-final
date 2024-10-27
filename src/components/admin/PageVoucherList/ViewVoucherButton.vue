@@ -13,6 +13,8 @@ function openmodel(row) {
   viewPrompt.value = true;
 
   selectedRow.value.issuer_name =
+    row.issuer.company_employee_id +
+    " - " +
     row.issuer.last_name +
     ", " +
     row.issuer.first_name +
@@ -20,6 +22,8 @@ function openmodel(row) {
     row.issuer.middle_name;
 
   selectedRow.value.recipient_name =
+    row.issuer.company_employee_id +
+    " - " +
     row.recipient.last_name +
     ", " +
     row.recipient.first_name +
