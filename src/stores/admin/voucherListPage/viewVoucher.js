@@ -28,13 +28,12 @@ export const useViewVoucherStore = defineStore("viewVoucher", {
       try {
         const { data, error } = await supabase.from("voucher").select(`
               id,
-              employee_id,
-              type,
-              date_issued,
-              recipient:employee_id(first_name, middle_name, last_name),
-              issuer:employee_id(first_name, middle_name, last_name), 
-              issuer,
+              admin_employee_id(first_name, middle_name, last_name),
+              subject,
               description,
+              date_issued,
+              recipient(first_name, middle_name, last_name),
+              issuer(first_name, middle_name, last_name), 
               amount,
               is_archive
             `);

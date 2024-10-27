@@ -1,5 +1,6 @@
 <script setup>
 import { date } from "quasar";
+import { ref } from "vue";
 import { usePageHeader } from "stores/pageHeader";
 
 import ViewVoucherButton from "components/admin/PageVoucherList/ViewVoucherButton.vue";
@@ -10,18 +11,25 @@ import { useViewVoucherStore } from "stores/admin/voucherListPage/viewVoucher";
 
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Voucher List";
-
+const tableSearch = ref("");
 const storeViewVoucher = useViewVoucherStore();
 storeViewVoucher.fetchListOfVouchers();
 
 const columns = [
   {
-    name: "Voucher Id",
+    name: "id",
     required: true,
     label: "Voucher Id",
     align: "left",
     field: (row) => row.id,
     format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "subject",
+    align: "center",
+    label: "Subject",
+    field: "subject",
     sortable: true,
   },
   {
@@ -32,13 +40,7 @@ const columns = [
     format: (val) => date.formatDate(val, "MMM D, YYYY"),
     sortable: true,
   },
-  {
-    name: "Description",
-    align: "center",
-    label: "Description",
-    field: "description",
-    sortable: true,
-  },
+
   {
     name: "Recipient",
     align: "center",
