@@ -8,7 +8,6 @@ storePageHeader.currentPage = "Loan List";
 
 <template>
   <div>
-    <h1>TESTING</h1>
     <GovernmentTable></GovernmentTable>
   </div>
 </template>

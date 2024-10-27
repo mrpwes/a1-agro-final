@@ -2,27 +2,31 @@
 import { ref } from "vue";
 import { useGovernmentLoan } from "stores/employee/loanPage/governmentLoan/governmentLoan";
 import ViewLoanButton from "./ViewLoanButton.vue";
-import GovernmentLoanTableArchived from "./GovernmentLoanTableArchived.vue";
 
 const filter = ref("");
+const archivedGovernmentLoan = ref(false);
+
 const governmentLoanStore = useGovernmentLoan();
-governmentLoanStore.fetchGovernmentLoanList();
 </script>
 
 <template>
-  <div class="tw-mt-6">
-    <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
-      <GovernmentLoanTableArchived></GovernmentLoanTableArchived>
-    </div>
-    <div>
+  <q-btn
+    icon="mdi-archive"
+    label="Archived Gov't Loan"
+    @click="archivedGovernmentLoan = true"
+    class="tw-bg-white"
+  />
+
+  <q-dialog v-model="archivedGovernmentLoan" persistent>
+    <div class="!tw-h-min !tw-w-9/12 !tw-max-w-full tw-bg-white tw-p-6">
       <q-table
-        class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
+        class="my-sticky-header-table tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
         flat
         bordered
-        title="Government Loan"
+        title="Archived Government Loan"
         :title-class="['tw-text-xl', 'tw-font-bold']"
         :columns="governmentLoanStore.columns"
-        :rows="governmentLoanStore.getUnarchivedLoans"
+        :rows="governmentLoanStore.getArchivedLoans"
         :rows-per-page-options="[10, 20, 0]"
         :filter="filter"
         row-key="Loan ID"
@@ -46,8 +50,11 @@ governmentLoanStore.fetchGovernmentLoanList();
           ></q-td>
         </template>
       </q-table>
+      <div class="tw-flex tw-justify-end tw-pt-6">
+        <q-btn flat label="CLOSE" class="tw-bg-green-400" v-close-popup />
+      </div>
     </div>
-  </div>
+  </q-dialog>
 </template>
 
 <style scoped>
