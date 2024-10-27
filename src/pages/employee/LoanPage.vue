@@ -1,6 +1,6 @@
 <script setup>
 import { usePageHeader } from "stores/pageHeader";
-import GovernmentTable from "components/employee/PageLoan/GovernmentTable.vue";
+import GovernmentTable from "components/employee/PageLoan/GovernmentLoan/GovernmentTable.vue";
 
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Loan List";
