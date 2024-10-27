@@ -47,7 +47,7 @@ const employeeMenuList = [
     icon: "fa-solid fa-file-invoice",
     label: "Voucher",
     separator: true,
-    link: "/employee/invoice",
+    link: "/employee/voucher",
   },
   {
     icon: "fa-solid fa-note-sticky",
