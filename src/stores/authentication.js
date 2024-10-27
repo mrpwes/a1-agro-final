@@ -41,7 +41,11 @@ export const useAuthenticationStore = defineStore("authentication", {
           this.router.push("/");
           this.isAuthenticated = false;
           this.logoutLoading = false;
-          // getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
+          try {
+            getActivePinia()._s.forEach((store) => store.$reset()); //LOGGING OUT PROBLEM RESETTING PINIA BEFORE SINGOUT
+          } catch (error) {
+            console.log(error);
+          }
         }
       } catch (error) {
         alert("Error logging out:", error);
