@@ -1,4 +1,5 @@
 <script setup>
+import { onMounted } from "vue";
 import { usePageHeader } from "stores/pageHeader";
 import { useProfileStore } from "stores/employee/profilePage/fetchProfileDetails";
 
@@ -7,7 +8,22 @@ storePageHeader.currentPage = "Profile";
 
 const storeProfile = useProfileStore();
 
-storeProfile.getProfileDetails();
+onMounted(() => {
+  storeProfile.getProfileDetails();
+  async function checkLinkStatus(url = storePageHeader.profilePicture) {
+    try {
+      const response = await fetch(url);
+
+      if (response.status === 400) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error(`Error fetching the link ${url}:`, error);
+    }
+  }
+});
 </script>
 
 <template>
@@ -21,9 +37,18 @@ storeProfile.getProfileDetails();
       <tr>
         <td colspan="4" class="tw-text-center tw-border-none">
           <img
+            v-if="checkLinkStatus"
             :src="storeProfile.profilePicture"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-48"
-          />{{ storeProfile.profileDetails.first_name }},
+          />
+          <img
+            v-else
+            src="https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/employee_avatar/no_image.png"
+            :alt="`Default profile picture`"
+            class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-48"
+          />
+
+          {{ storeProfile.profileDetails.first_name }},
           {{ storeProfile.profileDetails.last_name }}
           {{ storeProfile.profileDetails.middle_name }}
         </td>

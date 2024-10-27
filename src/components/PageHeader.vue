@@ -1,13 +1,27 @@
 <script setup>
 // import { useGlobalStore } from "stores/global";
 import { usePageHeader } from "stores/pageHeader";
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 
 // const store = useGlobalStore();
 const storePageHeader = usePageHeader();
 
 onMounted(() => {
   storePageHeader.getProfilePicture();
+
+  async function checkLinkStatus(url = storePageHeader.profilePicture) {
+    try {
+      const response = await fetch(url);
+
+      if (response.status === 400) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error(`Error fetching the link ${url}:`, error);
+    }
+  }
 });
 
 storePageHeader.getCurrentUserName();
@@ -16,7 +30,7 @@ storePageHeader.getCurrentUserName();
 <template>
   <q-header elevated class="tw-text-black">
     <div
-      class=" tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-500"
+      class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-500"
     >
       <div class="tw-col-span-2 tw-inline-flex">
         <q-btn
@@ -48,11 +62,12 @@ storePageHeader.getCurrentUserName();
             {{ storePageHeader.currentUserName }}&nbsp;&nbsp;
           </h6>
           <q-avatar size="2.5rem">
+            <img v-if="checkLinkStatus" :src="storePageHeader.profilePicture" />
             <img
-              v-if="storePageHeader.profilePicture != null"
-              :src="storePageHeader.profilePicture"
+              v-else
+              src="https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/employee_avatar/no_image.png"
+              :alt="`Default profile picture`"
             />
-            <q-spinner v-else color="primary" size="1.75em" :thickness="5" />
           </q-avatar>
         </div>
       </router-link>
