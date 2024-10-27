@@ -11,7 +11,6 @@ const storeViewVoucher = useViewVoucherStore();
 
 export const useAddVoucherStore = defineStore("addVoucher", {
   state: () => ({
-    currentEmployeeID: authenticationStore.getEmployeeId,
     type: null,
     date_issued: null,
     recipient: null,
@@ -30,7 +29,7 @@ export const useAddVoucherStore = defineStore("addVoucher", {
       try {
         const { data, error } = await supabase.from("voucher").insert([
           {
-            admin_employee_id: this.currentEmployeeID,
+            admin_employee_id: authenticationStore.getEmployeeId,
             subject: this.subject,
             description: this.description,
             date_issued: this.date_issued,
