@@ -83,6 +83,10 @@ const routes = [
         component: () => import("pages/employee/VoucherListPage.vue"),
       },
       {
+        path: "requestToAdmin",
+        component: () => import("pages/employee/RequestToAdminPage.vue"),
+      },
+      {
         path: "support",
         component: () => import("pages/SupportPage.vue"),
       },

@@ -5,7 +5,70 @@ import { supabase } from "../../../lib/supabaseClient.js";
 // const storeAuthentication = useAuthenticationStore();
 
 export const useViewApprovalStore = defineStore("viewApproval", {
-  state: () => ({ rows: [] }),
+  state: () => ({
+    rows: [],
+
+    columns: [
+      {
+        name: "id",
+        align: "center",
+        label: "Request ID",
+        field: (row) => row.id,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "request_type_name",
+        align: "center",
+        label: "Request Type",
+        field: (row) => row.request_type_id.request_type_name,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "Subject",
+        align: "center",
+        label: "Subject",
+        field: (row) => row.request_subject,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "Description",
+        align: "center",
+        label: "Description",
+        field: (row) => row.request_description,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "Recipient",
+        align: "center",
+        label: "Recipient",
+        field: (row) =>
+          row.request_employee_id.company_employee_id +
+          " - " +
+          row.request_employee_id.last_name +
+          " " +
+          row.request_employee_id.first_name,
+        sortable: true,
+      },
+      {
+        name: "Application Date",
+        align: "center",
+        label: "Application Date",
+        field: (row) => row.request_application_date,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "actions",
+        align: "center",
+        label: "",
+        field: "",
+      },
+    ],
+  }),
 
   getters: {
     getArchivedApprovalList(state) {
@@ -17,72 +80,25 @@ export const useViewApprovalStore = defineStore("viewApproval", {
   },
 
   actions: {
-    // async getApprovalList() {
-    //   try {
-    //     const { data, error } = await supabase
-    //       .from("request")
-    //       .select(
-    //         `
-    //         id,
-    //         recipient:employee (id, first_name, middle_name, last_name),
-    //         request_type_id,
-    //         request_date,
-    //         subject,
-    //         description,
-    //         remarks,
-    //         is_archive,
-    //         request_confirmation (
-    //             id,
-    //             employee_id,
-    //             application_date,
-    //             request_confirmation_date,
-    //             status,
-    //             remarks,
-    //             is_archive
-    //         )
-    //     `
-    //       )
-    //       .eq("request_type_id", 3);
-    //     if (error) throw error;
-    //     this.rows = data;
-    //     this.getApprovalList();
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
-    // async archivedRequest(requestID, requestIsArchive) {
-    //   try {
-    //     const { error } = await supabase
-    //       .from("request")
-    //       .update({
-    //         is_archive: !requestIsArchive,
-    //       })
-    //       .eq("id", requestID);
-    //     if (error) throw error;
-    //     this.getApprovalList();
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
-    // async requestConfirmationStatus(
-    //   requestConfirmationID,
-    //   requestConfirmationStatus
-    // ) {
-    //   try {
-    //     const { error } = await supabase
-    //       .from("request_confirmation")
-    //       .update({
-    //         status:
-    //           requestConfirmationStatus === "Approved"
-    //             ? "Disapproved"
-    //             : "Approved",
-    //       })
-    //       .eq("id", requestConfirmationID);
-    //     if (error) throw error;
-    //     this.getApprovalList();
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // },
+    async getRequestList() {
+      try {
+        const { data, error } = await supabase.from("request").select(
+          `
+            id,
+            request_employee_id(company_employee_id, first_name, middle_name, last_name),
+            request_type_id(request_type_name),
+            request_approval_status(request_approval_status_name),
+            request_application_date,
+            request_subject,
+            request_description,
+            is_archive
+        `
+        );
+        if (error) throw error;
+        this.rows = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 });

@@ -12,6 +12,7 @@ const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Approval List";
 
 const storeViewApproval = useViewApprovalStore();
+storeViewApproval.getRequestList();
 
 // storeViewApproval.getApprovalList();
 const columns = [
@@ -46,13 +47,7 @@ const columns = [
     field: "description",
     sortable: true,
   },
-  {
-    name: "Recipient",
-    align: "center",
-    label: "Recipient",
-    field: (row) => row.recipient.last_name + " " + row.recipient.first_name,
-    sortable: true,
-  },
+
   {
     name: "actions",
     align: "center",
@@ -65,15 +60,15 @@ const columns = [
 <template>
   <!-- TODO: Add Voucher List Page and Connect to Database -->
   <div class="tw-w-11/12 tw-mx-auto tw-flex tw-justify-end tw-mb-5 tw-gap-4">
-    <ArchivedApprovalButton></ArchivedApprovalButton>
-    <AddApprovalButton></AddApprovalButton>
+    <!-- <ArchivedApprovalButton></ArchivedApprovalButton>
+    <AddApprovalButton></AddApprovalButton> -->
   </div>
   <q-table
     class="my-sticky-header-table tw-w-11/12 tw-mx-auto tw-mt-6 tw-bg-white tw-shadow-lg tw-border tw-rounded-3xl tw-border-collapse"
     flat
     bordered
     :filter="tableSearch"
-    :columns="columns"
+    :columns="storeViewApproval.columns"
     :rows="storeViewApproval.getUnarchivedApprovalList"
     :rows-per-page-options="[10, 20, 0]"
     row-key="name"

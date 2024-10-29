@@ -21,17 +21,12 @@ function openmodel(row) {
       <div class="tw-grid tw-grid-cols-3 tw-gap-5 tw-pb-5">
         <div>Request ID: {{ selectedRow.id }}</div>
         <div>
-          Name: {{ selectedRow.recipient.first_name }}
-          {{ selectedRow.recipient.last_name }}
+          Name: {{ selectedRow.request_type_id.first_name }}
+          {{ selectedRow.request_type_id.last_name }}
         </div>
         <div>
           Application Date:
-          {{
-            date.formatDate(
-              selectedRow.request_confirmation.application_date,
-              "MMM D, YYYY"
-            )
-          }}
+          {{ selectedRow.request_application_date }}
         </div>
         <div class="tw-col-span-3">Subject:</div>
         <div class="tw-col-span-3">
@@ -55,60 +50,9 @@ function openmodel(row) {
             hide-bottom-space
           />
         </div>
-        <div class="tw-col-span-3">Remarks:</div>
-        <div class="tw-col-span-3 !tw-h-2/6">
-          <q-input
-            v-model="selectedRow.remarks"
-            filled
-            autogrow
-            :disable="selectedRow.isArchive ? true : false"
-            :readonly="selectedRow.isArchive ? true : false"
-          />
-        </div>
       </div>
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup />
-        <q-btn
-          v-if="selectedRow.request_confirmation.status == 'Pending'"
-          flat
-          class="tw-bg-red-500"
-          icon="mdi-close"
-          label="Disapprove"
-          @click="
-            storeViewApproval.requestConfirmationStatus(
-              selectedRow.request_confirmation.id,
-              'Disapproved'
-            )
-          "
-          v-close-popup
-        />
-        <q-btn
-          v-if="selectedRow.request_confirmation.status == 'Pending'"
-          flat
-          class="tw-bg-green-400"
-          icon="mdi-check-bold"
-          label="Approve"
-          @click="
-            storeViewApproval.requestConfirmationStatus(
-              selectedRow.request_confirmation.id,
-              'Approved'
-            )
-          "
-          v-close-popup
-        />
-        <q-btn
-          flat
-          :class="selectedRow.is_archive ? 'tw-bg-green-400' : 'tw-bg-red-400'"
-          icon="mdi-archive"
-          :label="selectedRow.is_archive ? 'Unarchive' : 'Archive'"
-          @click="
-            storeViewApproval.archivedRequest(
-              selectedRow.id,
-              selectedRow.is_archive
-            )
-          "
-          v-close-popup
-        />
       </q-card-actions>
     </div>
   </q-dialog>
