@@ -35,7 +35,57 @@ export const usePayrollTableFormatterStore = defineStore(
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ");
       },
+
       noDaysWorkedFormatter(attendance) {
+        let totalMinutes = 0;
+
+        attendance.forEach((entry) => {
+          if (entry.time_out === null && entry.time_in !== null) {
+            // Handle case where there is no time out
+            // console.log("No Time Out for entry:", entry);
+            totalMinutes += 0; // or handle it differently if needed
+          } else if (
+            entry.attendance_type_id !== 1 &&
+            entry.attendance_type_id !== undefined
+          ) {
+            totalMinutes += 480; // 8 hours in minutes
+          } else if (entry.time_in && entry.time_out) {
+            const timeIn = new Date(entry.time_in);
+            const timeOut = new Date(entry.time_out);
+
+            // Set timeIn to 8 AM if it's before 8 AM
+            const eightAM = new Date(timeIn);
+            eightAM.setHours(8, 0, 0, 0);
+            if (timeIn < eightAM) {
+              timeIn.setHours(8, 0, 0, 0);
+            }
+
+            // Set timeOut to 5 PM if it's after 5 PM
+            const fivePM = new Date(timeOut);
+            fivePM.setHours(17, 0, 0, 0);
+            if (timeOut > fivePM) {
+              timeOut.setHours(17, 0, 0, 0);
+            }
+
+            let minutes = (timeOut - timeIn) / (1000 * 60); // Convert milliseconds to minutes
+
+            // Subtract 60 minutes if timeOut is after 1 PM
+            const onePM = new Date(timeOut);
+            onePM.setHours(13, 0, 0, 0);
+            if (timeOut > onePM) {
+              minutes -= 60; // Subtract 1 hour
+              // console.log("Subtract 1 hour for entry:", entry);
+            }
+
+            totalMinutes += minutes;
+          }
+        });
+
+        const totalHours = totalMinutes / 60;
+        return totalHours.toFixed(2) / 8;
+      },
+
+      noDaysWorkedFormattersss(attendance) {
         let totalHours = 0;
 
         attendance.forEach((entry) => {

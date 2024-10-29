@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { date } from "quasar";
 import { useViewEmployeeStore } from "src/stores/admin/employeeListPage/viewEmployee";
 import viewEmployeeAuditButton from "components/admin/PageEmployeeList/ViweEmployeeButtonHistory/ViewEmployeeAuditButton.vue";
@@ -17,6 +17,20 @@ function openmodel(row) {
   viewPrompt.value = true;
   console.table(selectedRow.value);
   storeViewEmployee.getProfilePicture(selectedRow.value.id);
+}
+
+async function checkLinkStatus(url = storeViewEmployee.publicUrl) {
+  try {
+    const response = await fetch(url);
+
+    if (response.status === 400) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error(`Error fetching the link ${url}:`, error);
+  }
 }
 
 function capitalizeFirstLetterOfEachWord(str) {
@@ -53,7 +67,14 @@ function capitalizeFirstLetterOfEachWord(str) {
         <div v-if="!editingInformation" class="tw-col-span-2">
           <!-- TODO: Update Image Responsiveness -->
           <img
+            v-if="checkLinkStatus"
             :src="storeViewEmployee.publicUrl"
+            class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
+          />
+          <img
+            v-else
+            src="https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/employee_avatar/no_image.png"
+            :alt="`Default profile picture`"
             class="tw-mx-auto tw-my-3 tw-rounded-full tw-size-36"
           />
         </div>

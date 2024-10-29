@@ -137,15 +137,7 @@ function totalNetPay() {
                 {{
                   payrollTableFormatterStore.noDaysWorkedFormatter(
                     selectedRow.attendance
-                  ) === 0
-                    ? "N/A"
-                    : payrollTableFormatterStore.noDaysWorkedFormatter(
-                        selectedRow.attendance
-                      ) === 1
-                    ? "1 Day"
-                    : payrollTableFormatterStore.noDaysWorkedFormatter(
-                        selectedRow.attendance
-                      ) + " Days"
+                  )
                 }}
               </td>
               <td class="tw-border">

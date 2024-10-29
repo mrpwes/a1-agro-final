@@ -96,7 +96,14 @@ export const usePayrollTableStore = defineStore("payrollTable", {
     selectedDateOptions: null,
   }),
 
-  getters: {},
+  getters: {
+    getArchived(state) {
+      return state.rows.filter((row) => row.is_archive === true);
+    },
+    getUnarchived(state) {
+      return state.rows.filter((row) => row.is_archive === false);
+    },
+  },
   actions: {
     customFilter(rows, terms) {
       console.log("customFilter", rows, terms);
@@ -204,15 +211,16 @@ export const usePayrollTableStore = defineStore("payrollTable", {
             government_loan_audit!government_loan_audit_employee_id_fkey(*)
             `
           )
-          .eq("is_archive", false)
           .gte("attendance.date", dateStart) // Greater than or equal to dateStart
           .lte("attendance.date", dateEnd) // Less than or equal to dateEnd// Greater than or equal to dateStart
-          .lte("emp_sss_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
-          .lte("emp_philhealth_contrib_audit.change_date", dateEnd) // Greater than or equal to dateStart
-          .lte("emp_pagibig_contrib_audit.change_date", dateEnd) // Less than or equal to dateEnd
-          .gte("government_loan_audit.date_end", dateEnd) // Greater than or equal to dateEnd
-          .lte("government_loan_audit.change_date", dateEnd); // Less than or equal to dateEnd
+          .gte("government_loan_audit.date_end", dateEnd)
+          .lte("government_loan_audit.change_date", dateEnd) // Less than or equal to dateEnd
+          .gte("emp_sss_contrib_audit.change_date", dateEnd)
+          .gte("emp_philhealth_contrib_audit.change_date", dateEnd)
+          .gte("emp_pagibig_contrib_audit.change_date", dateEnd);
+        console.log(dateEnd);
         // Use forEach to iterate over the data
+        console.log(data);
         data.forEach((employee) => {
           const empSssContribAudit = employee.emp_sss_contrib_audit;
 

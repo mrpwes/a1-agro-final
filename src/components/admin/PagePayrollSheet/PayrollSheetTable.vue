@@ -130,7 +130,7 @@ function exportTableToCSV(tableId) {
     title="Attendance Report"
     :title-class="['tw-text-xl', 'tw-font-bold']"
     :columns="payrollTableStore.payrollColumns['columns']"
-    :rows="payrollTableStore.rows"
+    :rows="payrollTableStore.getUnarchived"
     :rows-per-page-options="[0]"
     :filter="tableSearch"
     :filter-method="payrollTableStore.customFilter"

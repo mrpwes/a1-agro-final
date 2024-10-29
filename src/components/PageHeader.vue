@@ -30,7 +30,7 @@ storePageHeader.getCurrentUserName();
 <template>
   <q-header elevated class="tw-text-black">
     <div
-      class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-500"
+      class="tw-flex tw-justify-between tw-items-center tw-p-2 tw-bg-primary tw-bg-gray-100"
     >
       <div class="tw-col-span-2 tw-inline-flex">
         <q-btn
@@ -65,7 +65,7 @@ storePageHeader.getCurrentUserName();
             <img v-if="checkLinkStatus" :src="storePageHeader.profilePicture" />
             <img
               v-else
-              src="https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/public/employee_avatar/no_image.png"
+              src="https://tkdqxpxpavnjhiitssss.supabase.co/storage/v1/object/sign/utils_image/no_image.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJ1dGlsc19pbWFnZS9ub19pbWFnZS5wbmciLCJpYXQiOjE3MzAwNzk4NjEsImV4cCI6MTc2MTYxNTg2MX0.2LR8y91sky7CUlfsX7jOxzs8pbqnrqsHW_tBkuJW0qE&t=2024-10-28T01%3A44%3A21.871Z"
               :alt="`Default profile picture`"
             />
           </q-avatar>

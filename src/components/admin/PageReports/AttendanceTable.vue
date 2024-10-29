@@ -68,12 +68,6 @@ function exportTableToCSV(tableId) {
 
 attendanceListStore.fetchAttendanceReports();
 
-function getTotalHours(array, targetObject, row) {
-  const targetColumnIndex = findIndexInArray(array, targetObject);
-  const targetRow = row.row.attendance[targetColumnIndex - 1];
-  return calculateTotalHours(targetRow);
-}
-
 function getBtnClass(array, targetObject, row) {
   const targetColumnIndex = findIndexInArray(array, targetObject);
   const targetRow = row.row.attendance[targetColumnIndex - 1];
@@ -96,6 +90,12 @@ function findIndexInArray(array, targetObject) {
   );
 }
 
+function getTotalHours(array, targetObject, row) {
+  const targetColumnIndex = findIndexInArray(array, targetObject);
+  const targetRow = row.row.attendance[targetColumnIndex - 1];
+  return calculateTotalHours(targetRow);
+}
+
 function calculateTotalHours(row) {
   const currentDate = new Date();
   const rowDate = new Date(row.date);
@@ -116,33 +116,49 @@ function calculateTotalHours(row) {
       row.attendance_type.attendance_type_name
     );
   } else {
-    const timeIn = new Date(row.time_in);
-    const timeOut = new Date(row.time_out);
+    var timeIn = new Date(row.time_in);
+    var timeOut = new Date(row.time_out);
+    console.log(timeIn, timeOut);
 
     // Set timeIn to 8 AM if it's before 8 AM
     const eightAM = new Date(timeIn);
     eightAM.setHours(8, 0, 0, 0);
     if (timeIn < eightAM) {
-      timeIn.setHours(8, 0, 0, 0);
+      timeIn = eightAM; // Update timeIn to eightAM
     }
 
     // Set timeOut to 5 PM if it's after 5 PM
     const fivePM = new Date(timeOut);
     fivePM.setHours(17, 0, 0, 0);
     if (timeOut > fivePM) {
-      timeOut.setHours(17, 0, 0, 0);
+      timeOut = fivePM; // Update timeOut to fivePM
     }
 
-    totalHours = ((timeOut - timeIn) / (1000 * 60 * 60)).toFixed(2);
-
+    // If timeOut is after 1 PM, subtract 1 hour
     const onePM = new Date(timeOut);
     onePM.setHours(13, 0, 0, 0);
-    if (timeOut > onePM) {
-      totalHours = (parseFloat(totalHours) - 1).toFixed(2); // Subtract 1 hour
-      // console.log("Subtract 1 hour");
+    const twelvePM = new Date(timeOut);
+    twelvePM.setHours(12, 0, 0, 0);
+    if (timeOut > onePM && timeIn < twelvePM) {
+      timeOut = new Date(timeOut.getTime() - 3600000); // Subtract 1 hour
     }
+
+    // Calculate total hours
+    const totalHours = (timeOut - timeIn) / 1000 / 60 / 60;
+
+    return convertDecimalToTime(totalHours);
   }
   return totalHours;
+}
+
+function convertDecimalToTime(decimalHours) {
+  // Get the whole number part (hours)
+  const hours = Math.floor(decimalHours);
+
+  // Get the decimal part and convert it to minutes
+  const minutes = Math.round((decimalHours - hours) * 60);
+
+  return `${hours}:${minutes}`;
 }
 
 function calculateClass(row) {
