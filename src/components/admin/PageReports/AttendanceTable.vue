@@ -285,7 +285,7 @@ function calculateClass(row) {
       </q-input>
     </template>
     <template v-slot:body-cell-actions="props">
-      <q-td key="actions" class="tw-w-2/12 !tw-p-0" :props="props">
+      <q-td key="actions" class="!tw-w-20 !tw-p-0" :props="props">
         <ViewAttendance
           :rows="props"
           :columns="props.cols"
