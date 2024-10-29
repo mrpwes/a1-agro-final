@@ -29,6 +29,12 @@ export const usePayrollTableFormatterStore = defineStore(
         var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
         return parseFloat(with2Decimals);
       },
+
+      formatToTwoDecimalPlaces(num) {
+        // Multiply by 100, truncate to an integer, then divide by 100
+        return Math.floor(num * 100) / 100;
+      },
+
       capitalizeFirstLetterOfEachWord(str) {
         return str
           .split(" ")
@@ -36,53 +42,87 @@ export const usePayrollTableFormatterStore = defineStore(
           .join(" ");
       },
 
-      noDaysWorkedFormatter(attendance) {
-        let totalMinutes = 0;
+      calculateTotalHours(row) {
+        // Check if attendance_type.id is not 1
+        if (row.attendance_type == undefined) {
+          return 0;
+        }
 
-        attendance.forEach((entry) => {
-          if (entry.time_out === null && entry.time_in !== null) {
-            // Handle case where there is no time out
-            // console.log("No Time Out for entry:", entry);
-            totalMinutes += 0; // or handle it differently if needed
-          } else if (
-            entry.attendance_type_id !== 1 &&
-            entry.attendance_type_id !== undefined
-          ) {
-            totalMinutes += 480; // 8 hours in minutes
-          } else if (entry.time_in && entry.time_out) {
-            const timeIn = new Date(entry.time_in);
-            const timeOut = new Date(entry.time_out);
+        if (row.attendance_type.id !== 1) {
+          return this.convertDecimalToHoursMinutes(8); // Return 8 hours as a numeric value
+        }
 
-            // Set timeIn to 8 AM if it's before 8 AM
-            const eightAM = new Date(timeIn);
-            eightAM.setHours(8, 0, 0, 0);
-            if (timeIn < eightAM) {
-              timeIn.setHours(8, 0, 0, 0);
-            }
+        // Parse the time_in and time_out strings into Date objects
+        let timeIn = new Date(row.time_in);
+        timeIn.setMilliseconds(0); // Set milliseconds to 0
 
-            // Set timeOut to 5 PM if it's after 5 PM
-            const fivePM = new Date(timeOut);
-            fivePM.setHours(17, 0, 0, 0);
-            if (timeOut > fivePM) {
-              timeOut.setHours(17, 0, 0, 0);
-            }
+        let timeOut = new Date(row.time_out);
+        timeOut.setMilliseconds(0); // Set milliseconds to 0
 
-            let minutes = (timeOut - timeIn) / (1000 * 60); // Convert milliseconds to minutes
+        // Set timeIn to 8 AM if it's before 8 AM
+        const eightAM = new Date(timeIn);
+        eightAM.setHours(8, 0, 0);
+        if (timeIn < eightAM) {
+          timeIn.setHours(8, 0, 0);
+        }
 
-            // Subtract 60 minutes if timeOut is after 1 PM
-            const onePM = new Date(timeOut);
-            onePM.setHours(13, 0, 0, 0);
-            if (timeOut > onePM) {
-              minutes -= 60; // Subtract 1 hour
-              // console.log("Subtract 1 hour for entry:", entry);
-            }
+        // Set timeOut to 5 PM if it's after 5 PM
+        const fivePM = new Date(timeOut);
+        fivePM.setHours(17, 0, 0);
+        if (timeOut > fivePM) {
+          timeOut.setHours(17, 0, 0);
+        }
 
-            totalMinutes += minutes;
-          }
+        // Calculate total minutes between adjusted timeIn and timeOut
+        let minutes = (timeOut - timeIn) / (1000 * 60); // Convert milliseconds to minutes
+
+        // Subtract 60 minutes if timeOut is after 1 PM
+        const onePM = new Date(timeOut);
+        onePM.setHours(13, 0, 0);
+        const twelvePM = new Date(timeOut);
+        twelvePM.setHours(12, 0, 0);
+        if (timeOut > onePM && timeIn < twelvePM) {
+          minutes -= 60; // Subtract 1 hour
+        }
+
+        // Convert total minutes to hours
+        const totalHours = Math.floor(minutes / 60) + (minutes % 60) / 60; // Total hours in decimal format
+
+        // Return the total hours as a numeric value
+        return this.convertDecimalToHoursMinutes(totalHours);
+      },
+
+      sumArray(arr) {
+        return arr.reduce(
+          (accumulator, currentValue) => accumulator + Number(currentValue),
+          0
+        );
+      },
+
+      calculateTotalAttendanceHours(attendance) {
+        let totalHours = 0;
+
+        let listOfHours = [];
+
+        attendance.forEach((record) => {
+          // totalHours += this.calculateTotalHours(record);
+          listOfHours.push(this.calculateTotalHours(record));
         });
 
-        const totalHours = totalMinutes / 60;
-        return totalHours.toFixed(2) / 8;
+        console.log(listOfHours);
+        totalHours = this.sumArray(listOfHours);
+        console.log(totalHours);
+        return totalHours;
+      },
+
+      convertDecimalToHoursMinutes(decimalHours) {
+        // Get the whole number of hours
+        const hours = Math.floor(decimalHours);
+
+        // Get the remaining decimal part and convert it to minutes
+        const minutes = Math.floor((decimalHours - hours) * 60);
+
+        return hours + "." + minutes;
       },
 
       noDaysWorkedFormattersss(attendance) {
@@ -135,12 +175,12 @@ export const usePayrollTableFormatterStore = defineStore(
           }
         });
 
-        return this.twoDecimalWithoutRounding(totalHours / 8);
+        return totalHours / 8;
       },
 
       grossIncomeFormatter(ratePerDay, attendance) {
-        const noDaysWorked = this.noDaysWorkedFormatter(attendance);
-        return ratePerDay * noDaysWorked;
+        const noDaysWorked = this.calculateTotalAttendanceHours(attendance) / 8;
+        return (ratePerDay * noDaysWorked).toFixed(2);
       },
 
       monthlyIncomeFormatter(ratePerDay, numberOfDaysInMonth = 30) {

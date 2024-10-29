@@ -2,6 +2,9 @@
 import { usePageHeader } from "stores/pageHeader";
 import { usePayslipStore } from "stores/employee/payslipPage/fetchPayslipContents";
 import { usePayslipFormatterStore } from "stores/employee/payslipPage/payslipFormatter";
+import { usePayrollTableFormatterStore } from "stores/admin/payrollSheetPage/payrollTableFormatter";
+
+const payrollTableFormatterStore = usePayrollTableFormatterStore();
 
 const storePageHeader = usePageHeader();
 storePageHeader.currentPage = "Payslip";
@@ -39,6 +42,11 @@ function totalNetPay(selectedRow) {
     console.error("Error calculating payroll:", error);
     return selectedRow; // or any default value you prefer
   }
+}
+
+function formatToTwoDecimalPlaces(num) {
+  // Multiply by 100, truncate to an integer, then divide by 100
+  return Math.floor(num * 100) / 100;
 }
 </script>
 
@@ -152,17 +160,21 @@ function totalNetPay(selectedRow) {
           <td colspan="1">
             <div>
               {{
-                payslipFormatterStore.noDaysWorkedFormatter(
-                  payslipStore.rows[0].attendance
+                formatToTwoDecimalPlaces(
+                  payrollTableFormatterStore.calculateTotalAttendanceHours(
+                    payslipStore.rows[0].attendance
+                  ) / 8
                 )
               }}
             </div>
           </td>
           <td>
             ₱{{
-              payslipFormatterStore.grossIncomeFormatter(
-                payslipStore.rows[0].rate_per_day,
-                payslipStore.rows[0].attendance
+              formatToTwoDecimalPlaces(
+                payrollTableFormatterStore.grossIncomeFormatter(
+                  payslipStore.rows[0].rate_per_day,
+                  payslipStore.rows[0].attendance
+                )
               )
             }}
           </td>
@@ -246,9 +258,11 @@ function totalNetPay(selectedRow) {
           <td colspan="2">Total Gross Income:</td>
           <td>
             ₱{{
-              payslipFormatterStore.grossIncomeFormatter(
-                payslipStore.rows[0].rate_per_day,
-                payslipStore.rows[0].attendance
+              formatToTwoDecimalPlaces(
+                payrollTableFormatterStore.grossIncomeFormatter(
+                  payslipStore.rows[0].rate_per_day,
+                  payslipStore.rows[0].attendance
+                )
               )
             }}
           </td>

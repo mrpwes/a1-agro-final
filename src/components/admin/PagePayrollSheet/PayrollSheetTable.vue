@@ -118,6 +118,11 @@ function exportTableToCSV(tableId) {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
+
+function formatToTwoDecimalPlaces(num) {
+  // Multiply by 100, truncate to an integer, then divide by 100
+  return Math.floor(num * 100) / 100;
+}
 </script>
 
 <template>
@@ -196,9 +201,11 @@ function exportTableToCSV(tableId) {
         }}</q-td>
         <q-td key="noDaysWorked" :props="props" auto-width>
           {{
-            payrollTableFormatterStore.noDaysWorkedFormatter(
-              props.row.attendance
-            )
+            (
+              payrollTableFormatterStore.calculateTotalAttendanceHours(
+                props.row.attendance
+              ) / 8
+            ).toFixed(4)
           }}
           <q-popup-edit
             :disable="!popupEdit"
