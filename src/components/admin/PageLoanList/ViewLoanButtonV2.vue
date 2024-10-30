@@ -217,6 +217,32 @@ function openmodel(row) {
         <q-card-actions align="right" class="text-primary noPrint">
           <q-btn
             flat
+            :class="
+              storeViewLoan.request_is_archive
+                ? 'tw-bg-green-400'
+                : 'tw-bg-red-400'
+            "
+            icon="mdi-archive"
+            :label="storeViewLoan.request_is_archive ? 'Unarchive' : 'Archive'"
+            v-close-popup
+            @click="storeViewLoan.archiveLoan"
+          />
+          <q-btn
+            v-if="storeViewLoan.is_paying === false"
+            label="Add Payment"
+            class="tw-bg-green-400"
+            :disable="storeViewLoan.is_paying"
+            @click="storeViewLoan.is_paying = true"
+          />
+          <q-btn
+            v-else
+            label="Save"
+            class="tw-bg-green-400"
+            v-close-popup
+            type="submit"
+          />
+          <q-btn
+            flat
             label="CLOSE"
             v-close-popup
             @click="
