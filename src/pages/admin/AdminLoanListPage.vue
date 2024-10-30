@@ -40,7 +40,7 @@ const columns = [
     name: "Loan Type",
     align: "center",
     label: "Loan Type",
-    field: (row) => row.request_type_id.request_type_name,
+    // field: (row) => row.request_type_id.request_type_name?.toUpperCase(),
     format: (val) => `${val}`,
     sortable: true,
   },

@@ -70,6 +70,9 @@ export const useRequestToAdminPage = defineStore("requestToAdminPage", {
         sortable: true,
       },
     ],
+
+    dateList: [{}],
+    selectedDate: "", // Data property for the date input
   }),
   getters: {
     getUnarchiveRows() {
@@ -77,6 +80,13 @@ export const useRequestToAdminPage = defineStore("requestToAdminPage", {
     },
   },
   actions: {
+    addField(value, fieldType) {
+      this.dateList.push({});
+    },
+    removeField(index, fieldType) {
+      this.dateList.splice(index, 1);
+    },
+
     async addRequestToAdminPage() {
       try {
         const { data, error } = await supabase.from("request").insert({
