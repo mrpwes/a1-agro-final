@@ -40,8 +40,11 @@ const columns = [
     name: "Loan Type",
     align: "center",
     label: "Loan Type",
-    field: (row) => row.request_type_id.request_type_name?.toUpperCase(),
-    format: (val) => `${val}`,
+    // field: (row) =>
+    //   row.request_type_id.request_type_name !== null
+    //     ? row.request_type_id.request_type_name
+    //     : row.request_type_id,
+    // format: (val) => `${val}`,
     sortable: true,
   },
   {
@@ -56,24 +59,24 @@ const columns = [
     name: "Recipient",
     align: "center",
     label: "Recipient",
-    field: (row) =>
-      row.request_employee_id.company_employee_id +
-      " - " +
-      row.request_employee_id.first_name +
-      " " +
-      row.request_employee_id.last_name,
+    // field: (row) =>
+    //   row.request_employee_id.company_employee_id +
+    //   " - " +
+    //   row.request_employee_id.first_name +
+    //   " " +
+    //   row.request_employee_id.last_name,
     sortable: true,
   },
   {
     name: "Issuer",
     align: "center",
     label: "Issuer",
-    field: (row) =>
-      row.admin_employee_id.company_employee_id +
-      " - " +
-      row.admin_employee_id.first_name +
-      " " +
-      row.admin_employee_id.last_name,
+    // field: (row) =>
+    //   row.admin_employee_id.company_employee_id +
+    //   " - " +
+    //   row.admin_employee_id.first_name +
+    //   " " +
+    //   row.admin_employee_id.last_name,
     sortable: true,
   },
   {

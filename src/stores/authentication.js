@@ -89,5 +89,5 @@ export const useAuthenticationStore = defineStore("authentication", {
       return this.data.user.app_metadata.userrole;
     },
   },
-  persist: true,
+  // persist: true,
 });

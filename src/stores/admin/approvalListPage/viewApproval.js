@@ -86,8 +86,9 @@ export const useViewApprovalStore = defineStore("viewApproval", {
           `
             id,
             request_employee_id(company_employee_id, first_name, middle_name, last_name),
-            request_type_id(request_type_name),
+            request_type_id(request_type_name, id),
             request_approval_status(request_approval_status_name),
+            request_contents,
             request_application_date,
             request_subject,
             request_description,
@@ -96,6 +97,37 @@ export const useViewApprovalStore = defineStore("viewApproval", {
         );
         if (error) throw error;
         this.rows = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async insertAttendance(employee_id) {
+      try {
+        const { data, error } = await supabase.from("attendance").insert([
+          {
+            employee_id: employee_id,
+            attendance_type_id: 2,
+            company_employee_id: 1,
+            attendance_date: "2021-09-01",
+          },
+        ]);
+        if (error) throw error;
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async approveLeave(id, employee_id, dateContents) {
+      try {
+        const { data, error } = await supabase
+          .from("request")
+          .update({ request_approval_status_id: 2 })
+          .eq("id", id);
+        if (error) throw error;
+        this.getRequestList();
+        this.insertAttendance(employee_id, dateContents);
       } catch (error) {
         console.log(error);
       }

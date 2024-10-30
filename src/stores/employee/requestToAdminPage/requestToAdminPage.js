@@ -98,6 +98,7 @@ export const useRequestToAdminPage = defineStore("requestToAdminPage", {
           request_approval_status_id: 1,
           request_employee_id: storeAuthentication.getEmployeeId,
           is_archive: false,
+          request_contents: this.dateList,
         });
         if (error) {
           throw error;
@@ -116,7 +117,10 @@ export const useRequestToAdminPage = defineStore("requestToAdminPage", {
     },
 
     async getRequestTypeOptions() {
-      const { data, error } = await supabase.from("request_type").select("*");
+      const { data, error } = await supabase
+        .from("request_type")
+        .select("*")
+        .in("id", ["3"]);
       if (error) {
         console.error("error", error);
       }
