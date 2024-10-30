@@ -53,7 +53,8 @@ export const useAddLoan = defineStore("addLoan", {
       try {
         const { data, error } = await supabase
           .from("request_type")
-          .select("id, request_type_name");
+          .select("id, request_type_name")
+          .in("id", ["1", "2"]);
         if (error) {
           throw error;
         }
